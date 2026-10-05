@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Clone.DataAccess/Clone.DataAccess.csproj" />
+  <Project Path="src/Clone.Models/Clone.Models.csproj" />
+  <Project Path="src/Clone.Utility/Clone.Utility.csproj" />
+  <Project Path="src/Clone.Web/Clone.Web.csproj" />
+</Solution>

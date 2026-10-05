@@ -1,0 +1,35 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<div role="status" style="display: flex; align-items: center; gap: 12px; padding-bottom: 1em;">
+    Current count: <FluentBadge Shape="BadgeShape.Rounded" Content="@($"{currentCount}")" />
+</div>
+
+<FluentButton Appearance="ButtonAppearance.Primary" OnClick="@IncrementCount">Click me</FluentButton>
+
+@code {
+    private int currentCount = 0;
+
+    private async Task IncrementCount()
+    {
+        currentCount++;
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var roles = authState.User.Claims
+            .Where(c => c.Type.EndsWith("/role"))
+            .Select(c => c.Value);
+
+        foreach (var role in roles)
+        {
+            Console.WriteLine(role);
+        }
+    }
+}

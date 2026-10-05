@@ -1,0 +1,112 @@
+@page "/company"
+@rendermode InteractiveServer
+
+@using Clone.DataAccess.Repositories.IRepository
+@using Clone.Utility
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inherits FluentDialogInstance﻿
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUnitOfWork UnitOfWork
+
+@attribute [Authorize(Roles = RD.RoleAdmin)]
+
+<PageTitle>Company</PageTitle>
+<FluentDialogProvider />
+<FluentTooltipProvider />
+<FluentStack Orientation="Orientation.Vertical" Gap="16">
+    <FluentLabel Typo="Typography.H3">Company</FluentLabel>
+    <div style="overflow:auto; width:100%;">
+        <EditForm Model="_company" OnValidSubmit="@(async () => await SaveAsync())">
+            <DataAnnotationsValidator />
+            <FluentValidationSummary />
+
+            <FluentGrid Justify="JustifyContent.FlexStart" Style="width: min(100%, 900px);">
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="Name" @bind-Value="_company.Name" Required="true" Placeholder="Company name" Label="Name" Style="width: 100%;" />
+                </FluentGridItem>
+
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="PhoneNumber" @bind-Value="_company.PhoneNumber" Placeholder="Phone number" Label="Phone" Style="width: 100%;" />
+                </FluentGridItem>
+
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="StreetAddress" @bind-Value="_company.StreetAddress" Placeholder="Street address" Label="Street address" Style="width: 100%;" />
+                </FluentGridItem>
+
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="City" @bind-Value="_company.City" Placeholder="City" Label="City" Style="width: 100%;" />
+                </FluentGridItem>
+
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="State" @bind-Value="_company.State" Placeholder="State" Label="State" Style="width: 100%;" />
+                </FluentGridItem>
+
+                <FluentGridItem xs="12" sm="6">
+                    <FluentTextInput Name="PostalCode" @bind-Value="_company.PostalCode" Placeholder="Postal code" Label="Postal code" Style="width: 100%;" />
+                </FluentGridItem>
+
+            </FluentGrid>
+
+            <FluentStack Orientation="Orientation.Horizontal" Gap="8" Style="margin-top: 16px;">
+                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">
+                    @(_company.Id == 0 ? "Save" : "Update")
+                </FluentButton>
+
+                @if (_company.Id != 0)
+                {
+                    <FluentButton Type="ButtonType.Button" OnClick="ResetForm">
+                        Cancel
+                    </FluentButton>
+                }
+            </FluentStack>
+        </EditForm>
+
+    </div>
+    <div style="overflow:auto; width:100%;">
+        @if (_companyDetails != null)
+        {
+            <FluentTextInput Label="Email" @bind-Value=_companyDetails.Name ReadOnly />
+            <FluentTextInput Label="Company" @bind-Value=_companyDetails.PhoneNumber ReadOnly />
+            <FluentTextInput Label="LastName" @bind-Value=_companyDetails.StreetAddress ReadOnly />
+            <FluentTextInput Label="FirstName" @bind-Value=_companyDetails.City ReadOnly />
+            <FluentTextInput Label="Phone" @bind-Value=_companyDetails.State ReadOnly />
+            <FluentTextInput Label="Phone" @bind-Value=_companyDetails.PostalCode ReadOnly />
+            <b>InsertDate:</b> @(_companyDetails.InsertDate.ToString("yyyy-MM-dd HH:mm:ss"))
+            <b>UpdateDate:</b> @(_companyDetails.UpdateDate?.ToString("yyyy-MM-dd HH:mm:ss"))
+        }
+        else
+        {
+            <p>No Contact selected.</p>
+        }
+    </div>
+
+
+    <FluentDivider />
+
+    <div style="overflow:auto; width:100%;">
+        <FluentDataGrid @ref="_grid" Items=@_queryableItems GridTemplateColumns="1fr 1fr 1fr 1fr">
+            <ChildContent>
+                <PropertyColumn Property="@(c => c.Name)" Sortable="true" />
+                <PropertyColumn Property="@(c => c.StreetAddress)" />
+                <PropertyColumn Property="@(c => c.City)" Align="DataGridCellAlignment.Center" />
+                <PropertyColumn Property="@(c => c.State)" Align="DataGridCellAlignment.End" />
+                <PropertyColumn Property="@(c => c.PostalCode)" />
+                <PropertyColumn Property="@(c => c.PhoneNumber)" />
+                <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
+                    <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => EditAsync(context))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => DetailsAsync(context))" />
+                    <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => DeleteAsync(context.Id))" />
+                </TemplateColumn>
+            </ChildContent>
+            <EmptyContent>
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                    <div>Nothing to see here. Carry on!</div>
+                </FluentStack>
+            </EmptyContent>
+        </FluentDataGrid>
+    </div>
+</FluentStack>
