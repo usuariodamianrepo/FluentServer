@@ -1,0 +1,22 @@
+﻿@page "/adminuser"
+@rendermode InteractiveServer
+
+@using Clone.DataAccess.Repositories.IRepository
+@using Clone.Utility
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject INotificationService NotificationService
+@inject IUnitOfWork UnitOfWork
+
+<PageTitle>Admin User</PageTitle>
+
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
+
+<FluentButton OnClick="@ShowMessageBar" Appearance="ButtonAppearance.Primary">
+    Show (5 seconds)
+</FluentButton>
+<FluentButton OnClick="@(async e => await NotificationService.ShowSuccessBarAsync(MESSAGEBAR_SECTION, title: "This is a success message bar"))">
+    Success
+</FluentButton>

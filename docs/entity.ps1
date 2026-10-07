@@ -1,9 +1,11 @@
 param(
-	[Parameter(Mandatory = $true, HelpMessage = "Provide the Entity Name.")]
+	[Parameter(Mandatory = $true, HelpMessage = "Provide the Entity Singular Name.")]
     [ValidateNotNullOrEmpty()]
-	[string]$EntityName
+	[string]$EntitySingularName,
+	[Parameter(Mandatory = $true, HelpMessage = "Provide the Entity Plural Name.")]
+    [ValidateNotNullOrEmpty()]
+	[string]$EntityPluralName
 )
-
 $entityContent = @"
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Clone.Models
 {
-    public sealed class $EntityName : AuditableEntity
+    public sealed class $EntitySingularName : AuditableEntity
     {
         [Display(Name = "Nombre"), MaxLength(60)]
         public string Name { get; set; } = string.Empty;
@@ -34,11 +36,11 @@ namespace Clone.Models
 }
 "@
 
-New-Item -Path "../src/Clone.Models/$EntityName.cs" -ItemType File -Force
-Set-Content -Path "../src/Clone.Models/$EntityName.cs" -Value $entityContent
+New-Item -Path "../src/Clone.Models/$EntitySingularName.cs" -ItemType File -Force
+Set-Content -Path "../src/Clone.Models/$EntitySingularName.cs" -Value $entityContent
 
-$entityRepository = $iEntityServiceName = -join($EntityName + "Repository")
-$entityIRepository = $iEntityServiceName = -join("I" + $EntityName + "Repository")
+$entityRepository = -join($EntitySingularName + "Repository")
+$entityIRepository = -join("I" + $EntitySingularName + "Repository")
 $repContent = @"
 using Clone.DataAccess.Repositories.IRepository;
 using Clone.Models;
@@ -47,9 +49,9 @@ namespace Clone.DataAccess.Repositories
 {
     public class $entityRepository : $entityIRepository
     {
-        private readonly IRepositoryAsync<$EntityName> _repository;
+        private readonly IRepositoryAsync<$EntitySingularName> _repository;
 
-        public $entityRepository(IRepositoryAsync<$EntityName> repository)
+        public $entityRepository(IRepositoryAsync<$EntitySingularName> repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
@@ -73,4 +75,6 @@ namespace Clone.DataAccess.Repositories.IRepository
 New-Item -Path "../src/Clone.DataAccess/Repositories/IRepository/$entityIRepository.cs" -ItemType File -Force
 Set-Content -Path "../src/Clone.DataAccess/Repositories/IRepository/$entityIRepository.cs" -Value $repIContent
 
-Write-Host "Congratulations! the $EntityName entity was created successfully"
+Add-Content ..\src\Clone.DataAccess\Data\ApplicationDbContext.cs "public DbSet<$EntitySingularName> $EntityPluralName { get; set; }"
+
+Write-Host "Congratulations! the $EntitySingularName entity was created successfully"

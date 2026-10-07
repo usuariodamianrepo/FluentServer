@@ -6,24 +6,26 @@
 
 <FluentNav Id="main-menu" Width="260px">
     <FluentNavItem Href="/" Match="NavLinkMatch.All" IconRest="@(new Icons.Regular.Size20.Home())" IconActive="@(new Icons.Filled.Size20.Home())">Home</FluentNavItem>
-        <FluentNavItem Href="counter" IconRest="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconActive="@(new Icons.Filled.Size20.NumberSymbolSquare())">Counter</FluentNavItem>
-        <FluentNavItem Href="weather" IconRest="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconActive="@(new Icons.Filled.Size20.WeatherPartlyCloudyDay())">Weather</FluentNavItem>
-        <FluentNavItem Href="auth" IconRest="@(new Icons.Regular.Size20.LockClosedKey())" IconActive="@(new Icons.Filled.Size20.LockClosedKey())">Auth Required</FluentNavItem>
-        <AuthorizeView>
-            <Authorized>
-                <FluentNavItem Href="Account/Manage">@context.User.Identity?.Name</FluentNavItem>
-                <FluentNavItem Href="company" IconRest="@(new Icons.Regular.Size20.Flag())" IconActive="@(new Icons.Filled.Size20.Flag())">Company</FluentNavItem>
-                <form action="Account/Logout" method="post">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                    <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
-                </form>
-            </Authorized>
-            <NotAuthorized>
-                <FluentNavItem Href="Account/Register">Register</FluentNavItem>
-                <FluentNavItem Href="Account/Login">Login</FluentNavItem>
-            </NotAuthorized>
-        </AuthorizeView>
+    <FluentNavItem Href="counter" IconRest="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconActive="@(new Icons.Filled.Size20.NumberSymbolSquare())">Counter</FluentNavItem>
+    <FluentNavItem Href="weather" IconRest="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconActive="@(new Icons.Filled.Size20.WeatherPartlyCloudyDay())">Weather</FluentNavItem>
+    <FluentNavItem Href="auth" IconRest="@(new Icons.Regular.Size20.LockClosedKey())" IconActive="@(new Icons.Filled.Size20.LockClosedKey())">Auth Required</FluentNavItem>
+    <AuthorizeView>
+        <Authorized>
+            <FluentNavItem Href="Account/Manage">@context.User.Identity?.Name</FluentNavItem>
+            <FluentNavItem Href="adminuser" IconRest="@(new Icons.Regular.Size20.Person())" IconActive="@(new Icons.Filled.Size20.Person())">Admin User</FluentNavItem>
+            <FluentNavItem Href="documenttypes" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">Document Types</FluentNavItem>
+            <FluentNavItem Href="company" IconRest="@(new Icons.Regular.Size20.BuildingFactory())" IconActive="@(new Icons.Filled.Size20.BuildingFactory())">Company</FluentNavItem>
+            <form action="Account/Logout" method="post">
+                <AntiforgeryToken />
+                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
+            </form>
+        </Authorized>
+        <NotAuthorized>
+            <FluentNavItem Href="Account/Register">Register</FluentNavItem>
+            <FluentNavItem Href="Account/Login">Login</FluentNavItem>
+        </NotAuthorized>
+    </AuthorizeView>
 </FluentNav>
 
 @code {
