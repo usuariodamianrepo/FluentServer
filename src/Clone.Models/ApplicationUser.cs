@@ -32,10 +32,5 @@ namespace Clone.Models
 
         [ForeignKey("CompanyId")]
         public Company? Company { get; set; }
-
-        [NotMapped]
-        [Display(Name = "Rol")]
-        public string Role { get; set; } = string.Empty;
-
     }
 }

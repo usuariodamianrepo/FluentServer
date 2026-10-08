@@ -3,20 +3,170 @@
 
 @using Clone.DataAccess.Repositories.IRepository
 @using Clone.Utility
+@using Clone.Models
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity;
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject INotificationService NotificationService
-@inject IUnitOfWork UnitOfWork
+@inject IUnitOfWork _UnitOfWork
+@inject UserManager<ApplicationUser> _UserManager
 
-<PageTitle>Admin User</PageTitle>
+@* @attribute [Authorize(Roles = RD.RoleAdmin)] *@
 
+<PageTitle>Document Types</PageTitle>
+<FluentDialogProvider />
+<FluentLabel Size="@LabelSize.Large">Document Types</FluentLabel>
 <FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
-<FluentButton OnClick="@ShowMessageBar" Appearance="ButtonAppearance.Primary">
-    Show (5 seconds)
-</FluentButton>
-<FluentButton OnClick="@(async e => await NotificationService.ShowSuccessBarAsync(MESSAGEBAR_SECTION, title: "This is a success message bar"))">
-    Success
-</FluentButton>
+<FluentKeyCode OnKeyDown="@KeyDownHandler">
+    <FluentStack HorizontalGap="6px" Wrap="true">
+        <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentTextInput @bind-Value=_PhoneNumberSearch Placeholder="Phone Number" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentButton Title="Search" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">Search</FluentButton>
+    </FluentStack>
+</FluentKeyCode>
+
+<FluentMultiSplitter>
+
+    <FluentMultiSplitterPane Size="50%">
+        <FluentDataGrid @ref="_Grid" Items=@_UserBySearchDto GridTemplateColumns="1fr 1fr 1fr 1fr">
+            <ChildContent>
+                <PropertyColumn Property="@(c => c.Id)" />
+                <PropertyColumn Property="@(c => c.Name)" Sortable="true" />
+                <PropertyColumn Property="@(c => c.Email)" />
+                <PropertyColumn Property="@(c => c.PhoneNumber)" />
+                <PropertyColumn Property="@(c => c.Roles)" />
+                <PropertyColumn Property="@(c => c.CompanyName)" />
+                <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
+                    <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="@(context.IsLocked ? "Unlock" : "Lock")"
+                                  Appearance="ButtonAppearance.Subtle"
+                                  IconEnd="@(context.IsLocked ? new Icons.Regular.Size20.PersonAvailable().WithColor(Color.Error) : new Icons.Regular.Size20.PersonAvailable())"
+                                  OnClick="@(() => OnLockUnlockClicked(context.Id))" />
+                </TemplateColumn>
+            </ChildContent>
+            <EmptyContent>
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                    <div>Nothing to see here. Carry on!</div>
+                </FluentStack>
+            </EmptyContent>
+        </FluentDataGrid>
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">Content</FluentLabel>
+        @if (_ApplicationUser != null)
+        {
+            <EditForm Model="_ApplicationUser" OnValidSubmit="@(async () => await OnSaveContentClicked())">
+                <DataAnnotationsValidator />
+                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentTextInput Label="Id" @bind-Value=_ApplicationUser.Id Width="100%" ReadOnly />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentTextInput Label="Name" @bind-Value=_ApplicationUser.Name Width="100%" ReadOnly />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentTextInput Label="Email" @bind-Value=_ApplicationUser.Email TextInputType="TextInputType.Email" Width="100%" ReadOnly>
+                            <EndTemplate>
+                                <FluentButton Appearance="ButtonAppearance.Transparent"
+                                              Size="ButtonSize.Small"
+                                              Tooltip="Copy email address"
+                                              IconOnly="true"
+                                              OnClick="@OnCopyEmailToClipboard"
+                                              IconStart="@(new Icons.Regular.Size16.Copy())" />
+                            </EndTemplate>
+                        </FluentTextInput>
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentTextInput Label="PhoneNumber" @bind-Value=_ApplicationUser.PhoneNumber Width="100%" ReadOnly />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentSelect Name="Role" Label="Rol"
+                                      Placeholder="Select a Role"
+                                      Items="@_RolesSelect"
+                                      OptionText="@(i => i.Text)"
+                                      OptionValue="@(i => i.Value)"
+                                      Width="100%"
+                                      @bind-Value="@_RoleSelected"
+                                      @onchange="OnRoleChangedChangeEvent" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="6">
+                        <FluentSelect Label="Company"
+                                      Placeholder="Select a Company"
+                                      Items="@_CompaniesSelect"
+                                      OptionText="@(i => i.Name)"
+                                      OptionValue="@(i => i.Id)"
+                                      Width="100%"
+                                      @bind-Value="@_ApplicationUser.CompanyId"
+                                      hidden="@_CompaniesSelectHidden" />
+                    </FluentGridItem>
+                </FluentGrid>
+                <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
+                    <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
+                    <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelContentClicked">Cancel</FluentButton>
+                </FluentStack>
+            </EditForm>
+        }
+        else
+        {
+            <p>No Contact selected.</p>
+        }
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">Details</FluentLabel>
+        <br />
+        @if (_UserBySearchDtoDetails != null)
+        {
+            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>Id:</b> @(_UserBySearchDtoDetails.Id)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>Name:</b> @(_UserBySearchDtoDetails.Name)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>StreetAddress:</b> @(_UserBySearchDtoDetails.StreetAddress)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>City:</b> @(_UserBySearchDtoDetails.City)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>State:</b> @(_UserBySearchDtoDetails.State)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>PostalCode:</b> @(_UserBySearchDtoDetails.PostalCode)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>PhoneNumber:</b> @(_UserBySearchDtoDetails.PhoneNumber)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>Email:</b> @(_UserBySearchDtoDetails.Email)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>UserName:</b> @(_UserBySearchDtoDetails.UserName)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>Rol:</b> @(_UserBySearchDtoDetails.Roles)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <b>CompanyName:</b> @(_UserBySearchDtoDetails.CompanyName)
+                </FluentGridItem>
+            </FluentGrid>
+            <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
+                <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelDetailsClicked">Cancel</FluentButton>
+            </FluentStack>
+        }
+        else
+        {
+            <p>No Contact selected.</p>
+        }
+    </FluentMultiSplitterPane>
+
+</FluentMultiSplitter>

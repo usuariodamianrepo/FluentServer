@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using Clone.Models
+@using Clone.Utility
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -26,15 +27,38 @@
             <DataAnnotationsValidator />
             <h2>Create a new account.</h2>
             <FluentValidationSummary class="text-danger" role="alert" />
-            <FluentStack Orientation="Orientation.Vertical">
-                <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" AutoComplete="email" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%" />
-                @* <FluentValidationMessage For="() => Input.Email" class="text-danger" /> *@
-                <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%" />
-                @* <FluentValidationMessage For="() => Input.Password" class="text-danger" /> *@
-                <FluentTextInput type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="Confirm Password" Style="width: 100%" />
-                @* <FluentValidationMessage For="() => Input.ConfirmPassword" class="text-danger" /> *@
-                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%">Register</FluentButton>
-            </FluentStack>
+            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGridItem Xs="12" Sm="12">
+                    <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput Name="Input.Name" @bind-Value="Input.Name" Required="true" Label="Name" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput type="phone" Name="Input.PhoneNumber" @bind-Value="Input.PhoneNumber" Required="true" Label="Phone Number" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="Confirm Password" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput Name="Input.StreetAddress" @bind-Value="Input.StreetAddress" Label="Street Address" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput Name="Input.City" @bind-Value="Input.City" Label="City" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput Name="Input.State" @bind-Value="Input.State" Label="State" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="6">
+                    <FluentTextInput Name="Input.PostalCode" @bind-Value="Input.PostalCode" Label="Postal Code" Style="width: 100%" />
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%">Register</FluentButton>
+                </FluentGridItem>
+            </FluentGrid>
         </EditForm>
     </FluentGridItem>
     <FluentGridItem xs="12" sm="8">
@@ -66,6 +90,15 @@
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+        // Additional properties
+        user.Name = Input.Name;
+        user.PhoneNumber = Input.PhoneNumber;
+        user.StreetAddress = Input.StreetAddress;
+        user.City = Input.City;
+        user.State = Input.State;
+        user.PostalCode = Input.PostalCode;
+
         var result = await UserManager.CreateAsync(user, Input.Password);
 
         if (!result.Succeeded)
@@ -75,6 +108,14 @@
         }
 
         Logger.LogInformation("User created a new account with password.");
+        
+        // Assign Customer role for default
+        var rolResult = await UserManager.AddToRoleAsync(user, RD.RoleCustomer);
+        if (!rolResult.Succeeded)
+        {
+            identityErrors = rolResult.Errors;
+            return;
+        }
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -137,5 +178,21 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; } = "";
+        [Display(Name = "Street Address")]
+        public string StreetAddress { get; set; } = "";
+        [Display(Name = "City")]
+        public string City { get; set; } = "";
+        [Display(Name = "State")]
+        public string State { get; set; } = "";
+        [Display(Name = "Postal Code")]
+        public string PostalCode { get; set; } = "";
+        [Phone]
+        [Required]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; } = "";
     }
 }

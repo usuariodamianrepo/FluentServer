@@ -91,9 +91,10 @@ namespace Clone.Web.Components.Pages
             if (toDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Id: {id} type not found");
+                return;
             }
 
-            _DocumentTypeDetails = toDetails!;
+            _DocumentTypeDetails = toDetails;
             _CollapsedDetails = false;
         }
 

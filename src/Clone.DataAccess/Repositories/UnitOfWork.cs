@@ -1,6 +1,9 @@
 ﻿using Clone.DataAccess.Data;
 using Clone.DataAccess.Repositories.IRepository;
 using Clone.Models;
+using Clone.Models.Dtos;
+using Clone.Utility;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 
 namespace Clone.DataAccess.Repositories
@@ -39,35 +42,49 @@ namespace Clone.DataAccess.Repositories
         }
 
         #region Users
-        //public async Task<List<UserBySearchDto>> UserBySearchAsync(string name, string phoneNumber)
-        //{
-        //    var users = await (
-        //        from user in _db.Users
-        //        join userRole in _db.UserRoles on user.Id equals userRole.UserId into userRoles
-        //        select new UserBySearchDto
-        //        {
-        //            Id = user.Id,
-        //            Name = user.Name,
-        //            StreetAddress = user.StreetAddress,
-        //            City = user.City,
-        //            State = user.State,
-        //            PostalCode = user.PostalCode,
-        //            CompanyId = user.CompanyId,
-        //            CompanyName = user.Company != null ? user.Company.Name : null,
-        //            UserName = user.UserName,
-        //            Email = user.Email,
-        //            PhoneNumber = user.PhoneNumber,
-        //            LockoutEnd = user.LockoutEnd,
-        //            Roles = string.Join(", ",
-        //                from ur in userRoles
-        //                join role in _db.Roles on ur.RoleId equals role.Id
-        //                select role.Name)
-        //        }
-        //        ).Take(MaxRows.MaxFifty).ToListAsync();
+        public IQueryable<UserBySearchDto> UserBySearchAsync(string id, string name, string phoneNumber)
+        {
+            var query = (
+                from user in _db.Users
+                join userRole in _db.UserRoles on user.Id equals userRole.UserId into userRoles
+                select new UserBySearchDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    StreetAddress = user.StreetAddress,
+                    City = user.City,
+                    State = user.State,
+                    PostalCode = user.PostalCode,
+                    CompanyId = user.CompanyId,
+                    CompanyName = user.Company != null ? user.Company.Name : null,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    LockoutEnd = user.LockoutEnd,
+                    Roles = string.Join(", ",
+                        from ur in userRoles
+                        join role in _db.Roles on ur.RoleId equals role.Id
+                        select role.Name)
+                }).AsNoTracking();
 
-        //    return users;
-        //}
+            if(!string.IsNullOrEmpty(id))
+            {
+                query = query.Where(u => u.Id == id);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    query = query.Where(u => u.Name!.Contains(name));
+                }
+                if (!string.IsNullOrEmpty(phoneNumber))
+                {
+                    query = query.Where(u => u.PhoneNumber!.Contains(phoneNumber));
+                }
+            }
 
+            return query.Take(MaxRows.MaxFifty);
+        }
         #endregion
     }
 }
