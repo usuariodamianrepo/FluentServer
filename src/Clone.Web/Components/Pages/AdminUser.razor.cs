@@ -34,7 +34,7 @@ namespace Clone.Web.Components.Pages
         #region Select
         IEnumerable<SelectListItem> _RolesSelect = Lists.RoleList;
         string _RoleSelected = RD.RoleCustomer;
-        IEnumerable<Company> _CompaniesSelect;
+        IEnumerable<Company> _CompaniesSelect = default!;
         bool _CompaniesSelectHidden = true;
         #endregion
 
@@ -111,7 +111,7 @@ namespace Clone.Web.Components.Pages
 
         private async Task OnDetailsClicked(string id)
         {
-            var toDetails = await _UnitOfWork.UserBySearchAsync(id, "", "").ToListAsync();
+            var toDetails = await _UnitOfWork.UserBySearch(id, "", "").ToListAsync();
             if (toDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User Id: {id} not found");
@@ -223,9 +223,9 @@ namespace Clone.Web.Components.Pages
         {
             _SearchButtonLoading = true;
 
-            _UserBySearchDto = _UnitOfWork.UserBySearchAsync("", _NameSearch, _PhoneNumberSearch);
+            _UserBySearchDto = _UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch);
 
-            if (_UserBySearchDto.Count() >= Constants.ItemsMaxNumber)
+            if ((await _UserBySearchDto.ToListAsync()).Count >= Constants.ItemsMaxNumber)
             {
                 await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {Constants.ItemsMaxNumber} results. Improve your filter.");
             }

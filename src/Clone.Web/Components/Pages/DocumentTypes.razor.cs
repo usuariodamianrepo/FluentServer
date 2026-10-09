@@ -66,7 +66,16 @@ namespace Clone.Web.Components.Pages
 
             var json = JsonSerializer.Serialize(_DocumentTypeDetails, new JsonSerializerOptions { WriteIndented = true });
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
-            await NotificationService.ShowInfoBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {_DocumentTypeDetails!.Id} copied to clipboard!");
+            await NotificationService.ShowMessageBarAsync(options =>
+            {
+                options.Section = MESSAGEBAR_SECTION;
+                options.Intent = MessageBarIntent.Info;
+                options.Layout = MessageBarLayout.SingleLine;
+                options.Title = $"Document Type Id: {_DocumentTypeDetails!.Id} copied to clipboard!";
+                options.AllowDismiss = true;
+                options.Lifetime = TimeSpan.FromSeconds(3);
+                options.ResultTiming = MessageBarResultTiming.Closed;
+            });
         }
 
         private async Task OnDeleteClicked(int id)
@@ -90,7 +99,7 @@ namespace Clone.Web.Components.Pages
             var toDetails = await UnitOfWork.Repository<DocumentType>().GetByIdAsync(id);
             if (toDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Id: {id} type not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} type not found");
                 return;
             }
 
@@ -103,7 +112,7 @@ namespace Clone.Web.Components.Pages
             var toEdit = await UnitOfWork.Repository<DocumentType>().GetByIdAsync(id);
             if (toEdit is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Id: {id} type not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} type not found");
             }
             _DocumentType = toEdit!;
             _CollapsedContent = false;

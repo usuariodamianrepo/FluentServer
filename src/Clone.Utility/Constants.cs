@@ -11,7 +11,7 @@
     /// </summary>
     public static class IANA
     {
-        public const string ZoneArgentina = "America/Argentina/Buenos_Aires";
+        public const string MyZone = "America/Argentina/Buenos_Aires";
     }
 
     /// <summary>

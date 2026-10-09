@@ -42,20 +42,20 @@ namespace Clone.Utility
         public static DateTime OnlyDateHHmm(this DateTime value) 
             => DateTime.ParseExact(value.ToString("dd/MM/yyyy HH:mm"), "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
 
-        public static DateTime ConvertToShow(this DateTime value, string ianaTimeZoneId)
+        public static DateTime ConvertToShow(this DateTime value)
         {
             // Aseguramos que la fecha de entrada sea tratada como UTC
             DateTime utcDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
 
             // Buscamos la zona horaria (IANA funciona nativo en .NET Core en Linux/Docker)
-            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(ianaTimeZoneId);
+            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(IANA.MyZone);
 
             return TimeZoneInfo.ConvertTimeFromUtc(utcDate, userTz);
         }
 
-        public static DateTime ConvertToSave(this DateTime value, string ianaTimeZoneId)
+        public static DateTime ConvertToSave(this DateTime value)
         {
-            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(ianaTimeZoneId);
+            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(IANA.MyZone);
 
             return TimeZoneInfo.ConvertTimeToUtc(value, userTz);
         }

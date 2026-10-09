@@ -2,8 +2,8 @@
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
-@using Clone.Utility
 @using Clone.Models
+@using Clone.Utility
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity;
@@ -13,7 +13,7 @@
 @inject IUnitOfWork _UnitOfWork
 @inject UserManager<ApplicationUser> _UserManager
 
-@* @attribute [Authorize(Roles = RD.RoleAdmin)] *@
+@attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>Document Types</PageTitle>
 <FluentDialogProvider />

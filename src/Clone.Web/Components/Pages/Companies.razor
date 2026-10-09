@@ -75,9 +75,9 @@
             <FluentTextInput Label="Phone" @bind-Value=_companyDetails.State ReadOnly />
             <FluentTextInput Label="Phone" @bind-Value=_companyDetails.PostalCode ReadOnly />
             <b>InsertDate:</b> 
-            @(_companyDetails.InsertDate.ConvertToShow(IANA.ZoneArgentina).ToString("yyyy-MM-dd HH:mm:ss"))
+            @(_companyDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
             <b>UpdateDate:</b> 
-            @(_companyDetails.UpdateDate?.ConvertToShow(IANA.ZoneArgentina).ToString("yyyy-MM-dd HH:mm:ss"))
+            @(_companyDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
         }
         else
         {

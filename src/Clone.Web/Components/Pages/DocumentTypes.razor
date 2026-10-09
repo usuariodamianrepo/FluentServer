@@ -51,20 +51,21 @@
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
-        <FluentLabel Size="@LabelSize.Large">Content</FluentLabel>
+        <FluentLabel Size="@LabelSize.Large">Content - Id: @(_DocumentType?.Id)</FluentLabel>
+        <FluentDivider />
         @if (_DocumentType != null)
         {
             <EditForm Model="_DocumentType" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
-                <b>Id:</b> @(_DocumentType.Id)
-                <br />
-                <FluentTextInput Label="Name" @bind-Value=_DocumentType.Name Maxlength=30 AutoComplete="off" />
-                <FluentTextArea Label="Description" @bind-Value=_DocumentType.Description Width="100%" Height="80px" AutoComplete="off" />
-                <div style="color: var(--error);">
-                    <FluentValidationSummary />
-                </div>
-                <br />
-                <FluentStack id="toolbar-footer" HorizontalGap="6px">
+                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="Name" @bind-Value=_DocumentType.Name Required="true" Maxlength=30 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextArea Label="Description" @bind-Value=_DocumentType.Description Required="true" Maxlength=450 Width="100%" Height="80px" AutoComplete="off" />
+                    </FluentGridItem>
+                </FluentGrid>
+                <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
                     <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
                     <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelContentClicked">Cancel</FluentButton>
                 </FluentStack>
@@ -77,36 +78,32 @@
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
-        <FluentLabel Size="@LabelSize.Large">Details</FluentLabel>
-        <br />
+        <FluentLabel Size="@LabelSize.Large">Details - Id: @(_DocumentTypeDetails?.Id)</FluentLabel>
+        <FluentDivider />
         @if (_DocumentTypeDetails != null)
         {
-            <FluentGrid>
-                <FluentGridItem Xs="12">
-                    <b>Id:</b> @(_DocumentTypeDetails.Id)
-                </FluentGridItem>
-                <FluentGridItem Xs="12">
+            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>Name:</b> @(_DocumentTypeDetails.Name)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>Description:</b> @(_DocumentTypeDetails.Description)
                 </FluentGridItem>
+                <FluentDivider/>
                 <FluentGridItem Xs="12">
-                    <b>InsertDate:</b> @(_DocumentTypeDetails.InsertDate.ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>InsertDate:</b> @(_DocumentTypeDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>InsertUser:</b> @(_DocumentTypeDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>UpdateDate:</b> @(_DocumentTypeDetails.UpdateDate?.ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>UpdateDate:</b> @(_DocumentTypeDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>UpdateUser:</b> @(_DocumentTypeDetails.UpdateUser)
                 </FluentGridItem>
             </FluentGrid>
-            <div style="color: var(--error);">
-            </div>
-            <br />
+            <br/>
             <FluentStack id="toolbar-footer" HorizontalGap="6px">
                 <FluentButton Title="Copy" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default" OnClick="OnCopyDetailsToClipboard">Copy</FluentButton>
                 <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelDetailsClicked">Cancel</FluentButton>

@@ -42,7 +42,7 @@ namespace Clone.DataAccess.Repositories
         }
 
         #region Users
-        public IQueryable<UserBySearchDto> UserBySearchAsync(string id, string name, string phoneNumber)
+        public IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber)
         {
             var query = (
                 from user in _db.Users
