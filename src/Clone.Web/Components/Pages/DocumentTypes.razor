@@ -22,7 +22,7 @@
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
     <FluentStack HorizontalGap="6px" Wrap="true">
         <FluentButton Title="Add" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
-                      OnClick="@OnAddClicked" Disabled=@(_DocumentTypes == null) />
+                      OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
         <FluentButton Title="Search" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
                       OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">Search</FluentButton>
@@ -69,7 +69,8 @@
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
                     <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
-                    <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelContentClicked">Cancel</FluentButton>
+                    <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                                  OnClick="OnCancelContentClicked">Cancel</FluentButton>
                 </FluentStack>
             </EditForm>
         }
@@ -107,10 +108,12 @@
                     <b>UpdateUser:</b> @(_DocumentTypeDetails.UpdateUser)
                 </FluentGridItem>
             </FluentGrid>
-            <br/>
+            <br />
             <FluentStack id="toolbar-footer" HorizontalGap="6px">
-                <FluentButton Title="Copy" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default" OnClick="OnCopyDetailsToClipboard">Copy</FluentButton>
-                <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default" OnClick="OnCancelDetailsClicked">Cancel</FluentButton>
+                <FluentButton Title="Copy" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCopyDetailsToClipboard">Copy</FluentButton>
+                <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCancelDetailsClicked">Cancel</FluentButton>
             </FluentStack>
         }
         else

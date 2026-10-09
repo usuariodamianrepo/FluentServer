@@ -41,7 +41,7 @@ namespace Clone.Web.Components.Pages
 
         private void OnAddClicked()
         {
-            _DocumentType = new DocumentType();
+            _DocumentType = new();
             _CollapsedContent = false;
         }
 
