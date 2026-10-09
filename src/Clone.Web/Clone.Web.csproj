@@ -15,9 +15,17 @@
     </PackageReference>
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="5.0.0" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Clone.DataAccess\Clone.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 </Project>

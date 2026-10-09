@@ -44,10 +44,10 @@ namespace Clone.Utility
 
         public static DateTime ConvertToShow(this DateTime value)
         {
-            // Aseguramos que la fecha de entrada sea tratada como UTC
+            // We ensure that the entry date is treated as UTC.
             DateTime utcDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
 
-            // Buscamos la zona horaria (IANA funciona nativo en .NET Core en Linux/Docker)
+            // We search for the time zone (IANA works natively in .NET Core on Linux/Docker)
             TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(IANA.MyZone);
 
             return TimeZoneInfo.ConvertTimeFromUtc(utcDate, userTz);

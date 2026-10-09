@@ -1,6 +1,7 @@
 ﻿using Clone.Models;
 using Clone.Utility;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
@@ -9,18 +10,19 @@ namespace Clone.Web.Components.Pages
 {
     public partial class DocumentTypes
     {
-        const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
-        FluentDataGrid<DocumentType>? _Grid;
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private FluentDataGrid<DocumentType>? _Grid;
 
         [Inject]
         public IJSRuntime JS { get; set; } = default!;
-        DocumentType _DocumentType { get; set; } = default!;
-        DocumentType _DocumentTypeDetails { get; set; } = default!;
-        IQueryable<DocumentType>? _DocumentTypes { get; set; }
+
+        private DocumentType _DocumentType { get; set; } = new();
+        private DocumentType _DocumentTypeDetails { get; set; } = new();
+        private IQueryable<DocumentType>? _DocumentTypes { get; set; }
 
         #region Search
-        string _NameSearch = string.Empty;
-        bool _SearchButtonLoading = false;
+        private string _NameSearch = string.Empty;
+        private bool _SearchButtonLoading = false;
         #endregion
 
         #region Filter
@@ -43,7 +45,7 @@ namespace Clone.Web.Components.Pages
 
         private void OnAddClicked()
         {
-            _DocumentType = new();
+            _DocumentType = new DocumentType();
             _CollapsedContent = false;
         }
 
@@ -62,44 +64,75 @@ namespace Clone.Web.Components.Pages
             if (_DocumentTypeDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No document type selected.");
+                return;
             }
 
-            var json = JsonSerializer.Serialize(_DocumentTypeDetails, new JsonSerializerOptions { WriteIndented = true });
-            await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
-            await NotificationService.ShowMessageBarAsync(options =>
+            try
             {
-                options.Section = MESSAGEBAR_SECTION;
-                options.Intent = MessageBarIntent.Info;
-                options.Layout = MessageBarLayout.SingleLine;
-                options.Title = $"Document Type Id: {_DocumentTypeDetails!.Id} copied to clipboard!";
-                options.AllowDismiss = true;
-                options.Lifetime = TimeSpan.FromSeconds(3);
-                options.ResultTiming = MessageBarResultTiming.Closed;
-            });
+                var json = JsonSerializer.Serialize(_DocumentTypeDetails, new JsonSerializerOptions { WriteIndented = true });
+                await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
+
+                await NotificationService.ShowMessageBarAsync(options =>
+                {
+                    options.Section = MESSAGEBAR_SECTION;
+                    options.Intent = MessageBarIntent.Info;
+                    options.Layout = MessageBarLayout.SingleLine;
+                    options.Title = $"Document Type Id: {_DocumentTypeDetails.Id} copied to clipboard!";
+                    options.AllowDismiss = true;
+                    options.Lifetime = TimeSpan.FromSeconds(3);
+                    options.ResultTiming = MessageBarResultTiming.Closed;
+                });
+            }
+            catch (JSException ex)
+            {
+                Logger.LogError(ex, "Error copying DocumentType {Id} to clipboard.", _DocumentTypeDetails.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Could not copy the content to the clipboard.");
+            }
         }
 
         private async Task OnDeleteClicked(int id)
         {
             var repository = UnitOfWork.Repository<DocumentType>();
-
             var toDelete = await repository.GetByIdAsync(id);
-            if (toDelete is null) return;
+
+            if (toDelete is null)
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                return;
+            }
 
             var result = await DialogService.ShowConfirmationAsync($"Are you <strong>sure</strong> you want to delete item Id: {toDelete.Id}?");
-            if (result.Cancelled) return;
+            if (result.Cancelled)
+            {
+                return;
+            }
 
-            await repository.RemoveAsync(toDelete);
-            await UnitOfWork.SaveAsync();
-
-            await SearchData();
+            try
+            {
+                await repository.RemoveAsync(toDelete);
+                await UnitOfWork.SaveAsync();
+                await SearchData();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Logger.LogError(ex, "Concurrency error while deleting DocumentType {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "The item was modified by another user. Refresh and try again.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unexpected error while deleting DocumentType {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while deleting the data.");
+            }
         }
 
         private async Task OnDetailsClicked(int id)
         {
-            var toDetails = await UnitOfWork.Repository<DocumentType>().GetByIdAsync(id);
+            var repository = UnitOfWork.Repository<DocumentType>();
+            var toDetails = await repository.GetByIdAsync(id);
+
             if (toDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} type not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
                 return;
             }
 
@@ -109,39 +142,62 @@ namespace Clone.Web.Components.Pages
 
         private async Task OnEditClicked(int id)
         {
-            var toEdit = await UnitOfWork.Repository<DocumentType>().GetByIdAsync(id);
+            var repository = UnitOfWork.Repository<DocumentType>();
+            var toEdit = await repository.GetByIdAsync(id);
+
             if (toEdit is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} type not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                return;
             }
-            _DocumentType = toEdit!;
+
+            _DocumentType = toEdit;
             _CollapsedContent = false;
         }
 
         private async Task OnSaveContentClicked()
         {
+            if (string.IsNullOrWhiteSpace(_DocumentType.Name))
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Name is required.");
+                return;
+            }
+
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var repository = UnitOfWork.Repository<DocumentType>();
 
-
-            if (_DocumentType.Id == 0)
+            try
             {
-                _DocumentType.InsertAudit(authState.User);
-                await repository.AddAsync(_DocumentType);
-            }
-            else
-            {
-                _DocumentType.UpdateAudit(authState.User);
-                await repository.UpdateAsync(_DocumentType);
-            }
+                if (_DocumentType.Id == 0)
+                {
+                    _DocumentType.InsertAudit(authState.User);
+                    await repository.AddAsync(_DocumentType);
+                }
+                else
+                {
+                    _DocumentType.UpdateAudit(authState.User);
+                    await repository.UpdateAsync(_DocumentType);
+                }
 
-            await UnitOfWork.SaveAsync();
-            await SearchData();
-            ResetForm();
-            _CollapsedContent = true;
+                await UnitOfWork.SaveAsync();
+
+                await SearchData();
+                ResetForm();
+                _CollapsedContent = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Logger.LogError(ex, "Concurrency error DocumentType Id: {Id}.", _DocumentType.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Concurrency error. Cancel the operation and try again.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unexpected error DocumentType Id: {Id}.", _DocumentType.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while saving the data.");
+            }
         }
 
-        private async void OnSearchClicked()
+        private async Task OnSearchClicked()
         {
             await SearchData();
         }
@@ -155,17 +211,28 @@ namespace Clone.Web.Components.Pages
         {
             _SearchButtonLoading = true;
 
-            _DocumentTypes = (await UnitOfWork.Repository<DocumentType>()
-                .GetBySearchAsync(filter: d => d.Name == "" || d.Name.Contains(_NameSearch)))
-                .AsQueryable();
-
-            if (_DocumentTypes.Count() >= Constants.ItemsMaxNumber)
+            try
             {
-                await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {Constants.ItemsMaxNumber} results. Improve your filter.");
-            }
+                _DocumentTypes = (await UnitOfWork.Repository<DocumentType>()
+                    .GetBySearchAsync(filter: d =>
+                        string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch)))
+                    .AsQueryable();
 
-            _SearchButtonLoading = false;
-            await InvokeAsync(StateHasChanged);
+                if (_DocumentTypes.Count() >= Constants.ItemsMaxNumber)
+                {
+                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {Constants.ItemsMaxNumber} results. Improve your filter.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error searching DocumentTypes.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while searching the data.");
+            }
+            finally
+            {
+                _SearchButtonLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

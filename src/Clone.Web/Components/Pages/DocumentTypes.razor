@@ -9,6 +9,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
+@inject ILogger<DocumentTypes> Logger
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
@@ -89,7 +90,9 @@
                 <FluentGridItem Xs="12">
                     <b>Description:</b> @(_DocumentTypeDetails.Description)
                 </FluentGridItem>
-                <FluentDivider/>
+                <FluentDivider AlignContent="DividerAlignContent.Center">
+                    Audit Information
+                </FluentDivider>
                 <FluentGridItem Xs="12">
                     <b>InsertDate:</b> @(_DocumentTypeDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
