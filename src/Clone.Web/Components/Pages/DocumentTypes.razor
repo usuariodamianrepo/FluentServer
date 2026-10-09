@@ -7,9 +7,10 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
+@inject ILogger<DocumentTypes> Logger
 @inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
-@inject ILogger<DocumentTypes> Logger
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 

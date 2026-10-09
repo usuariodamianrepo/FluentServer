@@ -1,6 +1,5 @@
 ﻿using Clone.Models;
 using Clone.Utility;
-using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -12,9 +11,6 @@ namespace Clone.Web.Components.Pages
     {
         private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
         private FluentDataGrid<DocumentType>? _Grid;
-
-        [Inject]
-        public IJSRuntime JS { get; set; } = default!;
 
         private DocumentType _DocumentType { get; set; } = new();
         private DocumentType _DocumentTypeDetails { get; set; } = new();
