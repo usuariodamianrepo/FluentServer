@@ -1,104 +1,238 @@
-﻿using Clone.Models;
+using Clone.Models;
+using Clone.Utility;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Microsoft.JSInterop;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace Clone.Web.Components.Pages
 {
     public partial class Companies
     {
-        FluentDataGrid<Company>? _grid;
-        IQueryable<Company>? _queryableItems;
-        private List<Company> _companies = [];
-        private Company _company = new();
-        private Company _companyDetails = new();
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private FluentDataGrid<Company>? _Grid;
+
+        private Company _Company { get; set; } = new();
+        private Company _CompaniesDetails { get; set; } = new();
+        private IQueryable<Company>? _Companies { get; set; }
+
+        #region Search
+        private string _NameSearch = string.Empty;
+        private bool _SearchButtonLoading = false;
+        #endregion
+
+        #region Filter
+        private bool _CollapsedContent = true;
+        private bool _CollapsedDetails = true;
+        #endregion
 
         protected override async Task OnInitializedAsync()
         {
-            await LoadCompaniesAsync();
+            await SearchData();
         }
 
-        private async Task LoadCompaniesAsync()
+        private async Task KeyDownHandler(FluentKeyCodeEventArgs e)
         {
-            var repository = UnitOfWork.Repository<Company>();
-            _companies = await repository.GetAllAsync();
-            _queryableItems = _companies.AsQueryable();
-        }
-
-        private async Task SaveAsync()
-        {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var repository = UnitOfWork.Repository<Company>();
-
-
-            if (_company.Id == 0)
+            if (e.KeyCode == Constants.KeyCodeEnter)
             {
-                _company.InsertAudit(authState.User);
-                await repository.AddAsync(_company);
+                await SearchData();
             }
-            else
-            {
-                _company.UpdateAudit(authState.User);
-                await repository.UpdateAsync(_company);
-            }
-
-            await UnitOfWork.SaveAsync();
-            await LoadCompaniesAsync();
-            ResetForm();
         }
 
-        private async Task EditAsync(Company company)
+        private void OnAddClicked()
         {
-            var toEdit = await UnitOfWork.Repository<Company>().GetByIdAsync(company.Id);
-            if (toEdit is null)
+            _Company = new();
+            _CollapsedContent = false;
+        }
+
+        private void OnCancelContentClicked()
+        {
+            _CollapsedContent = true;
+        }
+
+        private void OnCancelDetailsClicked()
+        {
+            _CollapsedDetails = true;
+        }
+
+        private async Task OnCopyDetailsToClipboard()
+        {
+            if (_CompaniesDetails is null)
             {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No company selected.");
                 return;
             }
-            _company = toEdit;
-        }
 
-        private async Task DetailsAsync(Company company)
-        {
-            var toShow = await UnitOfWork.Repository<Company>().GetByIdAsync(company.Id);
-            if(toShow is null)
+            try
             {
-                return;
+                var json = JsonSerializer.Serialize(_CompaniesDetails, new JsonSerializerOptions { WriteIndented = true });
+                await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
+
+                await NotificationService.ShowMessageBarAsync(options =>
+                {
+                    options.Section = MESSAGEBAR_SECTION;
+                    options.Intent = MessageBarIntent.Info;
+                    options.Layout = MessageBarLayout.SingleLine;
+                    options.Title = $"Company Id: {_CompaniesDetails.Id} copied to clipboard!";
+                    options.AllowDismiss = true;
+                    options.Lifetime = TimeSpan.FromSeconds(3);
+                    options.ResultTiming = MessageBarResultTiming.Closed;
+                });
             }
-            _companyDetails = toShow;
+            catch (JSException ex)
+            {
+                Logger.LogError(ex, "Error copying Company {Id} to clipboard.", _CompaniesDetails.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Could not copy the content to the clipboard.");
+            }
         }
 
-        private async Task DeleteAsync(int id)
+        private async Task OnDeleteClicked(int id)
         {
             var repository = UnitOfWork.Repository<Company>();
             var toDelete = await repository.GetByIdAsync(id);
 
             if (toDelete is null)
             {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Company Id: {id} not found.");
                 return;
             }
+
             var result = await DialogService.ShowConfirmationAsync($"Are you <strong>sure</strong> you want to delete item Id: {toDelete.Id}?");
             if (result.Cancelled)
             {
                 return;
             }
 
-            await repository.RemoveAsync(toDelete);
-            await UnitOfWork.SaveAsync();
-
-            if (_company.Id == id)
+            try
             {
-                ResetForm();
+                await repository.RemoveAsync(toDelete);
+                await UnitOfWork.SaveAsync();
+                await SearchData();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Logger.LogError(ex, "Concurrency error while deleting Company {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "The item was modified by another user. Refresh and try again.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unexpected error while deleting Company {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while deleting the data.");
+            }
+        }
+
+        private async Task OnDetailsClicked(int id)
+        {
+            var repository = UnitOfWork.Repository<Company>();
+            var toDetails = await repository.GetByIdAsync(id);
+
+            if (toDetails is null)
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Company Id: {id} not found.");
+                return;
             }
 
-            await LoadCompaniesAsync();
+            _CompaniesDetails = toDetails;
+            _CollapsedDetails = false;
+        }
+
+        private async Task OnEditClicked(int id)
+        {
+            var repository = UnitOfWork.Repository<Company>();
+            var toEdit = await repository.GetByIdAsync(id);
+
+            if (toEdit is null)
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Company Id: {id} not found.");
+                return;
+            }
+
+            _Company = toEdit;
+            _CollapsedContent = false;
+        }
+
+        private async Task OnSaveContentClicked()
+        {
+            if (string.IsNullOrWhiteSpace(_Company.Name))
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Name is required.");
+                return;
+            }
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var repository = UnitOfWork.Repository<Company>();
+
+            try
+            {
+                if (_Company.Id == 0)
+                {
+                    _Company.InsertAudit(authState.User);
+                    await repository.AddAsync(_Company);
+                }
+                else
+                {
+                    _Company.UpdateAudit(authState.User);
+                    await repository.UpdateAsync(_Company);
+                }
+
+                await UnitOfWork.SaveAsync();
+
+                await SearchData();
+                ResetForm();
+                _CollapsedContent = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Logger.LogError(ex, "Concurrency error Company Id: {Id}.", _Company.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Concurrency error. Cancel the operation and try again.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unexpected error Company Id: {Id}.", _Company.Id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while saving the data.");
+            }
+        }
+
+        private async Task OnSearchClicked()
+        {
+            await SearchData();
         }
 
         private void ResetForm()
         {
-            _company = new Company();
+            _Company = new Company();
         }
 
-        protected override Task OnActionClickedAsync(bool primary)
+        private async Task SearchData()
         {
-            throw new NotImplementedException();
+            _SearchButtonLoading = true;
+
+            try
+            {
+                var findeds = await UnitOfWork.Repository<Company>().Entities
+                    .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
+                    .AsNoTracking()
+                    .Take(MaxRows.MaxThirty)
+                    .ToListAsync();
+
+                if (findeds.Count >= MaxRows.MaxThirty)
+                {
+                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {MaxRows.MaxThirty} results. Improve your filter.");
+                }
+
+                _Companies = findeds.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error searching Companies.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while searching the data.");
+            }
+            finally
+            {
+                _SearchButtonLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-@page "/company"
+@page "/companies"
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
@@ -6,101 +6,45 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-@inherits FluentDialogInstance﻿
-
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
+@inject ILogger<Companies> Logger
+@inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
-<PageTitle>Company</PageTitle>
+<PageTitle>Companies</PageTitle>
 <FluentDialogProvider />
-<FluentTooltipProvider />
-<FluentStack Orientation="Orientation.Vertical" Gap="16">
-    <FluentLabel Typo="Typography.H3">Company</FluentLabel>
-    <div style="overflow:auto; width:100%;">
-        <EditForm Model="_company" OnValidSubmit="@(async () => await SaveAsync())">
-            <DataAnnotationsValidator />
-            <FluentValidationSummary />
+<FluentLabel Size="@LabelSize.Large">Companies</FluentLabel>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
-            <FluentGrid Justify="JustifyContent.FlexStart" Style="width: min(100%, 900px);">
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="Name" @bind-Value="_company.Name" Required="true" Placeholder="Company name" Label="Name" Style="width: 100%;" />
-                </FluentGridItem>
+<FluentKeyCode OnKeyDown="@KeyDownHandler">
+    <FluentStack HorizontalGap="6px" Wrap="true">
+        <FluentButton Title="Add" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
+                      OnClick="@OnAddClicked"/>
+        <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentButton Title="Search" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">Search</FluentButton>
+    </FluentStack>
+</FluentKeyCode>
 
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="PhoneNumber" @bind-Value="_company.PhoneNumber" Placeholder="Phone number" Label="Phone" Style="width: 100%;" />
-                </FluentGridItem>
+<FluentMultiSplitter>
 
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="StreetAddress" @bind-Value="_company.StreetAddress" Placeholder="Street address" Label="Street address" Style="width: 100%;" />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="City" @bind-Value="_company.City" Placeholder="City" Label="City" Style="width: 100%;" />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="State" @bind-Value="_company.State" Placeholder="State" Label="State" Style="width: 100%;" />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <FluentTextInput Name="PostalCode" @bind-Value="_company.PostalCode" Placeholder="Postal code" Label="Postal code" Style="width: 100%;" />
-                </FluentGridItem>
-
-            </FluentGrid>
-
-            <FluentStack Orientation="Orientation.Horizontal" Gap="8" Style="margin-top: 16px;">
-                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">
-                    @(_company.Id == 0 ? "Save" : "Update")
-                </FluentButton>
-
-                @if (_company.Id != 0)
-                {
-                    <FluentButton Type="ButtonType.Button" OnClick="ResetForm">
-                        Cancel
-                    </FluentButton>
-                }
-            </FluentStack>
-        </EditForm>
-
-    </div>
-    <div style="overflow:auto; width:100%;">
-        @if (_companyDetails != null)
-        {
-            <FluentTextInput Label="Email" @bind-Value=_companyDetails.Name ReadOnly />
-            <FluentTextInput Label="Company" @bind-Value=_companyDetails.PhoneNumber ReadOnly />
-            <FluentTextInput Label="LastName" @bind-Value=_companyDetails.StreetAddress ReadOnly />
-            <FluentTextInput Label="FirstName" @bind-Value=_companyDetails.City ReadOnly />
-            <FluentTextInput Label="Phone" @bind-Value=_companyDetails.State ReadOnly />
-            <FluentTextInput Label="Phone" @bind-Value=_companyDetails.PostalCode ReadOnly />
-            <b>InsertDate:</b> 
-            @(_companyDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
-            <b>UpdateDate:</b> 
-            @(_companyDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
-        }
-        else
-        {
-            <p>No Contact selected.</p>
-        }
-    </div>
-
-
-    <FluentDivider />
-
-    <div style="overflow:auto; width:100%;">
-        <FluentDataGrid @ref="_grid" Items=@_queryableItems GridTemplateColumns="1fr 1fr 1fr 1fr">
+    <FluentMultiSplitterPane Size="50%">
+        <FluentDataGrid @ref="_Grid" Items=@_Companies GridTemplateColumns="0.6fr 1.5fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr">
             <ChildContent>
+                <PropertyColumn Property="@(c => c.Id)" />
                 <PropertyColumn Property="@(c => c.Name)" Sortable="true" />
                 <PropertyColumn Property="@(c => c.StreetAddress)" />
-                <PropertyColumn Property="@(c => c.City)" Align="DataGridCellAlignment.Center" />
-                <PropertyColumn Property="@(c => c.State)" Align="DataGridCellAlignment.End" />
+                <PropertyColumn Property="@(c => c.City)" />
+                <PropertyColumn Property="@(c => c.State)" />
                 <PropertyColumn Property="@(c => c.PostalCode)" />
                 <PropertyColumn Property="@(c => c.PhoneNumber)" />
                 <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
-                    <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => EditAsync(context))" />
-                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => DetailsAsync(context))" />
-                    <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => DeleteAsync(context.Id))" />
+                    <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
                 </TemplateColumn>
             </ChildContent>
             <EmptyContent>
@@ -110,5 +54,100 @@
                 </FluentStack>
             </EmptyContent>
         </FluentDataGrid>
-    </div>
-</FluentStack>
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">Content - Id: @(_Company?.Id)</FluentLabel>
+        <FluentDivider />
+        @if (_Company != null)
+        {
+            <EditForm Model="_Company" OnValidSubmit="@(async () => await OnSaveContentClicked())">
+                <DataAnnotationsValidator />
+                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="Name" @bind-Value=_Company.Name Required="true" Maxlength=120 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="StreetAddress" @bind-Value=_Company.StreetAddress Maxlength=120 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="City" @bind-Value=_Company.City Maxlength=120 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="State" @bind-Value=_Company.State Maxlength=60 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="PostalCode" @bind-Value=_Company.PostalCode Maxlength=60 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="PhoneNumber" @bind-Value=_Company.PhoneNumber Maxlength=60 AutoComplete="off" />
+                    </FluentGridItem>
+                </FluentGrid>
+                <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
+                    <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
+                    <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                                  OnClick="OnCancelContentClicked">Cancel</FluentButton>
+                </FluentStack>
+            </EditForm>
+        }
+        else
+        {
+            <p>No Company selected.</p>
+        }
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">Details - Id: @(_CompaniesDetails?.Id)</FluentLabel>
+        <FluentDivider />
+        @if (_CompaniesDetails != null)
+        {
+            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>Name:</b> @(_CompaniesDetails.Name)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>StreetAddress:</b> @(_CompaniesDetails.StreetAddress)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>City:</b> @(_CompaniesDetails.City)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>State:</b> @(_CompaniesDetails.State)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>PostalCode:</b> @(_CompaniesDetails.PostalCode)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>PhoneNumber:</b> @(_CompaniesDetails.PhoneNumber)
+                </FluentGridItem>
+                <FluentDivider AlignContent="DividerAlignContent.Center">
+                    Audit Information
+                </FluentDivider>
+                <FluentGridItem Xs="12">
+                    <b>InsertDate:</b> @(_CompaniesDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>InsertUser:</b> @(_CompaniesDetails.InsertUser)
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>UpdateDate:</b> @(_CompaniesDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>UpdateUser:</b> @(_CompaniesDetails.UpdateUser)
+                </FluentGridItem>
+            </FluentGrid>
+            <br />
+            <FluentStack id="toolbar-footer" HorizontalGap="6px">
+                <FluentButton Title="Copy" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCopyDetailsToClipboard">Copy</FluentButton>
+                <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCancelDetailsClicked">Cancel</FluentButton>
+            </FluentStack>
+        }
+        else
+        {
+            <p>No Company selected.</p>
+        }
+    </FluentMultiSplitterPane>
+
+</FluentMultiSplitter>

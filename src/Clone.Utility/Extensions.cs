@@ -48,14 +48,14 @@ namespace Clone.Utility
             DateTime utcDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
 
             // We search for the time zone (IANA works natively in .NET Core on Linux/Docker)
-            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(IANA.MyZone);
+            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(Iana.MyZone);
 
             return TimeZoneInfo.ConvertTimeFromUtc(utcDate, userTz);
         }
 
         public static DateTime ConvertToSave(this DateTime value)
         {
-            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(IANA.MyZone);
+            TimeZoneInfo userTz = TimeZoneInfo.FindSystemTimeZoneById(Iana.MyZone);
 
             return TimeZoneInfo.ConvertTimeToUtc(value, userTz);
         }

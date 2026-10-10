@@ -209,15 +209,18 @@ namespace Clone.Web.Components.Pages
 
             try
             {
-                _DocumentTypes = (await UnitOfWork.Repository<DocumentType>()
-                    .GetBySearchAsync(filter: d =>
-                        string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch)))
-                    .AsQueryable();
+                var findeds = await UnitOfWork.Repository<DocumentType>().Entities
+                    .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
+                    .AsNoTracking()
+                    .Take(MaxRows.MaxThirty)
+                    .ToListAsync();
 
-                if (_DocumentTypes.Count() >= Constants.ItemsMaxNumber)
+                if (findeds.Count >= MaxRows.MaxThirty)
                 {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {Constants.ItemsMaxNumber} results. Improve your filter.");
+                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {MaxRows.MaxThirty} results. Improve your filter.");
                 }
+
+                _DocumentTypes = findeds.AsQueryable();
             }
             catch (Exception ex)
             {
