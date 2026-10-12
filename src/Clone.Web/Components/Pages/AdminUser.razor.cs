@@ -81,12 +81,13 @@ namespace Clone.Web.Components.Pages
             });
         }
 
-        private async Task OnLockUnlockClicked(string id)
+        private async Task OnLockUnlockClicked(UserBySearchDto context)
         {
-            var result = await DialogService.ShowConfirmationAsync($"Are you <strong>sure</strong> you want to Lock/Unlock the User?");
+            var action = context.IsLocked ? "Unlock" : "Lock";
+            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>{action}</strong> the User?");
             if (result.Cancelled) return;
 
-            var user = await _UserManager.FindByIdAsync(id);
+            var user = await _UserManager.FindByIdAsync(context.Id);
             if (user is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User not found.");

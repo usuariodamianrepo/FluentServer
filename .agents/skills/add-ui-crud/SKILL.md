@@ -48,7 +48,7 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 				{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
                 <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
                     <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
                     <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
                 </TemplateColumn>
             </ChildContent>
@@ -69,10 +69,31 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
             <EditForm Model="_{EntitySingularName}" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
-				{SPECIAL_CASE: for each entity property repeat this little code with the property name
+				{SPECIAL_CASE: for each entity property repeat this little code with the property name.
+				IF Property is string THEN
                     `<FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
-                    </FluentGridItem>`}
+                    </FluentGridItem>`
+				ELSE IF Property is int THEN
+                    `<FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName TextInputType="TextInputType.Number"/>
+                    </FluentGridItem>`
+				ELSE IF Property is DateTime THEN
+				    `<FluentGridItem Xs="12" Sm="12">
+                        <FluentDatePicker Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
+                    </FluentGridItem>`
+				ELSE IF Property is bool THEN
+					`<FluentGridItem Xs="12" Sm="12">
+                        <FluentCheckbox Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
+                    </FluentGridItem>`
+				ELSE IF Property is ForeignKey THEN
+					`<FluentGridItem Xs="12" Sm="12">
+						<FluentSelect Label="PropertyName"
+							  Placeholder="Select a PropertyName"
+							  Items="@_{PropertyName}Select"
+							  @bind-Value="@_{EntitySingularName}.PropertyName" />
+                    </FluentGridItem>`
+				}
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
                     <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
@@ -96,7 +117,7 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 			{SPECIAL_CASE: for each entity property repeat this little code with the property name
                 <FluentGridItem Xs="12" Sm="12">
                     <b>PropertyName:</b> @(_{EntitySingularName}.PropertyName)
-                </FluentGridItem>`}
+                </FluentGridItem>`
                 <FluentDivider AlignContent="DividerAlignContent.Center">
                     Audit Information
                 </FluentDivider>
@@ -112,6 +133,7 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
                 <FluentGridItem Xs="12">
                     <b>UpdateUser:</b> @(_{EntityPluralName}Details.UpdateUser)
                 </FluentGridItem>
+			}
             </FluentGrid>
             <br />
             <FluentStack id="toolbar-footer" HorizontalGap="6px">
@@ -151,6 +173,11 @@ namespace Clone.Web.Components.Pages
         private {EntitySingularName} _{EntityPluralName}Details { get; set; } = new();
         private IQueryable<{EntitySingularName}>? _{EntityPluralName} { get; set; }
 
+		{SPECIAL_CASE: for each entity property repeat this little code with the property name
+		IF Property is ForeignKey THEN
+		`IEnumerable<{PropertyName}> _{PropertyName}Select = default!;`
+		}
+
         #region Search
         private string _NameSearch = string.Empty;
         private bool _SearchButtonLoading = false;
@@ -160,7 +187,7 @@ namespace Clone.Web.Components.Pages
         private bool _CollapsedContent = true;
         private bool _CollapsedDetails = true;
         #endregion
-
+		
         protected override async Task OnInitializedAsync()
         {
             await SearchData();
@@ -194,7 +221,7 @@ namespace Clone.Web.Components.Pages
         {
             if (_{EntityPluralName}Details is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No document type selected.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No {EntitySingularName} selected.");
                 return;
             }
 
@@ -208,7 +235,7 @@ namespace Clone.Web.Components.Pages
                     options.Section = MESSAGEBAR_SECTION;
                     options.Intent = MessageBarIntent.Info;
                     options.Layout = MessageBarLayout.SingleLine;
-                    options.Title = $"Document Type Id: {_{EntityPluralName}Details.Id} copied to clipboard!";
+                    options.Title = $"{EntitySingularName} Id: {_{EntityPluralName}Details.Id} copied to clipboard!";
                     options.AllowDismiss = true;
                     options.Lifetime = TimeSpan.FromSeconds(3);
                     options.ResultTiming = MessageBarResultTiming.Closed;
@@ -228,11 +255,11 @@ namespace Clone.Web.Components.Pages
 
             if (toDelete is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"{EntitySingularName} Id: {id} not found.");
                 return;
             }
 
-            var result = await DialogService.ShowConfirmationAsync($"Are you <strong>sure</strong> you want to delete item Id: {toDelete.Id}?");
+            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>delete</strong> item Id: {toDelete.Id}?");
             if (result.Cancelled)
             {
                 return;
@@ -263,7 +290,7 @@ namespace Clone.Web.Components.Pages
 
             if (toDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"{EntitySingularName} Id: {id} not found.");
                 return;
             }
 
@@ -278,10 +305,14 @@ namespace Clone.Web.Components.Pages
 
             if (toEdit is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"{EntitySingularName} Id: {id} not found.");
                 return;
             }
 
+		{SPECIAL_CASE: for each entity property repeat this little code with the property name
+		IF Property is ForeignKey THEN
+			`_{PropertyName}Select = await _UnitOfWork.Repository<{PropertyName}>().GetAllAsync();`
+		}
             _{EntitySingularName} = toEdit;
             _CollapsedContent = false;
         }

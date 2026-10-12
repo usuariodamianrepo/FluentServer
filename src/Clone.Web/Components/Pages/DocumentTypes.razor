@@ -32,14 +32,14 @@
 <FluentMultiSplitter>
 
     <FluentMultiSplitterPane Size="50%">
-        <FluentDataGrid @ref="_Grid" Items=@_DocumentTypes GridTemplateColumns="1fr 1fr 1fr 1fr">
+        <FluentDataGrid @ref="_Grid" Items=@_DocumentTypes GridTemplateColumns="0.2fr 1fr 1fr 1fr">
             <ChildContent>
                 <PropertyColumn Property="@(c => c.Id)" />
                 <PropertyColumn Property="@(c => c.Name)" Sortable="true" />
                 <PropertyColumn Property="@(c => c.Description)" />
                 <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
                     <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
                     <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
                 </TemplateColumn>
             </ChildContent>

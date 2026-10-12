@@ -5,28 +5,28 @@ namespace Clone.Models
 {
     public sealed class Company : AuditableEntity
     {
-		[DisplayName("Nombre")]
-		[Required(ErrorMessage = "El campo {0} es requerido")]
+		[DisplayName("Name")]
+		[Required(ErrorMessage = "The {0} field is required.")]
 		[MaxLength(120)]
 		public string Name { get; set; } = string.Empty;
 
-        [DisplayName("Dirección")]
+        [DisplayName("Address")]
 		[MaxLength(120)]
 		public string? StreetAddress { get; set; }
 
-        [DisplayName("Ciudad")]
+        [DisplayName("City")]
 		[MaxLength(120)]
 		public string? City { get; set; }
 
-        [DisplayName("Provincia")]
+        [DisplayName("State")]
 		[MaxLength(60)]
 		public string? State { get; set; }
 
-        [DisplayName("Código Postal")]
+        [DisplayName("Postal Code")]
 		[MaxLength(60)]
 		public string? PostalCode { get; set; }
 
-        [DisplayName("Teléfono")]
+        [DisplayName("Phone")]
 		[MaxLength(60)]
 		public string? PhoneNumber { get; set; }
     }

@@ -13,6 +13,7 @@
         <Authorized>
             <FluentNavItem Href="Account/Manage">@context.User.Identity?.Name</FluentNavItem>
             <FluentNavItem Href="adminuser" IconRest="@(new Icons.Regular.Size20.Person())" IconActive="@(new Icons.Filled.Size20.Person())">Admin User</FluentNavItem>
+            <FluentNavItem Href="documents" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">Documents</FluentNavItem>
             <FluentNavItem Href="documenttypes" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">Document Types</FluentNavItem>
             <FluentNavItem Href="companies" IconRest="@(new Icons.Regular.Size20.BuildingFactory())" IconActive="@(new Icons.Filled.Size20.BuildingFactory())">Companies</FluentNavItem>
             <form action="Account/Logout" method="post">
