@@ -7,6 +7,6 @@ namespace Clone.DataAccess.Repositories.IRepository
     {
         IRepositoryAsync<T> Repository<T>() where T : AuditableEntity;
         Task SaveAsync();
-        IQueryable<UserBySearchDto> UserBySearchAsync(string id, string name, string phoneNumber);
+        IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber);
     }
 }

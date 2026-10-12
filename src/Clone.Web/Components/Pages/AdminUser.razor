@@ -2,8 +2,8 @@
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
-@using Clone.Utility
 @using Clone.Models
+@using Clone.Utility
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity;
@@ -13,7 +13,7 @@
 @inject IUnitOfWork _UnitOfWork
 @inject UserManager<ApplicationUser> _UserManager
 
-@* @attribute [Authorize(Roles = RD.RoleAdmin)] *@
+@attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>Document Types</PageTitle>
 <FluentDialogProvider />
@@ -42,11 +42,13 @@
                 <PropertyColumn Property="@(c => c.CompanyName)" />
                 <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
                     <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.AppsListDetail())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
                     <FluentButton Title="@(context.IsLocked ? "Unlock" : "Lock")"
                                   Appearance="ButtonAppearance.Subtle"
-                                  IconEnd="@(context.IsLocked ? new Icons.Regular.Size20.PersonAvailable().WithColor(Color.Error) : new Icons.Regular.Size20.PersonAvailable())"
-                                  OnClick="@(() => OnLockUnlockClicked(context.Id))" />
+                                  IconEnd="@(context.IsLocked ?
+                                    new Icons.Regular.Size20.PersonLock().WithColor(Color.Error) :
+                                    new Icons.Regular.Size20.PersonAvailable().WithColor(Color.Success))"
+                                  OnClick="@(() => OnLockUnlockClicked(context))" />
                 </TemplateColumn>
             </ChildContent>
             <EmptyContent>

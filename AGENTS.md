@@ -18,3 +18,7 @@
 - Build the solution with `dotnet build FluentBlazorServer.slnx`.
 - Run available tests with `dotnet test FluentBlazorServer.slnx` when changes affect tested behavior.
 - Address compilation errors introduced by changes before completing the work.
+
+## AI tooling resources
+
+- **Skills** — `.agents/skills/*/SKILL.md`: step-by-step task recipes. Scaffolders: `add-feature`.

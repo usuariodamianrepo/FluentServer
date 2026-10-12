@@ -6,32 +6,32 @@ namespace Clone.Models
 {
     public class Document : AuditableEntity
     {
-        [DisplayName("Nombre")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [DisplayName("Name")]
+        [Required(ErrorMessage = "The {0} field is required.")]
         [MaxLength(120)]
         public string Title { get; set; } = string.Empty;
 
-        [DisplayName("Publicado")]
+        [DisplayName("Published")]
         [Column(TypeName = "timestamp without time zone")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public DateTime Published { get; set; }
 
-        [DisplayName("Descripción")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [DisplayName("Description")]
+        [Required(ErrorMessage = "The {0} field is required.")]
         [MaxLength(450)]
         public string Description { get; set; } = string.Empty;
 
-        [DisplayName("Público")]
+        [DisplayName("Public")]
         public bool IsPublic { get; set; } = false;
 
         [DisplayName("URL")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Required(ErrorMessage = "The {0} field is required.")]
         [MaxLength(250)]
         public string URL { get; set; } = string.Empty;
 
-        [DisplayName("Tipo de Documento")]
+        [DisplayName("Document Type")]
         [ForeignKey("DocumentTypeId")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Required(ErrorMessage = "The {0} field is required.")]
         public int DocumentTypeId { get; set; }
         public virtual DocumentType DocumentType { get; set; } = default!;
     }
