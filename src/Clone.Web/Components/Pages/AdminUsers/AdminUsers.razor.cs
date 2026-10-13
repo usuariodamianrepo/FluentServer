@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Clone.Web.Components.Pages
+namespace Clone.Web.Components.Pages.AdminUsers
 {
-    public partial class AdminUser
+    public partial class AdminUsers
     {
         const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
         FluentDataGrid<UserBySearchDto>? _Grid;

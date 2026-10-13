@@ -1,4 +1,4 @@
-﻿@page "/adminuser"
+﻿@page "/adminusers"
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
@@ -12,12 +12,13 @@
 @inject INotificationService NotificationService
 @inject IUnitOfWork _UnitOfWork
 @inject UserManager<ApplicationUser> _UserManager
+@inject IStringLocalizer<AdminUsers> Localizer
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
-<PageTitle>Document Types</PageTitle>
+<PageTitle>@Localizer["Weather.Title"]</PageTitle>
 <FluentDialogProvider />
-<FluentLabel Size="@LabelSize.Large">Document Types</FluentLabel>
+<FluentLabel Size="@LabelSize.Large">Admin Users</FluentLabel>
 <FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
