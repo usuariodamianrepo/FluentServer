@@ -5,7 +5,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Clone.Web.Components.Pages.Documents
+namespace Clone.Web.Components.Pages.DocumentTypes
 {
     public partial class DocumentTypes
     {

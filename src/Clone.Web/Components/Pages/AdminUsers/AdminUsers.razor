@@ -12,13 +12,13 @@
 @inject INotificationService NotificationService
 @inject IUnitOfWork _UnitOfWork
 @inject UserManager<ApplicationUser> _UserManager
-@inject IStringLocalizer<AdminUsers> Localizer
+@inject IStringLocalizer<AppResources> Localizer
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
-<PageTitle>@Localizer["Weather.Title"]</PageTitle>
+<PageTitle>@Localizer["AdminUsers.Title"]</PageTitle>
 <FluentDialogProvider />
-<FluentLabel Size="@LabelSize.Large">Admin Users</FluentLabel>
+<FluentLabel Size="@LabelSize.Large">@Localizer["AdminUsers.Label"]</FluentLabel>
 <FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
