@@ -5,7 +5,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Clone.Web.Components.Pages
+namespace Clone.Web.Components.Pages.Companies
 {
     public partial class Companies
     {

@@ -1,18 +1,20 @@
 ﻿@page "/weather"
 @attribute [StreamRendering]
 
-<PageTitle>Weather</PageTitle>
+@inject IStringLocalizer<Weather> Localizer
 
-<h1>Weather</h1>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<p>This component demonstrates showing data.</p>
+<h1>@Localizer["Title"]</h1>
+
+<p>@Localizer["Description"]</p>
 
 <!-- This page is rendered in SSR mode, so the FluentDataGrid component does not offer any interactivity (like sorting). -->
 <FluentDataGrid Id="weathergrid" Items="@forecasts" GridTemplateColumns="1fr 1fr 1fr 2fr" Loading="@(forecasts == null)" Style="height:204px;" TGridItem="WeatherForecast">
-    <PropertyColumn Title="Date" Property="@(c => c!.Date)" Align="DataGridCellAlignment.Start"/>
-    <PropertyColumn Title="Temp. (C)" Property="@(c => c!.TemperatureC)" Align="DataGridCellAlignment.Center"/>
-    <PropertyColumn Title="Temp. (F)" Property="@(c => c!.TemperatureF)" Align="DataGridCellAlignment.Center"/>
-    <PropertyColumn Title="Summary" Property="@(c => c!.Summary)" Align="DataGridCellAlignment.End"/>
+    <PropertyColumn Title="@Localizer["Column.Date"]" Property="@(c => c!.Date)" Align="DataGridCellAlignment.Start"/>
+    <PropertyColumn Title="@Localizer["Column.TempC"]" Property="@(c => c!.TemperatureC)" Align="DataGridCellAlignment.Center"/>
+    <PropertyColumn Title="@Localizer["Column.TempF"]" Property="@(c => c!.TemperatureF)" Align="DataGridCellAlignment.Center"/>
+    <PropertyColumn Title="@Localizer["Column.Summary"]" Property="@(c => c!.Summary)" Align="DataGridCellAlignment.End"/>
 </FluentDataGrid>
 
 @code {
@@ -29,7 +31,7 @@
         {
             Date = startDate.AddDays(index),
             TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
+            Summary = Localizer[$"Summary.{summaries[Random.Shared.Next(summaries.Length)]}"]
         }).AsQueryable();
     }
 

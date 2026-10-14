@@ -3,9 +3,9 @@ FluentUI 5.0 Blazor Web + PostgreSQL
 
 ## About The Project
 
-FluentServer is a simple project server side with [FluentUI](https://www.fluentui-blazor.net/) Components. It was created with the template [Fluent Blazor Web App](https://www.fluentui-blazor.net/Templates). The idea is use this code for simple project where don't have very much bussiness logic and the connection is good, for example an intranet.
+FluentServer is a simple project server side with [FluentUI](https://www.fluentui-blazor.net/) Components. It was created with the template [Fluent Blazor Web App](https://www.fluentui-blazor.net/Templates). The idea is use this code for simple project where you don't need very much business logic and the connection is good.
 
-***Configuration***
+***Configuration Template***
 
 	- Framework: .NET Core 10
 	- Authentication Type: Individual Accounts
@@ -19,11 +19,10 @@ FluentServer is a simple project server side with [FluentUI](https://www.fluentu
 - Fluent Blazor Web App (Server)
 - EntityFrameworkCore
 - PostgreSQL
+- Serilog
 
 ***Next Spets***
 
-- [ ] Need to add Serilog.
-- [ ] Need to add User Administration.
 - [ ] Need to add language translations as per the implemented Location.
 
 ## License
