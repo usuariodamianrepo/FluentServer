@@ -117,58 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Weather.Title" xml:space="preserve">
-    <value>Weather</value>
+  <data name="Title" xml:space="preserve">
+    <value>Usuarios administradores</value>
   </data>
-  <data name="Weather.Description" xml:space="preserve">
-    <value>This component demonstrates showing data.</value>
+  <data name="Label" xml:space="preserve">
+    <value>Administración de usuarios</value>
   </data>
-  <data name="Weather.Column.Date" xml:space="preserve">
-    <value>Date</value>
+  <data name="ContentHeader" xml:space="preserve">
+    <value>Contenido</value>
   </data>
-  <data name="Weather.Column.TempC" xml:space="preserve">
-    <value>Temp. (C)</value>
+  <data name="DetailsHeader" xml:space="preserve">
+    <value>Detalles</value>
   </data>
-  <data name="Weather.Column.TempF" xml:space="preserve">
-    <value>Temp. (F)</value>
+  <data name="Column.Id" xml:space="preserve">
+    <value>Id</value>
   </data>
-  <data name="Weather.Column.Summary" xml:space="preserve">
-    <value>Summary</value>
+  <data name="Column.Name" xml:space="preserve">
+    <value>Nombre</value>
   </data>
-  <data name="Weather.Summary.Freezing" xml:space="preserve">
-    <value>Freezing</value>
+  <data name="Column.Email" xml:space="preserve">
+    <value>Correo electrónico</value>
   </data>
-  <data name="Weather.Summary.Bracing" xml:space="preserve">
-    <value>Bracing</value>
+  <data name="Column.PhoneNumber" xml:space="preserve">
+    <value>Teléfono</value>
   </data>
-  <data name="Weather.Summary.Chilly" xml:space="preserve">
-    <value>Chilly</value>
+  <data name="Column.Roles" xml:space="preserve">
+    <value>Roles</value>
   </data>
-  <data name="Weather.Summary.Cool" xml:space="preserve">
-    <value>Cool</value>
+  <data name="Column.CompanyName" xml:space="preserve">
+    <value>Empresa</value>
   </data>
-  <data name="Weather.Summary.Mild" xml:space="preserve">
-    <value>Mild</value>
+  <data name="StreetAddress" xml:space="preserve">
+    <value>Dirección</value>
   </data>
-  <data name="Weather.Summary.Warm" xml:space="preserve">
-    <value>Warm</value>
+  <data name="City" xml:space="preserve">
+    <value>Ciudad</value>
   </data>
-  <data name="Weather.Summary.Balmy" xml:space="preserve">
-    <value>Balmy</value>
+  <data name="State" xml:space="preserve">
+    <value>Provincia</value>
   </data>
-  <data name="Weather.Summary.Hot" xml:space="preserve">
-    <value>Hot</value>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Código postal</value>
   </data>
-  <data name="Weather.Summary.Sweltering" xml:space="preserve">
-    <value>Sweltering</value>
+  <data name="UserName" xml:space="preserve">
+    <value>Nombre de usuario</value>
   </data>
-  <data name="Weather.Summary.Scorching" xml:space="preserve">
-    <value>Scorching</value>
+  <data name="Rol" xml:space="preserve">
+    <value>Rol</value>
   </data>
-  <data name="AdminUsers.Title" xml:space="preserve">
-    <value>Admin Users</value>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Empresa</value>
   </data>
-  <data name="AdminUsers.Label" xml:space="preserve">
-    <value>Admin Users</value>
+  <data name="Confirm.LockUnlockUser" xml:space="preserve">
+    <value>¿Está seguro de que desea {0} al usuario?</value>
+  </data>
+  <data name="Error.RemoveRol" xml:space="preserve">
+    <value>Se produjo un error al eliminar al usuario del rol</value>
+  </data>
+  <data name="Error.AddRol" xml:space="preserve">
+    <value>Se produjo un error al agregar el usuario al rol</value>
+  </data>
+  <data name="Error.UserNotSelected" xml:space="preserve">
+    <value>Usuario no seleccionado</value>
+  </data>
+  <data name="Message.EmailCopied" xml:space="preserve">
+    <value>¡Correo electrónico {0} copiado al portapapeles!</value>
+  </data>
+  <data name="Error.LockUnlockUser" xml:space="preserve">
+    <value>Ocurrió un error mientras {0} el usuario</value>
   </data>
 </root>

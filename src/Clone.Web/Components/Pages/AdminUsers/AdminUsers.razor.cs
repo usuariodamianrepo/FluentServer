@@ -65,7 +65,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
         {
             if (_UserBySearchDtoDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No user selected.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.UserNotSelected"]);
             }
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", _UserBySearchDtoDetails!.Email);
             await NotificationService.ShowMessageBarAsync(options =>
@@ -74,7 +74,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
                 options.Intent = MessageBarIntent.Info;
                 options.Layout = MessageBarLayout.SingleLine;
-                options.Title = $"Email {_UserBySearchDtoDetails.Email} copied to clipboard!";
+                options.Title = Localizer["Message.EmailCopied", _UserBySearchDtoDetails.Email ?? "NotEmail"];
                 options.AllowDismiss = true;
                 options.Lifetime = TimeSpan.FromSeconds(3);
                 options.ResultTiming = MessageBarResultTiming.Closed;
@@ -83,14 +83,15 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
         private async Task OnLockUnlockClicked(UserBySearchDto context)
         {
-            var action = context.IsLocked ? "Unlock" : "Lock";
-            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>{action}</strong> the User?");
+            var action = context.IsLocked ? SharedLocalizer["Common.Unlock"] : SharedLocalizer["Common.Lock"];
+            var confirm = Localizer["Confirm.LockUnlockUser", action];
+            var result = await DialogService.ShowConfirmationAsync(confirm);
             if (result.Cancelled) return;
 
             var user = await _UserManager.FindByIdAsync(context.Id);
             if (user is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotFound", context.Id]); 
                 return;
             }
 
@@ -103,7 +104,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
             if (!Lockout.Succeeded)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Error occurred while locking/unlocking the user.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.LockUnlockUser", action]);
                 return;
             }
 
@@ -115,7 +116,8 @@ namespace Clone.Web.Components.Pages.AdminUsers
             var toDetails = await _UnitOfWork.UserBySearch(id, "", "").ToListAsync();
             if (toDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User Id: {id} not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotFound", id]);
+                return;
             }
 
             _UserBySearchDtoDetails = toDetails!.First();
@@ -129,7 +131,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
             var toEdit = await _UserManager.FindByIdAsync(id);
             if (toEdit is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User Id: {id} not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotFound", id]);
                 return;
             }
             _CompaniesSelect = await _UnitOfWork.Repository<Company>().GetAllAsync();
@@ -169,7 +171,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
             var toChangeRol = await _UserManager.FindByIdAsync(_ApplicationUser.Id);
             if (toChangeRol is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User Id: {_ApplicationUser.Id} not found");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotFound", _ApplicationUser.Id]);
                 return;
             }
 
@@ -178,7 +180,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
             if (oldRole is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"User don't have a role assigned.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotRol", _ApplicationUser.Id]);
                 return;
             }
 
@@ -187,13 +189,13 @@ namespace Clone.Web.Components.Pages.AdminUsers
                 var removeRol = await _UserManager.RemoveFromRoleAsync(toChangeRol, oldRole);
                 if(!removeRol.Succeeded)
                 {
-                    await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Error occurred while removing the user from the role.");
+                    await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.RemoveRol"]);
                     return;
                 }
                 var addRol = await _UserManager.AddToRoleAsync(toChangeRol, _RoleSelected);
                 if(!addRol.Succeeded)
                 {
-                    await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Error occurred while adding the user to the role.");
+                    await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.AddRol"]);
                     return;
                 }
             }
@@ -202,11 +204,6 @@ namespace Clone.Web.Components.Pages.AdminUsers
             {
                 toChangeRol.CompanyId = null;
             }
-
-            //if (_RoleSelected == RD.RoleSupplier)
-            //{
-            //    _ApplicationUser.CompanyId = 1; // sacar de la pantalla de edición, por ahora lo dejo fijo para pruebas
-            //}
 
             await _UnitOfWork.SaveAsync();
 
@@ -228,7 +225,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
             if ((await _UserBySearchDto.ToListAsync()).Count >= Constants.ItemsMaxNumber)
             {
-                await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {Constants.ItemsMaxNumber} results. Improve your filter.");
+                await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", Constants.ItemsMaxNumber]);
             }
 
             _SearchButtonLoading = false;

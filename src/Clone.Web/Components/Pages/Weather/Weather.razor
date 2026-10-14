@@ -1,20 +1,20 @@
 ﻿@page "/weather"
 @attribute [StreamRendering]
 
-@inject IStringLocalizer<AppResources> Localizer
+@inject IStringLocalizer<Weather> Localizer
 
-<PageTitle>@Localizer["Weather.Title"]</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h1>@Localizer["Weather.Title"]</h1>
+<h1>@Localizer["Title"]</h1>
 
-<p>@Localizer["Weather.Description"]</p>
+<p>@Localizer["Description"]</p>
 
 <!-- This page is rendered in SSR mode, so the FluentDataGrid component does not offer any interactivity (like sorting). -->
 <FluentDataGrid Id="weathergrid" Items="@forecasts" GridTemplateColumns="1fr 1fr 1fr 2fr" Loading="@(forecasts == null)" Style="height:204px;" TGridItem="WeatherForecast">
-    <PropertyColumn Title="@Localizer["Weather.Column.Date"]" Property="@(c => c!.Date)" Align="DataGridCellAlignment.Start"/>
-    <PropertyColumn Title="@Localizer["Weather.Column.TempC"]" Property="@(c => c!.TemperatureC)" Align="DataGridCellAlignment.Center"/>
-    <PropertyColumn Title="@Localizer["Weather.Column.TempF"]" Property="@(c => c!.TemperatureF)" Align="DataGridCellAlignment.Center"/>
-    <PropertyColumn Title="@Localizer["Weather.Column.Summary"]" Property="@(c => c!.Summary)" Align="DataGridCellAlignment.End"/>
+    <PropertyColumn Title="@Localizer["Column.Date"]" Property="@(c => c!.Date)" Align="DataGridCellAlignment.Start"/>
+    <PropertyColumn Title="@Localizer["Column.TempC"]" Property="@(c => c!.TemperatureC)" Align="DataGridCellAlignment.Center"/>
+    <PropertyColumn Title="@Localizer["Column.TempF"]" Property="@(c => c!.TemperatureF)" Align="DataGridCellAlignment.Center"/>
+    <PropertyColumn Title="@Localizer["Column.Summary"]" Property="@(c => c!.Summary)" Align="DataGridCellAlignment.End"/>
 </FluentDataGrid>
 
 @code {
@@ -31,7 +31,7 @@
         {
             Date = startDate.AddDays(index),
             TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Localizer[$"Weather.Summary.{summaries[Random.Shared.Next(summaries.Length)]}"]
+            Summary = Localizer[$"Summary.{summaries[Random.Shared.Next(summaries.Length)]}"]
         }).AsQueryable();
     }
 
