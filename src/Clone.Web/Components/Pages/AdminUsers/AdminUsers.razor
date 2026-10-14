@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.Identity;
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILogger<AdminUsers> Logger
 @inject INotificationService NotificationService
 @inject IUnitOfWork _UnitOfWork
 @inject UserManager<ApplicationUser> _UserManager

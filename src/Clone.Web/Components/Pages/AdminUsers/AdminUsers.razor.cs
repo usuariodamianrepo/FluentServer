@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Serilog.Core;
 
 namespace Clone.Web.Components.Pages.AdminUsers
 {
@@ -45,7 +46,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
         private async Task KeyDownHandler(FluentKeyCodeEventArgs e)
         {
-            if (e.KeyCode == Constants.KeyCodeEnter)
+            if (e.KeyCode == Clone.Utility.Constants.KeyCodeEnter)
             {
                 await SearchData();
             }
@@ -220,16 +221,27 @@ namespace Clone.Web.Components.Pages.AdminUsers
         private async Task SearchData()
         {
             _SearchButtonLoading = true;
-
-            _UserBySearchDto = _UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch);
-
-            if ((await _UserBySearchDto.ToListAsync()).Count >= Constants.ItemsMaxNumber)
+            try
             {
-                await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", Constants.ItemsMaxNumber]);
-            }
+                var findeds = await (_UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch)).ToListAsync();
 
-            _SearchButtonLoading = false;
-            await InvokeAsync(StateHasChanged);
+                if (findeds.Count >= MaxRows.MaxThirty)
+                {
+                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", MaxRows.MaxThirty]);
+                }
+
+                _UserBySearchDto = findeds.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error searching Companies.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while searching the data.");
+            }
+            finally
+            {
+                _SearchButtonLoading = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }
