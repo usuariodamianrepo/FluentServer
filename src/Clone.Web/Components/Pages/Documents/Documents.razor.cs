@@ -9,7 +9,7 @@ namespace Clone.Web.Components.Pages.Documents
 {
     public partial class Documents
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_DOCUMENT";
         private FluentDataGrid<Document>? _Grid;
 
         private Document _Document { get; set; } = new();

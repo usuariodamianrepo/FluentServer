@@ -11,7 +11,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
 {
     public partial class AdminUsers
     {
-        const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        const string MESSAGEBAR_SECTION = "MESSAGEBAR_USER";
         FluentDataGrid<UserBySearchDto>? _Grid;
 
         [Inject]

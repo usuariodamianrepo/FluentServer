@@ -9,7 +9,7 @@ namespace Clone.Web.Components.Pages.Companies
 {
     public partial class Companies
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_COMPANY";
         private FluentDataGrid<Company>? _Grid;
 
         private Company _Company { get; set; } = new();

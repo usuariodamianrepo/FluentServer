@@ -23,7 +23,7 @@ FluentServer is a simple project server side with [FluentUI](https://www.fluentu
 
 ***Next Spets***
 
-- [ ] Need to add language translations as per the implemented Location.
+- [ ] Need to add language translations for some pages.
 
 ## License
 

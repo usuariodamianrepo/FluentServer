@@ -166,7 +166,7 @@ namespace Clone.Web.Components.Pages
 {
     public partial class {EntityPluralName}
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_{EntitySingularNameUpperCase}";
         private FluentDataGrid<{EntitySingularName}>? _Grid;
 
         private {EntitySingularName} _{EntitySingularName} { get; set; } = new();
