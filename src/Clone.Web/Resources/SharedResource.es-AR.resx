@@ -214,10 +214,10 @@
     <value>Copiar dirección de correo</value>
   </data>
   <data name="Message.NoData" xml:space="preserve">
-    <value>No hay nada para ver aquí. ¡Siga!</value>
+    <value>No hay nada para ver aquí.</value>
   </data>
   <data name="Message.NoSelection" xml:space="preserve">
-    <value>No hay ningún contacto seleccionado.</value>
+    <value>No hay ningún item seleccionado.</value>
   </data>
   <data name="Validation.Required" xml:space="preserve">
     <value>Este campo es obligatorio.</value>
@@ -230,5 +230,23 @@
   </data>
   <data name="Warning.Search" xml:space="preserve">
     <value>Tu búsqueda arrojó más de {0} resultados. Ajusta los filtros.</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Common.AuditInformation" xml:space="preserve">
+    <value>Información de auditoría</value>
+  </data>
+  <data name="Common.InsertDate" xml:space="preserve">
+    <value>Fecha de alta</value>
+  </data>
+  <data name="Common.InsertUser" xml:space="preserve">
+    <value>Usuario de alta</value>
+  </data>
+  <data name="Common.UpdateDate" xml:space="preserve">
+    <value>Fecha de modificación</value>
+  </data>
+  <data name="Common.UpdateUser" xml:space="preserve">
+    <value>Usuario de modificación</value>
   </data>
 </root>

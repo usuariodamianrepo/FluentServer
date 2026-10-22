@@ -59,7 +59,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
         {
             if (_DocumentTypeDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "No document type selected.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Message.NoSelection"]);
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
                     options.Section = MESSAGEBAR_SECTION;
                     options.Intent = MessageBarIntent.Info;
                     options.Layout = MessageBarLayout.SingleLine;
-                    options.Title = $"Document Type Id: {_DocumentTypeDetails.Id} copied to clipboard!";
+                    options.Title = Localizer["Message.Copied", _DocumentTypeDetails.Id];
                     options.AllowDismiss = true;
                     options.Lifetime = TimeSpan.FromSeconds(3);
                     options.ResultTiming = MessageBarResultTiming.Closed;
@@ -82,7 +82,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             catch (JSException ex)
             {
                 Logger.LogError(ex, "Error copying DocumentType {Id} to clipboard.", _DocumentTypeDetails.Id);
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Could not copy the content to the clipboard.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Copy"]);
             }
         }
 
@@ -93,11 +93,11 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
             if (toDelete is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NotFound", id]);
                 return;
             }
 
-            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>delete</strong> item Id: {toDelete.Id}?");
+            var result = await DialogService.ShowConfirmationAsync(Localizer["Confirm.Delete", toDelete.Id]);
             if (result.Cancelled)
             {
                 return;
@@ -112,12 +112,12 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             catch (DbUpdateConcurrencyException ex)
             {
                 Logger.LogError(ex, "Concurrency error while deleting DocumentType {Id}.", id);
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "The item was modified by another user. Refresh and try again.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.ModifiedByAnotherUser"]);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Unexpected error while deleting DocumentType {Id}.", id);
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while deleting the data.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Delete"]);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
             if (toDetails is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NotFound", id]);
                 return;
             }
 
@@ -143,7 +143,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
             if (toEdit is null)
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: $"Document Type Id: {id} not found.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NotFound", id]);
                 return;
             }
 
@@ -155,7 +155,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
         {
             if (string.IsNullOrWhiteSpace(_DocumentType.Name))
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Name is required.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NameRequired"]);
                 return;
             }
 
@@ -184,12 +184,12 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             catch (DbUpdateConcurrencyException ex)
             {
                 Logger.LogError(ex, "Concurrency error DocumentType Id: {Id}.", _DocumentType.Id);
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "Concurrency error. Cancel the operation and try again.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Concurrency"]);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Unexpected error DocumentType Id: {Id}.", _DocumentType.Id);
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while saving the data.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Save"]);
             }
         }
 
@@ -217,7 +217,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
                 if (findeds.Count >= MaxRows.MaxThirty)
                 {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {MaxRows.MaxThirty} results. Improve your filter.");
+                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", MaxRows.MaxThirty]);
                 }
 
                 _DocumentTypes = findeds.AsQueryable();
@@ -225,7 +225,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Error searching DocumentTypes.");
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: "An error occurred while searching the data.");
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Search"]);
             }
             finally
             {
