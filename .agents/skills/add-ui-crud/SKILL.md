@@ -32,11 +32,11 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
     <FluentStack HorizontalGap="6px" Wrap="true">
-        <FluentButton Title="Add" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
+        <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
-        <FluentButton Title="Search" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
-                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">Search</FluentButton>
+        <FluentButton Title="@SharedLocalizer["Common.Search"]" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
     </FluentStack>
 </FluentKeyCode>
 
@@ -46,16 +46,16 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
         <FluentDataGrid @ref="_Grid" Items=@_{EntityPluralName} GridTemplateColumns="1fr 1fr 1fr 1fr">
             <ChildContent>
 				{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
-                <TemplateColumn Title="Actions" Align="@DataGridCellAlignment.Center">
-                    <FluentButton Title="Edit" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="Details" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
-                    <FluentButton Title="Delete" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
+                <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+                    <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                    <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                    <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
                 </TemplateColumn>
             </ChildContent>
             <EmptyContent>
                 <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
                     <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
-                    <div>Nothing to see here. Carry on!</div>
+                    <div>@SharedLocalizer["Message.NoData"]</div>
                 </FluentStack>
             </EmptyContent>
         </FluentDataGrid>
@@ -96,15 +96,16 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 				}
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
-                    <FluentButton Type="ButtonType.Submit" Title="Save" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">Save</FluentButton>
+                    <FluentButton Type="ButtonType.Submit" Title="@SharedLocalizer["Common.Save"]" IconStart="@(new Icons.Regular.Size20.Save())" 									
+						Appearance="ButtonAppearance.Primary">@SharedLocalizer["Common.Save"]</FluentButton>
                     <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
-                                  OnClick="OnCancelContentClicked">Cancel</FluentButton>
+                        OnClick="OnCancelContentClicked">Cancel</FluentButton>
                 </FluentStack>
             </EditForm>
         }
         else
         {
-            <p>No {EntitySingularName} selected.</p>
+            <p>@SharedLocalizer["Message.NoSelection"]</p>
         }
     </FluentMultiSplitterPane>
 
@@ -139,13 +140,13 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
             <FluentStack id="toolbar-footer" HorizontalGap="6px">
                 <FluentButton Title="Copy" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default"
                               OnClick="OnCopyDetailsToClipboard">Copy</FluentButton>
-                <FluentButton Title="Cancel" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
-                              OnClick="OnCancelDetailsClicked">Cancel</FluentButton>
+                <FluentButton Title="@SharedLocalizer["Common.Cancel"]" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCancelDetailsClicked">@SharedLocalizer["Common.Cancel"]</FluentButton>
             </FluentStack>
         }
         else
         {
-            <p>No {EntitySingularName} selected.</p>
+            <p>@SharedLocalizer["Message.NoSelection"]</p>
         }
     </FluentMultiSplitterPane>
 
@@ -166,7 +167,7 @@ namespace Clone.Web.Components.Pages
 {
     public partial class {EntityPluralName}
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_{EntitySingularNameUpperCase}";
         private FluentDataGrid<{EntitySingularName}>? _Grid;
 
         private {EntitySingularName} _{EntitySingularName} { get; set; } = new();

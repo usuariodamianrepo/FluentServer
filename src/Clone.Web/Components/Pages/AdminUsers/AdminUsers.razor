@@ -71,10 +71,10 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
                     <FluentGridItem Xs="12" Sm="6">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Id"]" @bind-Value=_ApplicationUser.Id Width="100%" ReadOnly />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Id"]" @bind-Value=_ApplicationUser.Id Width="100%" Disabled="true" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="6">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value=_ApplicationUser.Name Width="100%" ReadOnly />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value=_ApplicationUser.Name Width="100%" Disabled="true" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="6">
                         <FluentTextInput Label="@SharedLocalizer["Common.Email"]" @bind-Value=_ApplicationUser.Email TextInputType="TextInputType.Email" Width="100%" ReadOnly>
@@ -89,7 +89,7 @@
                         </FluentTextInput>
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="6">
-                        <FluentTextInput Label="@SharedLocalizer["Common.PhoneNumber"]" @bind-Value=_ApplicationUser.PhoneNumber Width="100%" ReadOnly />
+                        <FluentTextInput Label="@SharedLocalizer["Common.PhoneNumber"]" @bind-Value=_ApplicationUser.PhoneNumber Width="100%" Disabled="true" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="6">
                         <FluentSelect Name="Role" Label="@Localizer["Rol"]"

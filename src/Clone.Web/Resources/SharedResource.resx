@@ -186,6 +186,9 @@
   <data name="Common.Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Common.Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
   <data name="Common.Email" xml:space="preserve">
     <value>Email</value>
   </data>
@@ -217,7 +220,7 @@
     <value>Nothing to see here. Carry on!</value>
   </data>
   <data name="Message.NoSelection" xml:space="preserve">
-    <value>No Contact selected.</value>
+    <value>No item selected.</value>
   </data>
   <data name="Validation.Required" xml:space="preserve">
     <value>This field is required.</value>
@@ -230,5 +233,23 @@
   </data>
   <data name="Warning.Search" xml:space="preserve">
     <value>Your search returned more than {0} results. Improve your filter.</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Common.AuditInformation" xml:space="preserve">
+    <value>Audit Information</value>
+  </data>
+  <data name="Common.InsertDate" xml:space="preserve">
+    <value>Insert Date</value>
+  </data>
+  <data name="Common.InsertUser" xml:space="preserve">
+    <value>Insert User</value>
+  </data>
+  <data name="Common.UpdateDate" xml:space="preserve">
+    <value>Update Date</value>
+  </data>
+  <data name="Common.UpdateUser" xml:space="preserve">
+    <value>Update User</value>
   </data>
 </root>

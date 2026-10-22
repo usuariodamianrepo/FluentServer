@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Serilog.Core;
 
 namespace Clone.Web.Components.Pages.AdminUsers
 {
     public partial class AdminUsers
     {
-        const string MESSAGEBAR_SECTION = "MESSAGEBAR_SERVICE_DEFAULT";
+        const string MESSAGEBAR_SECTION = "MESSAGEBAR_USER";
         FluentDataGrid<UserBySearchDto>? _Grid;
 
         [Inject]
@@ -64,18 +63,18 @@ namespace Clone.Web.Components.Pages.AdminUsers
 
         private async Task OnCopyEmailToClipboard()
         {
-            if (_UserBySearchDtoDetails is null)
+            if (_ApplicationUser is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.UserNotSelected"]);
             }
-            await JS.InvokeVoidAsync("navigator.clipboard.writeText", _UserBySearchDtoDetails!.Email);
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", _ApplicationUser!.Email);
             await NotificationService.ShowMessageBarAsync(options =>
             {
                 options.Section = MESSAGEBAR_SECTION;
 
                 options.Intent = MessageBarIntent.Info;
                 options.Layout = MessageBarLayout.SingleLine;
-                options.Title = Localizer["Message.EmailCopied", _UserBySearchDtoDetails.Email ?? "NotEmail"];
+                options.Title = Localizer["Message.EmailCopied", _ApplicationUser.Email ?? "NotEmail"];
                 options.AllowDismiss = true;
                 options.Lifetime = TimeSpan.FromSeconds(3);
                 options.ResultTiming = MessageBarResultTiming.Closed;
