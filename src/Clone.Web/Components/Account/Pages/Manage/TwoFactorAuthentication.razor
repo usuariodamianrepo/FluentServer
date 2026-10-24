@@ -7,11 +7,12 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<TwoFactorAuthentication> Localizer
 
-<PageTitle>Two-factor authentication (2FA)</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 <StatusMessage />
-<h3>Two-factor authentication (2FA)</h3>
+<h3>@Localizer["Title"]</h3>
 <FluentGrid>
     <FluentGridItem sm="9">
     @if (canTrack)
@@ -20,49 +21,49 @@
         {
             if (recoveryCodesLeft == 0)
             {
-                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">You have no recovery codes left.</FluentMessageBar>
+                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">@Localizer["Warning.NoRecoveryCodes"]</FluentMessageBar>
                 <p>
-                    You must <a href="Account/Manage/GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.
+                    @((MarkupString)Localizer["Info.NoRecoveryCodes"].Value)
                 </p>
             }
             else if (recoveryCodesLeft == 1)
             {
-                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">You have 1 recovery code left.</FluentMessageBar>
-                <p>You can <a href="Account/Manage/GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">@Localizer["Warning.OneRecoveryCode"]</FluentMessageBar>
+                <p>@((MarkupString)Localizer["Info.OneRecoveryCode"].Value)</p>
             }
             else if (recoveryCodesLeft <= 3)
             {
-                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">You have @recoveryCodesLeft recovery codes left.</FluentMessageBar>
-                <p>You should <a href="Account/Manage/GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+                <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">@Localizer["Warning.RecoveryCodesLeft", recoveryCodesLeft]</FluentMessageBar>
+                <p>@((MarkupString)Localizer["Info.RecoveryCodesLeft"].Value)</p>
             }
 
             if (isMachineRemembered)
             {
                 <form style="display: inline-block" @formname="forget-browser" @onsubmit="OnSubmitForgetBrowserAsync" method="post">
                     <AntiforgeryToken />
-                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Forget this browser</FluentButton>
+                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["Button.ForgetBrowser"]</FluentButton>
                 </form>
             }
 
-            <FluentLink Href="Account/Manage/Disable2fa" >Disable 2FA</FluentLink>
-            <FluentLink Href="Account/Manage/GenerateRecoveryCodes" >Reset recovery codes</FluentLink>
+            <FluentLink Href="Account/Manage/Disable2fa" >@Localizer["Link.Disable2fa"]</FluentLink>
+            <FluentLink Href="Account/Manage/GenerateRecoveryCodes" >@Localizer["Link.ResetRecoveryCodes"]</FluentLink>
         }
 
-        <h4>Authenticator app</h4>
+        <h4>@Localizer["AuthenticatorApp"]</h4>
         @if (!hasAuthenticator)
         {
-            <FluentLink Href="Account/Manage/EnableAuthenticator">Add authenticator app</FluentLink>
+            <FluentLink Href="Account/Manage/EnableAuthenticator">@Localizer["Link.AddAuthenticator"]</FluentLink>
         }
         else
         {
-            <FluentLink Href="Account/Manage/EnableAuthenticator">Set up authenticator app</FluentLink>
-            <FluentLink Href="Account/Manage/ResetAuthenticator">Reset authenticator app</FluentLink>
+            <FluentLink Href="Account/Manage/EnableAuthenticator">@Localizer["Link.SetupAuthenticator"]</FluentLink>
+            <FluentLink Href="Account/Manage/ResetAuthenticator">@Localizer["Link.ResetAuthenticator"]</FluentLink>
         }
     }
     else
     {
-        <FluentMessageBar Intent="MessageBarIntent.Error" AllowDismiss="false">Privacy and cookie policy have not been accepted.</FluentMessageBar>
-        <p>You must accept the policy before you can enable two factor authentication.</p>
+        <FluentMessageBar Intent="MessageBarIntent.Error" AllowDismiss="false">@Localizer["Error.PolicyNotAccepted"]</FluentMessageBar>
+        <p>@Localizer["Info.AcceptPolicy"]</p>
     }
     </FluentGridItem>
 </FluentGrid>
@@ -98,7 +99,7 @@
         await SignInManager.ForgetTwoFactorClientAsync();
 
         RedirectManager.RedirectToCurrentPageWithStatus(
-            "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.",
+            Localizer["Message.BrowserForgotten"],
             HttpContext);
     }
 }

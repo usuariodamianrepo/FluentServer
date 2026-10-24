@@ -8,28 +8,29 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<DeletePersonalData> Logger
+@inject IStringLocalizer<DeletePersonalData> Localizer
 
-<PageTitle>Delete Personal Data</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 <StatusMessage Message="@message" />
 
-<h3>Delete Personal Data</h3>
+<h3>@Localizer["Title"]</h3>
 
 <FluentGrid>
     <FluentGridItem sm="9">
         <FluentMessageBar Intent="MessageBarIntent.Warning">
-            Deleting this data will permanently remove your account, and this cannot be recovered.
+            @Localizer["Warning.DeleteAccount"]
         </FluentMessageBar>
         <EditForm Model="Input" FormName="delete-user" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
             <FluentValidationSummary class="text-danger" role="alert" />
             @if (requirePassword)
             {
-                <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="Please enter your password." Label="Password" Style="width: 100%" />
+                <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="@Localizer["Placeholder.Password"]" Label="@Localizer["Password"]" Style="width: 100%" />
                 @* <FluentValidationMessage For="() => Input.Password" class="text-danger" /> *@
             }
             <p style="margin-top: 10px; text-align: end;">
-                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Delete data and close my account</FluentButton>
+                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["DeleteDataAndCloseAccount"]</FluentButton>
             </p>
         </EditForm>
     </FluentGridItem>
@@ -68,7 +69,7 @@
 
         if (requirePassword && !await UserManager.CheckPasswordAsync(user, Input.Password))
         {
-            message = "Error: Incorrect password.";
+            message = Localizer["Error.IncorrectPassword"];
             return;
         }
 

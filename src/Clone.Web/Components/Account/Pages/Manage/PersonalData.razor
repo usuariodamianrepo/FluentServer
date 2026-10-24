@@ -5,25 +5,26 @@
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<PersonalData> Localizer
 
-<PageTitle>Personal Data</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 <StatusMessage />
-<h3>Personal Data</h3>
+<h3>@Localizer["Title"]</h3>
 
 <FluentGrid>
     <FluentGridItem xs="12" sm="6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+        <p>@Localizer["Info"]</p>
         <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+            <strong>@Localizer["Warning.Delete"]</strong>
         </p>
         <form action="Account/Manage/DownloadPersonalData" method="post">
             <AntiforgeryToken />
-            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width:20%;">Download</FluentButton>
+            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width:20%;">@Localizer["Button.Download"]</FluentButton>
         </form>
 
         <p style="margin-top: 10px; text-align: end;">
-            <FluentLink Href="Account/Manage/DeletePersonalData" >Delete your personal data</FluentLink>
+            <FluentLink Href="Account/Manage/DeletePersonalData">@Localizer["Link.DeletePersonalData"]</FluentLink>
         </p>
     </FluentGridItem>
 </FluentGrid>

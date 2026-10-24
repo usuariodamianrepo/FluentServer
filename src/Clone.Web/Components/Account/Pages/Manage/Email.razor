@@ -11,10 +11,11 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<Email> Localizer
 
-<PageTitle>Manage email</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h3>Manage email</h3>
+<h3>@Localizer["Title"]</h3>
 
 <StatusMessage Message="@message"/>
 <FluentGrid>
@@ -27,19 +28,19 @@
             <FluentValidationSummary class="text-danger" role="alert" />
             @if (isEmailConfirmed)
             {
-                <FluentTextInput Value="@email" Placeholder="Enter your email." Disabled="true" Label="Email" Appearance="TextInputAppearance.FilledDarker" Style="width: 100%">
+                <FluentTextInput Value="@email" Placeholder="@Localizer["Placeholder.EmailConfirmed"]" Disabled="true" Label="@Localizer["Email"]" Appearance="TextInputAppearance.FilledDarker" Style="width: 100%">
                     <span slot="end">✓</span>
                 </FluentTextInput>
             }
             else
             {
-                <FluentTextInput value="@email" Placeholder="Please enter your email." Disabled="true" Label="Email" Appearance="TextInputAppearance.FilledDarker" Style="width: 100%" />
-                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Form="send-verification-form" Style="width: 100%">Send verification email</FluentButton>
+                <FluentTextInput value="@email" Placeholder="@Localizer["Placeholder.Email"]" Disabled="true" Label="@Localizer["Email"]" Appearance="TextInputAppearance.FilledDarker" Style="width: 100%" />
+                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Form="send-verification-form" Style="width: 100%">@Localizer["Button.SendVerificationEmail"]</FluentButton>
             }
-            <FluentTextInput Name="Input.NewEmail" @bind-Value="Input.NewEmail" AutoComplete="email" Required="true" Placeholder="Please enter new email." Label="New email" Style="width: 100%" />
+            <FluentTextInput Name="Input.NewEmail" @bind-Value="Input.NewEmail" AutoComplete="email" Required="true" Placeholder="@Localizer["Placeholder.NewEmail"]" Label="@Localizer["NewEmail"]" Style="width: 100%" />
             @* <FluentValidationMessage For="() => Input.NewEmail" class="text-danger" /> *@
             <p style="margin-top: 10px; text-align: end;">
-                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Change email</FluentButton>
+                <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["Button.ChangeEmail"]</FluentButton>
             </p>
         </EditForm>
     </FluentGridItem>
@@ -78,7 +79,7 @@
     {
         if (Input.NewEmail is null || Input.NewEmail == email)
         {
-            message = "Your email is unchanged.";
+            message = Localizer["Message.EmailUnchanged"];
             return;
         }
 
@@ -97,7 +98,7 @@
 
         await EmailSender.SendConfirmationLinkAsync(user, Input.NewEmail, HtmlEncoder.Default.Encode(callbackUrl));
 
-        message = "Confirmation link to change email sent. Please check your email.";
+        message = Localizer["Message.ChangeEmailSent"];
     }
 
     private async Task OnSendEmailVerificationAsync()
@@ -122,14 +123,14 @@
 
         await EmailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(callbackUrl));
 
-        message = "Verification email sent. Please check your email.";
+        message = Localizer["Message.VerificationEmailSent"];
     }
 
     private sealed class InputModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "New email")]
+        [Required(ErrorMessageResourceType = typeof(EmailResources), ErrorMessageResourceName = nameof(EmailResources.EmailRequired))]
+        [EmailAddress(ErrorMessageResourceType = typeof(EmailResources), ErrorMessageResourceName = nameof(EmailResources.InvalidEmail))]
+        [Display(ResourceType = typeof(EmailResources), Name = nameof(EmailResources.NewEmail))]
         public string? NewEmail { get; set; }
     }
 }
