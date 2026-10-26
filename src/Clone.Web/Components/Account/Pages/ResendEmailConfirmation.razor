@@ -11,20 +11,21 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<ResendEmailConfirmation> Localizer
 
-<PageTitle>Resend email confirmation</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h1>Resend email confirmation</h1>
-<h2>Enter your email.</h2>
+<h1>@Localizer["Header"]</h1>
+<h2>@Localizer["Subtitle"]</h2>
 <StatusMessage Message="@message" />
 <FluentGrid>
     <FluentGridItem xs="8" sm="4">
         <EditForm Model="Input" FormName="resend-email-confirmation" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
             <FluentValidationSummary class="text-danger" role="alert" />
-            <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" class="form-control" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%;" />
+            <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" class="form-control" Required="true" Placeholder="name@example.com" Label="@Localizer["Email"]" Style="width: 100%;" />
             @* <FluentValidationMessage For="() => Input.Email" class="text-danger" /> *@
-            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">Resend</FluentButton>
+            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">@Localizer["Button.Resend"]</FluentButton>
         </EditForm>
     </FluentGridItem>
 </FluentGrid>
@@ -45,7 +46,7 @@
         var user = await UserManager.FindByEmailAsync(Input.Email!);
         if (user is null)
         {
-            message = "Verification email sent. Please check your email.";
+            message = Localizer["Message.Sent"];
             return;
         }
 
@@ -57,13 +58,14 @@
             new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
         await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
-        message = "Verification email sent. Please check your email.";
+        message = Localizer["Message.Sent"];
     }
 
     private sealed class InputModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessageResourceType = typeof(ResendEmailConfirmationResources), ErrorMessageResourceName = nameof(ResendEmailConfirmationResources.Required))]
+        [EmailAddress(ErrorMessageResourceType = typeof(ResendEmailConfirmationResources), ErrorMessageResourceName = nameof(ResendEmailConfirmationResources.EmailValidation))]
+        [Display(ResourceType = typeof(ResendEmailConfirmationResources), Name = nameof(ResendEmailConfirmationResources.Email))]
         public string Email { get; set; } = "";
     }
 }

@@ -8,23 +8,23 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWithRecoveryCode> Logger
+@inject IStringLocalizer<LoginWithRecoveryCode> Localizer
 
-<PageTitle>Recovery code verification</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h1>Recovery code verification</h1>
+<h1>@Localizer["Header"]</h1>
 <StatusMessage Message="@message" />
 <p>
-    You have requested to log in with a recovery code. This login will not be remembered until you provide
-    an authenticator app code at log in or disable 2FA and log in again.
+    @Localizer["Text.Info"]
 </p>
 <FluentGrid>
     <FluentGridItem xs="8" sm="4">
         <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
             <FluentValidationSummary class="text-danger" role="alert" />
-            <FluentTextInput Name="Input.RecoveryCode" @bind-Value="Input.RecoveryCode" class="form-control" AutoComplete="off" Placeholder="Recovery code" Label="Recovery code" Style="width: 100%;" />
+            <FluentTextInput Name="Input.RecoveryCode" @bind-Value="Input.RecoveryCode" class="form-control" AutoComplete="off" Placeholder="@Localizer["Label.RecoveryCode"]" Label="@Localizer["Label.RecoveryCode"]" Style="width: 100%;" />
             @* <FluentValidationMessage For="() => Input.RecoveryCode" class="text-danger" /> *@
-            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">Log in</FluentButton>
+            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">@Localizer["Button.Login"]</FluentButton>
         </EditForm>
     </FluentGridItem>
 </FluentGrid>
@@ -68,15 +68,15 @@
         else
         {
             Logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", userId);
-            message = "Error: Invalid recovery code entered.";
+            message = Localizer["Error.InvalidCode"];
         }
     }
 
     private sealed class InputModel
     {
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(LoginWithRecoveryCodeResources), ErrorMessageResourceName = nameof(LoginWithRecoveryCodeResources.Required))]
         [DataType(DataType.Text)]
-        [Display(Name = "Recovery Code")]
+        [Display(ResourceType = typeof(LoginWithRecoveryCodeResources), Name = nameof(LoginWithRecoveryCodeResources.RecoveryCode))]
         public string RecoveryCode { get; set; } = "";
     }
 }

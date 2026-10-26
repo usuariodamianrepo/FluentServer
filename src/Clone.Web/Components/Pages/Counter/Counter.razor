@@ -1,6 +1,10 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
 @using System.Globalization
+@using Clone.Utility
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = RD.RoleCustomer)]
 
 <PageTitle>Counter</PageTitle>
 
