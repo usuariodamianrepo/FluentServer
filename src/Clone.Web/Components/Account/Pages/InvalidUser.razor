@@ -1,7 +1,9 @@
 ﻿@page "/Account/InvalidUser"
 
-<PageTitle>Invalid user</PageTitle>
+@inject IStringLocalizer<InvalidUser> Localizer
 
-<h3>Invalid user</h3>
+<PageTitle>@Localizer["Title"]</PageTitle>
+
+<h3>@Localizer["Header"]</h3>
 
 <StatusMessage />

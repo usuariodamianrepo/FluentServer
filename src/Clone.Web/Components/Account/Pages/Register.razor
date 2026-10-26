@@ -15,54 +15,55 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IStringLocalizer<Register> Localizer
 
-<PageTitle>Register</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h1>Register</h1>
+<h1>@Localizer["Header"]</h1>
 
 <FluentGrid>
     <FluentGridItem xs="8" sm="4">
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <h2>@Localizer["Subtitle"]</h2>
             <FluentValidationSummary class="text-danger" role="alert" />
             <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
                 <FluentGridItem Xs="12" Sm="12">
-                    <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%" />
+                    <FluentTextInput Name="Input.Email" @bind-Value="Input.Email" Required="true" Placeholder="name@example.com" Label="@Localizer["Email"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput Name="Input.Name" @bind-Value="Input.Name" Required="true" Label="Name" Style="width: 100%" />
+                    <FluentTextInput Name="Input.Name" @bind-Value="Input.Name" Required="true" Label="@Localizer["Name"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput type="phone" Name="Input.PhoneNumber" @bind-Value="Input.PhoneNumber" Required="true" Label="Phone Number" Style="width: 100%" />
+                    <FluentTextInput type="phone" Name="Input.PhoneNumber" @bind-Value="Input.PhoneNumber" Required="true" Label="@Localizer["PhoneNumber"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%" />
+                    <FluentTextInput type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="new-password" Required="true" Placeholder="password" Label="@Localizer["Password"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="Confirm Password" Style="width: 100%" />
+                    <FluentTextInput type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="@Localizer["ConfirmPassword"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput Name="Input.StreetAddress" @bind-Value="Input.StreetAddress" Label="Street Address" Style="width: 100%" />
+                    <FluentTextInput Name="Input.StreetAddress" @bind-Value="Input.StreetAddress" Label="@Localizer["StreetAddress"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput Name="Input.City" @bind-Value="Input.City" Label="City" Style="width: 100%" />
+                    <FluentTextInput Name="Input.City" @bind-Value="Input.City" Label="@Localizer["City"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput Name="Input.State" @bind-Value="Input.State" Label="State" Style="width: 100%" />
+                    <FluentTextInput Name="Input.State" @bind-Value="Input.State" Label="@Localizer["State"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="6">
-                    <FluentTextInput Name="Input.PostalCode" @bind-Value="Input.PostalCode" Label="Postal Code" Style="width: 100%" />
+                    <FluentTextInput Name="Input.PostalCode" @bind-Value="Input.PostalCode" Label="@Localizer["PostalCode"]" Style="width: 100%" />
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
-                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%">Register</FluentButton>
+                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%">@Localizer["Button.Register"]</FluentButton>
                 </FluentGridItem>
             </FluentGrid>
         </EditForm>
     </FluentGridItem>
     <FluentGridItem xs="12" sm="8">
-        <h3>Use another service to log in.</h3>
+        <h3>@Localizer["ExternalLoginTitle"]</h3>
         <ExternalLoginPicker />
     </FluentGridItem>
 </FluentGrid>
@@ -76,7 +77,7 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message => identityErrors is null ? null : $"{Localizer["Error.Prefix"]} {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
     protected override void OnInitialized()
     {
@@ -163,36 +164,36 @@
 
     private sealed class InputModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
+        [Required(ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.Required))]
+        [EmailAddress(ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.EmailValidation))]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.Email))]
         public string Email { get; set; } = "";
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.Required))]
+        [StringLength(100, ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.StringLength), MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.Password))]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.ConfirmPassword))]
+        [Compare("Password", ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.PasswordMismatch))]
         public string ConfirmPassword { get; set; } = "";
 
-        [Required]
-        [Display(Name = "Name")]
+        [Required(ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.Required))]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.Name))]
         public string Name { get; set; } = "";
-        [Display(Name = "Street Address")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.StreetAddress))]
         public string StreetAddress { get; set; } = "";
-        [Display(Name = "City")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.City))]
         public string City { get; set; } = "";
-        [Display(Name = "State")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.State))]
         public string State { get; set; } = "";
-        [Display(Name = "Postal Code")]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.PostalCode))]
         public string PostalCode { get; set; } = "";
         [Phone]
-        [Required]
-        [Display(Name = "Phone Number")]
+        [Required(ErrorMessageResourceType = typeof(RegisterResources), ErrorMessageResourceName = nameof(RegisterResources.Required))]
+        [Display(ResourceType = typeof(RegisterResources), Name = nameof(RegisterResources.PhoneNumber))]
         public string PhoneNumber { get; set; } = "";
     }
 }

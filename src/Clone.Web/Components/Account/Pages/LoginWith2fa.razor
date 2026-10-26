@@ -8,13 +8,14 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWith2fa> Logger
+@inject IStringLocalizer<LoginWith2fa> Localizer
 
-<PageTitle>Two-factor authentication</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-<h1>Two-factor authentication</h1>
+<h1>@Localizer["Header"]</h1>
 <hr />
 <StatusMessage Message="@message" />
-<p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+<p>@Localizer["Text.Info"]</p>
 <FluentGrid>
     <FluentGridItem xs="8" sm="4">
         <EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
@@ -22,16 +23,16 @@
             <input type="hidden" name="RememberMe" value="@RememberMe" />
             <DataAnnotationsValidator />
             <FluentValidationSummary class="text-danger" role="alert" />
-            <FluentTextInput Name="Input.TwoFactorCode" @bind-Value="Input.TwoFactorCode" class="form-control" AutoComplete="off" Label="Authenticator code" Style="width: 100%;" />
+            <FluentTextInput Name="Input.TwoFactorCode" @bind-Value="Input.TwoFactorCode" class="form-control" AutoComplete="off" Label="@Localizer["Label.AuthenticatorCode"]" Style="width: 100%;" />
             @* <FluentValidationMessage For="() => Input.TwoFactorCode" class="text-danger" /> *@
-            <FluentCheckbox Name="Input.RememberMachine" @bind-Value="Input.RememberMachine" Label="Remember this machine" Style="width: 100%;" />
-            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">Log in</FluentButton>
+            <FluentCheckbox Name="Input.RememberMachine" @bind-Value="Input.RememberMachine" Label="@Localizer["Label.RememberMachine"]" Style="width: 100%;" />
+            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary" Style="width: 100%;">@Localizer["Button.Login"]</FluentButton>
         </EditForm>
     </FluentGridItem>
 </FluentGrid>
 <p>
-    Don't have access to your authenticator device? You can
-    <a href="Account/LoginWithRecoveryCode?ReturnUrl=@ReturnUrl">log in with a recovery code</a>.
+    @Localizer["Text.NoAccess"]
+    <a href="Account/LoginWithRecoveryCode?ReturnUrl=@ReturnUrl">@Localizer["Link.RecoveryCode"]</a>.
 </p>
 
 @code {
@@ -75,19 +76,19 @@
         else
         {
             Logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", userId);
-            message = "Error: Invalid authenticator code.";
+            message = Localizer["Error.InvalidCode"];
         }
     }
 
     private sealed class InputModel
     {
-        [Required]
-        [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessageResourceType = typeof(LoginWith2faResources), ErrorMessageResourceName = nameof(LoginWith2faResources.Required))]
+        [StringLength(7, ErrorMessageResourceType = typeof(LoginWith2faResources), ErrorMessageResourceName = nameof(LoginWith2faResources.StringLength), MinimumLength = 6)]
         [DataType(DataType.Text)]
-        [Display(Name = "Authenticator code")]
+        [Display(ResourceType = typeof(LoginWith2faResources), Name = nameof(LoginWith2faResources.AuthenticatorCode))]
         public string? TwoFactorCode { get; set; }
 
-        [Display(Name = "Remember this machine")]
+        [Display(ResourceType = typeof(LoginWith2faResources), Name = nameof(LoginWith2faResources.RememberMachine))]
         public bool RememberMachine { get; set; }
     }
 }

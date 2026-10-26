@@ -1,5 +1,5 @@
 # FluentServer
-FluentUI 5.0 Blazor Web + PostgreSQL
+Fluent Blazor Web + PostgreSQL + Serilog
 
 ## About The Project
 
@@ -16,15 +16,19 @@ FluentServer is a simple project server side with [FluentUI](https://www.fluentu
 
 ### Tech Stack
 
-- Fluent Blazor Web App (Server)
+- FluentUI 5 
+- Blazor Web App (Server)
 - EntityFrameworkCore
 - PostgreSQL
 - Serilog
 
+<<<<<<< HEAD
 ***Next Spets***
 
 - [ ] Need to add language translations for some pages.
 
+=======
+>>>>>>> dev
 ## License
 
 Distributed under the MIT License.

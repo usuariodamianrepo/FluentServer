@@ -11,8 +11,9 @@
 @inject UrlEncoder UrlEncoder
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<EnableAuthenticator> Logger
+@inject IStringLocalizer<EnableAuthenticator> Localizer
 
-<PageTitle>Configure authenticator app</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 @if (recoveryCodes is not null)
 {
@@ -21,39 +22,38 @@
 else
 {
    <StatusMessage Message="@message" />
-    <h3>Configure authenticator app</h3>
+    <h3>@Localizer["Title"]</h3>
     <FluentGrid>
         <FluentGridItem xs="12" sm="6">
-            <p>To use an authenticator app go through the following steps:</p>
+            <p>@Localizer["Intro"]</p>
             <ol class="list">
                 <li>
                     <p>
-                        Download a two-factor authenticator app like Microsoft Authenticator for
-                        <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> and
-                        <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a> or
-                        Google Authenticator for
-                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> and
+                        @Localizer["Step1.Intro"]
+                        <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> @Localizer["Step1.And"]
+                        <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a> @Localizer["Step1.Or"]
+                        @Localizer["Step1.Google"]
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> @Localizer["Step1.And"]
                         <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>.
                     </p>
                 </li>
                 <li>
-                    <p>Scan the QR Code or enter this key <kbd>@sharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
-                    <div class="alert alert-info">Learn how to <a href="https://go.microsoft.com/fwlink/?Linkid=852423">enable QR code generation</a>.</div>
+                    <p>@Localizer["Step2.Scan"] <kbd>@sharedKey</kbd> @Localizer["Step2.AfterKey"]</p>
+                    <div class="alert alert-info">@Localizer["Alert.Learn"] <a href="https://go.microsoft.com/fwlink/?Linkid=852423">@Localizer["Link.EnableQrCode"]</a>.</div>
                     <div></div>
                     <div data-url="@authenticatorUri"></div>
                 </li>
                 <li>
                     <p>
-                        Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
-                        with a unique code. Enter the code in the confirmation box below.
+                        @Localizer["Step3.Text"]
                     </p>
 
                     <EditForm Model="Input" FormName="send-code" OnValidSubmit="OnValidSubmitAsync" method="post">
                         <DataAnnotationsValidator />
-                        <FluentTextInput Name="Input.Code" @bind-Value="Input.Code" AutoComplete="off" Placeholder="Please enter the code." Style="width: 100%;" />
+                        <FluentTextInput Name="Input.Code" @bind-Value="Input.Code" AutoComplete="off" Placeholder="@Localizer["Placeholder.Code"]" Style="width: 100%;" />
                         @* <FluentValidationMessage For="() => Input.Code" class="text-danger" /> *@
                         <p style="margin-top: 10px; text-align: end;">
-                            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Verify</FluentButton>
+                            <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["Button.Verify"]</FluentButton>
                         </p>
                         <FluentValidationSummary class="text-danger" role="alert" />
                     </EditForm>
@@ -108,7 +108,7 @@ else
 
         if (!is2faTokenValid)
         {
-            message = "Error: Verification code is invalid.";
+            message = Localizer["Message.InvalidCode"];
             return;
         }
 
@@ -116,7 +116,7 @@ else
         var userId = await UserManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
-        message = "Your authenticator app has been verified.";
+        message = Localizer["Message.AuthenticatorVerified"];
 
         if (await UserManager.CountRecoveryCodesAsync(user) == 0)
         {
@@ -173,10 +173,12 @@ else
 
     private sealed class InputModel
     {
-        [Required]
-        [StringLength(7, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessageResourceType = typeof(EnableAuthenticatorResources), ErrorMessageResourceName = nameof(EnableAuthenticatorResources.Required))]
+        [StringLength(7, MinimumLength = 6,
+            ErrorMessageResourceType = typeof(EnableAuthenticatorResources),
+            ErrorMessageResourceName = nameof(EnableAuthenticatorResources.CodeLength))]
         [DataType(DataType.Text)]
-        [Display(Name = "Verification Code")]
+        [Display(ResourceType = typeof(EnableAuthenticatorResources), Name = nameof(EnableAuthenticatorResources.VerificationCode))]
         public string Code { get; set; } = "";
     }
 }

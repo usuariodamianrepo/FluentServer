@@ -6,25 +6,25 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<Disable2fa> Logger
+@inject IStringLocalizer<Disable2fa> Localizer
 
-<PageTitle>Disable two-factor authentication (2FA)</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 <StatusMessage />
-<h3>Disable two-factor authentication (2FA)</h3>
+<h3>@Localizer["Title"]</h3>
 
 <FluentGrid>
     <FluentGridItem sm="9">
-        <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">This action only disables 2FA.</FluentMessageBar>
+        <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">@Localizer["Warning.OnlyDisables2fa"]</FluentMessageBar>
         <p>
-            Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
-            used in an authenticator app you should <a href="Account/Manage/ResetAuthenticator">reset your authenticator keys.</a>
+            @Localizer["Info.Disable2fa"]<a href="Account/Manage/ResetAuthenticator">@Localizer["Link.ResetAuthenticator"]</a>
         </p>
 
         <div>
             <form @formname="disable-2fa" @onsubmit="OnSubmitAsync" method="post">
                 <AntiforgeryToken />
                 <p style="margin-top: 10px; text-align: end;">
-                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Disable 2FA</FluentButton>
+                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["Button.Disable2fa"]</FluentButton>
                 </p>
             </form>
         </div>
@@ -70,7 +70,7 @@
         Logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", userId);
         RedirectManager.RedirectToWithStatus(
             "Account/Manage/TwoFactorAuthentication",
-            "2fa has been disabled. You can reenable 2fa when you setup an authenticator app",
+            Localizer["Message.TwoFactorDisabled"],
             HttpContext);
     }
 }

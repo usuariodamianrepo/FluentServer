@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="Heading" xml:space="preserve">
+    <value>Erro.</value>
+  </data>
+  <data name="Subtitle" xml:space="preserve">
+    <value>Ocorreu um erro ao processar sua solicitação.</value>
+  </data>
+  <data name="RequestId" xml:space="preserve">
+    <value>ID da solicitação:</value>
+  </data>
+  <data name="DevelopmentMode" xml:space="preserve">
+    <value>Modo de desenvolvimento</value>
+  </data>
+  <data name="SwappingTo" xml:space="preserve">
+    <value>Ao alternar para o ambiente</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>serão exibidas informações mais detalhadas sobre o erro ocorrido.</value>
+  </data>
+  <data name="Warning.NotForProductionPrefix" xml:space="preserve">
+    <value>O ambiente</value>
+  </data>
+  <data name="Warning.NotForProductionSuffix" xml:space="preserve">
+    <value>não deve ser habilitado em aplicativos implantados.</value>
+  </data>
+  <data name="Warning.SensitiveInfo" xml:space="preserve">
+    <value>Isso pode resultar na exibição de informações confidenciais de exceções para os usuários finais.</value>
+  </data>
+  <data name="Debug.Prefix" xml:space="preserve">
+    <value>Para depuração local, habilite o ambiente</value>
+  </data>
+  <data name="Debug.Middle" xml:space="preserve">
+    <value>definindo a variável de ambiente</value>
+  </data>
+  <data name="Debug.Variable" xml:space="preserve">
+    <value>como</value>
+  </data>
+  <data name="Debug.Suffix" xml:space="preserve">
+    <value>e reinicie o aplicativo.</value>
+  </data>
+</root>

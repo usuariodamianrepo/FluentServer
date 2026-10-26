@@ -7,23 +7,23 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ResetAuthenticator> Logger
+@inject IStringLocalizer<ResetAuthenticator> Localizer
 
-<PageTitle>Reset authenticator key</PageTitle>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
 <StatusMessage />
-<h3>Reset authenticator key</h3>
+<h3>@Localizer["Title"]</h3>
 <FluentGrid>
     <FluentGridItem sm="9">
-        <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">If you reset your authenticator key your authenticator app will not work until you reconfigure it.</FluentMessageBar>
+        <FluentMessageBar Margin="@Margin.Bottom2" Intent="MessageBarIntent.Warning" AllowDismiss="false">@Localizer["Warning.Reset"]</FluentMessageBar>
         <p>
-            This process disables 2FA until you verify your authenticator app.
-            If you do not complete your authenticator app configuration you may lose access to your account.
+            @Localizer["Info"]
         </p>
         <div>
             <form @formname="reset-authenticator" @onsubmit="OnSubmitAsync" method="post">
                 <AntiforgeryToken />
                 <p style="margin-top: 10px; text-align: end;">
-                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">Reset authenticator key</FluentButton>
+                    <FluentButton Type="ButtonType.Submit" Appearance="ButtonAppearance.Primary">@Localizer["Button.Reset"]</FluentButton>
                 </p>
             </form>
         </div>
@@ -52,7 +52,7 @@
 
         RedirectManager.RedirectToWithStatus(
             "Account/Manage/EnableAuthenticator",
-            "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.",
+            Localizer["Message.KeyReset"],
             HttpContext);
     }
 }

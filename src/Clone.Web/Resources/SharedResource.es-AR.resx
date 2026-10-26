@@ -252,4 +252,94 @@
   <data name="Common.UpdateUser" xml:space="preserve">
     <value>Usuario de modificación</value>
   </data>
+<<<<<<< HEAD
+=======
+  <data name="ExternalLogin.NoServicesConfigured" xml:space="preserve">
+    <value>No hay servicios de autenticación externos configurados. Consulte este</value>
+  </data>
+  <data name="ExternalLogin.SetupArticle" xml:space="preserve">
+    <value>artículo sobre cómo configurar esta aplicación ASP.NET para admitir el inicio de sesión mediante servicios externos</value>
+  </data>
+  <data name="ExternalLogin.LoginWithAccount" xml:space="preserve">
+    <value>Iniciar sesión con su cuenta de {0}</value>
+  </data>
+  <data name="ManageLayout.Title" xml:space="preserve">
+    <value>Administrar su cuenta</value>
+  </data>
+  <data name="ManageLayout.Subtitle" xml:space="preserve">
+    <value>Cambiar la configuración de su cuenta</value>
+  </data>
+  <data name="ManageNav.Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="ManageNav.Email" xml:space="preserve">
+    <value>Correo electrónico</value>
+  </data>
+  <data name="ManageNav.Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="ManageNav.ExternalLogins" xml:space="preserve">
+    <value>Inicios de sesión externos</value>
+  </data>
+  <data name="ManageNav.TwoFactorAuthentication" xml:space="preserve">
+    <value>Autenticación de dos factores</value>
+  </data>
+  <data name="ManageNav.Passkeys" xml:space="preserve">
+    <value>Claves de acceso</value>
+  </data>
+  <data name="ManageNav.PersonalData" xml:space="preserve">
+    <value>Datos personales</value>
+  </data>
+  <data name="ShowRecoveryCodes.Title" xml:space="preserve">
+    <value>Códigos de recuperación</value>
+  </data>
+  <data name="ShowRecoveryCodes.Warning.SafePlace" xml:space="preserve">
+    <value>Guarde estos códigos en un lugar seguro.</value>
+  </data>
+  <data name="ShowRecoveryCodes.Info.LoseAccess" xml:space="preserve">
+    <value>Si pierde su dispositivo y no tiene los códigos de recuperación, perderá el acceso a su cuenta.</value>
+  </data>
+  <data name="EmailSender.ConfirmSubject" xml:space="preserve">
+    <value>Confirme su correo electrónico</value>
+  </data>
+  <data name="EmailSender.ConfirmBody" xml:space="preserve">
+    <value>Confirme su cuenta haciendo &lt;a href='{0}'&gt;clic aquí&lt;/a&gt;.</value>
+  </data>
+  <data name="EmailSender.ResetPasswordSubject" xml:space="preserve">
+    <value>Restablezca su contraseña</value>
+  </data>
+  <data name="EmailSender.ResetPasswordBody" xml:space="preserve">
+    <value>Restablezca su contraseña haciendo &lt;a href='{0}'&gt;clic aquí&lt;/a&gt;.</value>
+  </data>
+  <data name="EmailSender.ResetPasswordCodeBody" xml:space="preserve">
+    <value>Restablezca su contraseña usando el siguiente código: {0}</value>
+  </data>
+  <data name="Reconnect.Rejoining" xml:space="preserve">
+    <value>Reconectando con el servidor...</value>
+  </data>
+  <data name="Reconnect.RejoinFailed" xml:space="preserve">
+    <value>Error al reconectar... reintentando en</value>
+  </data>
+  <data name="Reconnect.SecondsToNextAttempt" xml:space="preserve">
+    <value>segundos.</value>
+  </data>
+  <data name="Reconnect.FailedToRejoin" xml:space="preserve">
+    <value>No se pudo reconectar.</value>
+  </data>
+  <data name="Reconnect.PleaseRetry" xml:space="preserve">
+    <value>Vuelva a intentarlo o recargue la página.</value>
+  </data>
+  <data name="Reconnect.Retry" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="Reconnect.SessionPaused" xml:space="preserve">
+    <value>El servidor ha pausado la sesión.</value>
+  </data>
+  <data name="Reconnect.FailedToResume" xml:space="preserve">
+    <value>No se pudo reanudar la sesión.</value>
+  </data>
+  <data name="Reconnect.Resume" xml:space="preserve">
+    <value>Reanudar</value>
+  </data>
+>>>>>>> dev
 </root>
