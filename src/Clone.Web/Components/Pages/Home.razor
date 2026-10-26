@@ -1,7 +1,9 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@inject IStringLocalizer<Home> Localizer
 
-<h1>Hello, world!</h1>
+<PageTitle>@Localizer["Title"]</PageTitle>
 
-Welcome to your new Fluent Blazor app.
+<h1>@Localizer["Heading"]</h1>
+
+@Localizer["Welcome"]

@@ -297,4 +297,46 @@
   <data name="ShowRecoveryCodes.Info.LoseAccess" xml:space="preserve">
     <value>Si pierde su dispositivo y no tiene los códigos de recuperación, perderá el acceso a su cuenta.</value>
   </data>
+  <data name="EmailSender.ConfirmSubject" xml:space="preserve">
+    <value>Confirme su correo electrónico</value>
+  </data>
+  <data name="EmailSender.ConfirmBody" xml:space="preserve">
+    <value>Confirme su cuenta haciendo &lt;a href='{0}'&gt;clic aquí&lt;/a&gt;.</value>
+  </data>
+  <data name="EmailSender.ResetPasswordSubject" xml:space="preserve">
+    <value>Restablezca su contraseña</value>
+  </data>
+  <data name="EmailSender.ResetPasswordBody" xml:space="preserve">
+    <value>Restablezca su contraseña haciendo &lt;a href='{0}'&gt;clic aquí&lt;/a&gt;.</value>
+  </data>
+  <data name="EmailSender.ResetPasswordCodeBody" xml:space="preserve">
+    <value>Restablezca su contraseña usando el siguiente código: {0}</value>
+  </data>
+  <data name="Reconnect.Rejoining" xml:space="preserve">
+    <value>Reconectando con el servidor...</value>
+  </data>
+  <data name="Reconnect.RejoinFailed" xml:space="preserve">
+    <value>Error al reconectar... reintentando en</value>
+  </data>
+  <data name="Reconnect.SecondsToNextAttempt" xml:space="preserve">
+    <value>segundos.</value>
+  </data>
+  <data name="Reconnect.FailedToRejoin" xml:space="preserve">
+    <value>No se pudo reconectar.</value>
+  </data>
+  <data name="Reconnect.PleaseRetry" xml:space="preserve">
+    <value>Vuelva a intentarlo o recargue la página.</value>
+  </data>
+  <data name="Reconnect.Retry" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="Reconnect.SessionPaused" xml:space="preserve">
+    <value>El servidor ha pausado la sesión.</value>
+  </data>
+  <data name="Reconnect.FailedToResume" xml:space="preserve">
+    <value>No se pudo reanudar la sesión.</value>
+  </data>
+  <data name="Reconnect.Resume" xml:space="preserve">
+    <value>Reanudar</value>
+  </data>
 </root>

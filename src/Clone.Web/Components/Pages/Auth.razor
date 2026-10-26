@@ -4,10 +4,12 @@
 
 @attribute [Authorize]
 
-<PageTitle>Auth</PageTitle>
+@inject IStringLocalizer<Auth> Localizer
 
-<h1>You are authenticated</h1>
+<PageTitle>@Localizer["Title"]</PageTitle>
+
+<h1>@Localizer["Header"]</h1>
 
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
+    @Localizer["Greeting", context.User.Identity?.Name]
 </AuthorizeView>
