@@ -252,8 +252,6 @@
   <data name="Common.UpdateUser" xml:space="preserve">
     <value>Usuario de modificación</value>
   </data>
-<<<<<<< HEAD
-=======
   <data name="ExternalLogin.NoServicesConfigured" xml:space="preserve">
     <value>No hay servicios de autenticación externos configurados. Consulte este</value>
   </data>
@@ -341,5 +339,4 @@
   <data name="Reconnect.Resume" xml:space="preserve">
     <value>Reanudar</value>
   </data>
->>>>>>> dev
 </root>
