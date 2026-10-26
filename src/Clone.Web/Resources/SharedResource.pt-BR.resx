@@ -252,4 +252,49 @@
   <data name="Common.UpdateUser" xml:space="preserve">
     <value>Usuário de alteração</value>
   </data>
+  <data name="ExternalLogin.NoServicesConfigured" xml:space="preserve">
+    <value>Não há serviços de autenticação externos configurados. Veja este</value>
+  </data>
+  <data name="ExternalLogin.SetupArticle" xml:space="preserve">
+    <value>artigo sobre como configurar esta aplicação ASP.NET para suportar o login por meio de serviços externos</value>
+  </data>
+  <data name="ExternalLogin.LoginWithAccount" xml:space="preserve">
+    <value>Entrar com sua conta {0}</value>
+  </data>
+  <data name="ManageLayout.Title" xml:space="preserve">
+    <value>Gerenciar sua conta</value>
+  </data>
+  <data name="ManageLayout.Subtitle" xml:space="preserve">
+    <value>Alterar as configurações da sua conta</value>
+  </data>
+  <data name="ManageNav.Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="ManageNav.Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="ManageNav.Password" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="ManageNav.ExternalLogins" xml:space="preserve">
+    <value>Logins externos</value>
+  </data>
+  <data name="ManageNav.TwoFactorAuthentication" xml:space="preserve">
+    <value>Autenticação de dois fatores</value>
+  </data>
+  <data name="ManageNav.Passkeys" xml:space="preserve">
+    <value>Chaves de acesso</value>
+  </data>
+  <data name="ManageNav.PersonalData" xml:space="preserve">
+    <value>Dados pessoais</value>
+  </data>
+  <data name="ShowRecoveryCodes.Title" xml:space="preserve">
+    <value>Códigos de recuperação</value>
+  </data>
+  <data name="ShowRecoveryCodes.Warning.SafePlace" xml:space="preserve">
+    <value>Guarde estes códigos em um local seguro.</value>
+  </data>
+  <data name="ShowRecoveryCodes.Info.LoseAccess" xml:space="preserve">
+    <value>Se você perder seu dispositivo e não tiver os códigos de recuperação, perderá o acesso à sua conta.</value>
+  </data>
 </root>
