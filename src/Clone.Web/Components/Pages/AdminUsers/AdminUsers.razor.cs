@@ -25,6 +25,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
         string _PhoneNumberSearch = string.Empty;
         bool _IsMaxSearch = false;
         bool _SearchButtonLoading = false;
+        private int _TotalSearched = 0;
         #endregion
 
         #region Filter
@@ -225,7 +226,8 @@ namespace Clone.Web.Components.Pages.AdminUsers
             {
                 var findeds = await (_UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch)).ToListAsync();
 
-                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
+                _TotalSearched = findeds.Count;
+                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
                 _UserBySearchDto = findeds.AsQueryable();
             }

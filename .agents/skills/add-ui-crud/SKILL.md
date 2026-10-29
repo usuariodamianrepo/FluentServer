@@ -49,24 +49,29 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 <FluentMultiSplitter>
 
     <FluentMultiSplitterPane Size="50%">
-		<div style="height: 560px; overflow-x:auto; display:flex;">
-			<FluentDataGrid @ref="_Grid" Items=@_{EntityPluralName} GridTemplateColumns="1fr 1fr 1fr 1fr">
-				<ChildContent>
-					{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
-					<TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
-						<FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-						<FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
-						<FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
-					</TemplateColumn>
-				</ChildContent>
-				<EmptyContent>
-					<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
-						<FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
-						<div>@SharedLocalizer["Message.NoData"]</div>
-					</FluentStack>
-				</EmptyContent>
-			</FluentDataGrid>
+        <div style="display: table; table-layout: fixed; width: 100%;">
+            <div style="overflow-x: auto;">
+				<FluentDataGrid @ref="_Grid" Items=@_{EntityPluralName} GridTemplateColumns="1fr 1fr 1fr 1fr">
+					<ChildContent>
+						{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
+						<TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+							<FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+							<FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+							<FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
+						</TemplateColumn>
+					</ChildContent>
+					<EmptyContent>
+						<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+							<FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+							<div>@SharedLocalizer["Message.NoData"]</div>
+						</FluentStack>
+					</EmptyContent>
+				</FluentDataGrid>
+			</div>
 		</div>
+		<p style="font-weight: bold;padding:5px;">
+            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        </p>
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
@@ -191,6 +196,7 @@ namespace Clone.Web.Components.Pages
         private string _NameSearch = string.Empty;
 		private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
+		private int _TotalSearched = 0;
         #endregion
 
         #region Filter
@@ -391,7 +397,8 @@ namespace Clone.Web.Components.Pages
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-				_IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
+                _TotalSearched = findeds.Count;
+                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
                 _{EntityPluralName} = findeds.AsQueryable();
             }

@@ -20,6 +20,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
         private string _NameSearch = string.Empty;
         private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
+        private int _TotalSearched = 0;
         #endregion
 
         #region Filter
@@ -212,11 +213,13 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             {
                 var findeds = await UnitOfWork.Repository<DocumentType>().Entities
                     .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
+                    .OrderBy(d => d.Name)
                     .AsNoTracking()
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
+                _TotalSearched = findeds.Count;
+                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
                 _DocumentTypes = findeds.AsQueryable();
             }

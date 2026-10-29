@@ -20,6 +20,7 @@ namespace Clone.Web.Components.Pages.Companies
         private string _NameSearch = string.Empty;
         private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
+        private int _TotalSearched = 0;
         #endregion
 
         #region Filter
@@ -216,7 +217,8 @@ namespace Clone.Web.Components.Pages.Companies
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
+                _TotalSearched = findeds.Count;
+                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
                 _Companies = findeds.AsQueryable();
             }

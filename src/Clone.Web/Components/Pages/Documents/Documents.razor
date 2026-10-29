@@ -65,6 +65,9 @@
                 </FluentDataGrid>
             </div>
         </div>
+        <p style="font-weight: bold;padding:5px;">
+            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        </p>
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
