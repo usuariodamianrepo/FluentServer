@@ -27,7 +27,13 @@
     <FluentStack HorizontalGap="6px" Wrap="true">
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
         <FluentTextInput @bind-Value=_PhoneNumberSearch Placeholder="@SharedLocalizer["Common.PhoneNumber"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
-        <FluentButton Title="@SharedLocalizer["Common.Search"]" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+        <FluentButton Title="@(_IsMaxSearch?
+                                        SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
+                                        SharedLocalizer["Common.Search"])"
+                      IconStart="@(_IsMaxSearch ?
+                                        new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
+                                        new Icons.Regular.Size20.DatabaseSearch())"
+                      Appearance="ButtonAppearance.Default"
                       OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
     </FluentStack>
 </FluentKeyCode>
@@ -35,32 +41,34 @@
 <FluentMultiSplitter>
 
     <FluentMultiSplitterPane Size="50%">
-        <FluentDataGrid @ref="_Grid" Items=@_UserBySearchDto GridTemplateColumns="1fr 1fr 1fr 1fr">
-            <ChildContent>
-                <PropertyColumn Title="@Localizer["Column.Id"]" Property="@(c => c.Id)" />
-                <PropertyColumn Title="@Localizer["Column.Name"]" Property="@(c => c.Name)" Sortable="true" />
-                <PropertyColumn Title="@Localizer["Column.Email"]" Property="@(c => c.Email)" />
-                <PropertyColumn Title="@Localizer["Column.PhoneNumber"]" Property="@(c => c.PhoneNumber)" />
-                <PropertyColumn Title="@Localizer["Column.Roles"]" Property="@(c => c.Roles)" />
-                <PropertyColumn Title="@Localizer["Column.CompanyName"]" Property="@(c => c.CompanyName)" />
-                <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
-                    <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
-                    <FluentButton Title="@(context.IsLocked ? SharedLocalizer["Common.Unlock"] : SharedLocalizer["Common.Lock"])"
-                                  Appearance="ButtonAppearance.Subtle"
-                                  IconEnd="@(context.IsLocked ?
-                                    new Icons.Regular.Size20.PersonLock().WithColor(Color.Error) :
-                                    new Icons.Regular.Size20.PersonAvailable().WithColor(Color.Success))"
-                                  OnClick="@(() => OnLockUnlockClicked(context))" />
-                </TemplateColumn>
-            </ChildContent>
-            <EmptyContent>
-                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
-                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
-                    <div>@SharedLocalizer["Message.NoData"]</div>
-                </FluentStack>
-            </EmptyContent>
-        </FluentDataGrid>
+        <div style="height:560px; overflow-x:auto; display:flex;">
+            <FluentDataGrid @ref="_Grid" Items=@_UserBySearchDto GridTemplateColumns="1fr 1fr 1fr 1fr">
+                <ChildContent>
+                    <PropertyColumn Title="@Localizer["Column.Id"]" Property="@(c => c.Id)" />
+                    <PropertyColumn Title="@Localizer["Column.Name"]" Property="@(c => c.Name)" Sortable="true" />
+                    <PropertyColumn Title="@Localizer["Column.Email"]" Property="@(c => c.Email)" />
+                    <PropertyColumn Title="@Localizer["Column.PhoneNumber"]" Property="@(c => c.PhoneNumber)" />
+                    <PropertyColumn Title="@Localizer["Column.Roles"]" Property="@(c => c.Roles)" />
+                    <PropertyColumn Title="@Localizer["Column.CompanyName"]" Property="@(c => c.CompanyName)" />
+                    <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+                        <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                        <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                        <FluentButton Title="@(context.IsLocked ? SharedLocalizer["Common.Unlock"] : SharedLocalizer["Common.Lock"])"
+                                      Appearance="ButtonAppearance.Subtle"
+                                      IconEnd="@(context.IsLocked ?
+                                        new Icons.Regular.Size20.PersonLock().WithColor(Color.Error) :
+                                        new Icons.Regular.Size20.PersonAvailable().WithColor(Color.Success))"
+                                      OnClick="@(() => OnLockUnlockClicked(context))" />
+                    </TemplateColumn>
+                </ChildContent>
+                <EmptyContent>
+                    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                        <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                        <div>@SharedLocalizer["Message.NoData"]</div>
+                    </FluentStack>
+                </EmptyContent>
+            </FluentDataGrid>
+        </div>
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">

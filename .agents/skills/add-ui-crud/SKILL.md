@@ -35,7 +35,13 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
-        <FluentButton Title="@SharedLocalizer["Common.Search"]" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+        <FluentButton Title="@(_IsMaxSearch?
+                                        SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
+                                        SharedLocalizer["Common.Search"])"
+                      IconStart="@(_IsMaxSearch ?
+                                        new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
+                                        new Icons.Regular.Size20.DatabaseSearch())"
+                      Appearance="ButtonAppearance.Default"
                       OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
     </FluentStack>
 </FluentKeyCode>
@@ -181,6 +187,7 @@ namespace Clone.Web.Components.Pages
 
         #region Search
         private string _NameSearch = string.Empty;
+		private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
         #endregion
 
@@ -382,10 +389,7 @@ namespace Clone.Web.Components.Pages
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-                if (findeds.Count >= MaxRows.MaxThirty)
-                {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: $"Your search returned more than {MaxRows.MaxThirty} results. Improve your filter.");
-                }
+				_IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
 
                 _{EntityPluralName} = findeds.AsQueryable();
             }

@@ -23,6 +23,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
         #region Search
         string _NameSearch = string.Empty;
         string _PhoneNumberSearch = string.Empty;
+        bool _IsMaxSearch = false;
         bool _SearchButtonLoading = false;
         #endregion
 
@@ -224,10 +225,7 @@ namespace Clone.Web.Components.Pages.AdminUsers
             {
                 var findeds = await (_UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch)).ToListAsync();
 
-                if (findeds.Count >= MaxRows.MaxThirty)
-                {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", MaxRows.MaxThirty]);
-                }
+                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
 
                 _UserBySearchDto = findeds.AsQueryable();
             }

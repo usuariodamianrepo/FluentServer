@@ -20,6 +20,7 @@ namespace Clone.Web.Components.Pages.Documents
 
         #region Search
         private string _NameSearch = string.Empty;
+        private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
         #endregion
 
@@ -220,10 +221,7 @@ namespace Clone.Web.Components.Pages.Documents
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-                if (findeds.Count >= MaxRows.MaxThirty)
-                {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", MaxRows.MaxThirty]);
-                }
+                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
 
                 _Documents = findeds.AsQueryable();
             }

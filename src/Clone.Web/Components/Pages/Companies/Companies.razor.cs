@@ -18,6 +18,7 @@ namespace Clone.Web.Components.Pages.Companies
 
         #region Search
         private string _NameSearch = string.Empty;
+        private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
         #endregion
 
@@ -215,10 +216,7 @@ namespace Clone.Web.Components.Pages.Companies
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
 
-                if (findeds.Count >= MaxRows.MaxThirty)
-                {
-                    await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Warning.Search", MaxRows.MaxThirty]);
-                }
+                _IsMaxSearch = findeds.Count >= MaxRows.MaxThirty;
 
                 _Companies = findeds.AsQueryable();
             }

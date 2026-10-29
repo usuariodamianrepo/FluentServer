@@ -26,7 +26,13 @@
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked" />
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Title"]" TextInputType="TextInputType.Search" Maxlength=120 AutoComplete="off" Autofocus="true" />
-        <FluentButton Title="@SharedLocalizer["Common.Search"]" IconStart="@(new Icons.Regular.Size20.DatabaseSearch())" Appearance="ButtonAppearance.Primary"
+        <FluentButton Title="@(_IsMaxSearch?
+                                        SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
+                                SharedLocalizer["Common.Search"])"
+                      IconStart="@(_IsMaxSearch ?
+                                        new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
+                                        new Icons.Regular.Size20.DatabaseSearch())"
+                      Appearance="ButtonAppearance.Default"
                       OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
     </FluentStack>
 </FluentKeyCode>
@@ -34,27 +40,31 @@
 <FluentMultiSplitter>
 
     <FluentMultiSplitterPane Size="50%">
-        <FluentDataGrid @ref="_Grid" Items=@_Documents GridTemplateColumns="0.2fr 2fr 1fr 0.5fr 2fr 1fr 1.2fr">
-            <ChildContent>
-                <PropertyColumn Title="@SharedLocalizer["Common.Id"]" Property="@(c => c.Id)" />
-                <PropertyColumn Title="@SharedLocalizer["Common.Title"]" Property="@(c => c.Title)" Sortable="true" />
-                <PropertyColumn Title="@Localizer["Column.Published"]" Property="@(c => c.Published.ToDateHHmm())" />
-                <PropertyColumn Title="@Localizer["Column.IsPublic"]" Property="@(c => c.IsPublic ? Localizer["Yes"] : Localizer["No"])" Align="DataGridCellAlignment.Center"/>
-                <PropertyColumn Title="@Localizer["URL"]" Property="@(c => c.URL)" />
-                <PropertyColumn Title="@Localizer["Column.DocumentType"]" Property="@(c => c.DocumentType.Name)" />
-                <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
-                    <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
-                    <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
-                </TemplateColumn>
-            </ChildContent>
-            <EmptyContent>
-                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
-                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
-                    <div>@SharedLocalizer["Message.NoData"]</div>
-                </FluentStack>
-            </EmptyContent>
-        </FluentDataGrid>
+        <div style="display: table; table-layout: fixed; width: 100%;">
+            <div style="overflow-x: auto;">
+                <FluentDataGrid @ref="_Grid" Items=@_Documents GridTemplateColumns="0.2fr 2fr 1fr 0.5fr 2fr 1fr 1.2fr" Style="min-width: max-content;">
+                    <ChildContent>
+                        <PropertyColumn Title="@SharedLocalizer["Common.Id"]" Property="@(c => c.Id)" />
+                        <PropertyColumn Title="@SharedLocalizer["Common.Title"]" Property="@(c => c.Title)" Sortable="true" />
+                        <PropertyColumn Title="@Localizer["Column.Published"]" Property="@(c => c.Published.ToDateHHmm())" />
+                        <PropertyColumn Title="@Localizer["Column.IsPublic"]" Property="@(c => c.IsPublic ? Localizer["Yes"] : Localizer["No"])" Align="DataGridCellAlignment.Center" />
+                        <PropertyColumn Title="@Localizer["URL"]" Property="@(c => c.URL)" />
+                        <PropertyColumn Title="@Localizer["Column.DocumentType"]" Property="@(c => c.DocumentType.Name)" />
+                        <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+                            <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                            <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                            <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
+                        </TemplateColumn>
+                    </ChildContent>
+                    <EmptyContent>
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                            <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                            <div>@SharedLocalizer["Message.NoData"]</div>
+                        </FluentStack>
+                    </EmptyContent>
+                </FluentDataGrid>
+            </div>
+        </div>
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
