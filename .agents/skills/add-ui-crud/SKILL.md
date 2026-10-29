@@ -49,22 +49,24 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 <FluentMultiSplitter>
 
     <FluentMultiSplitterPane Size="50%">
-        <FluentDataGrid @ref="_Grid" Items=@_{EntityPluralName} GridTemplateColumns="1fr 1fr 1fr 1fr">
-            <ChildContent>
-				{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
-                <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
-                    <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
-                    <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
-                    <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
-                </TemplateColumn>
-            </ChildContent>
-            <EmptyContent>
-                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
-                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
-                    <div>@SharedLocalizer["Message.NoData"]</div>
-                </FluentStack>
-            </EmptyContent>
-        </FluentDataGrid>
+		<div style="height: 560px; overflow-x:auto; display:flex;">
+			<FluentDataGrid @ref="_Grid" Items=@_{EntityPluralName} GridTemplateColumns="1fr 1fr 1fr 1fr">
+				<ChildContent>
+					{SPECIAL_CASE: for each entity property repeat this little code with the property name `<PropertyColumn Property="@(c => c.PropertyName)"` /> }
+					<TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+						<FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+						<FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+						<FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
+					</TemplateColumn>
+				</ChildContent>
+				<EmptyContent>
+					<FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+						<FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+						<div>@SharedLocalizer["Message.NoData"]</div>
+					</FluentStack>
+				</EmptyContent>
+			</FluentDataGrid>
+		</div>
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
@@ -74,7 +76,7 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
         {
             <EditForm Model="_{EntitySingularName}" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
-                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
 				{SPECIAL_CASE: for each entity property repeat this little code with the property name.
 				IF Property is string THEN
                     `<FluentGridItem Xs="12" Sm="12">
@@ -120,27 +122,27 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
         <FluentDivider />
         @if (_{EntityPluralName}Details != null)
         {
-            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+            <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
 			{SPECIAL_CASE: for each entity property repeat this little code with the property name
                 <FluentGridItem Xs="12" Sm="12">
                     <b>PropertyName:</b> @(_{EntitySingularName}.PropertyName)
-                </FluentGridItem>`
+                </FluentGridItem>
+			}
                 <FluentDivider AlignContent="DividerAlignContent.Center">
                     Audit Information
                 </FluentDivider>
-                <FluentGridItem Xs="12">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>InsertDate:</b> @(_{EntityPluralName}Details.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
-                <FluentGridItem Xs="12">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>InsertUser:</b> @(_{EntityPluralName}Details.InsertUser)
                 </FluentGridItem>
-                <FluentGridItem Xs="12">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>UpdateDate:</b> @(_{EntityPluralName}Details.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
-                <FluentGridItem Xs="12">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>UpdateUser:</b> @(_{EntityPluralName}Details.UpdateUser)
                 </FluentGridItem>
-			}
             </FluentGrid>
             <br />
             <FluentStack id="toolbar-footer" HorizontalGap="6px">

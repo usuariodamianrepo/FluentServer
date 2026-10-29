@@ -69,7 +69,7 @@
         {
             <EditForm Model="_DocumentType" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
-                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value=_DocumentType.Name Required="true" Maxlength=30 AutoComplete="off" />
                     </FluentGridItem>
@@ -95,7 +95,7 @@
         <FluentDivider />
         @if (_DocumentTypeDetails != null)
         {
-            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+            <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
                     <b>@SharedLocalizer["Common.Name"]:</b> @(_DocumentTypeDetails.Name)
                 </FluentGridItem>

@@ -74,7 +74,7 @@
         {
             <EditForm Model="_Document" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
-                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+                <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value=_Document.Title Required="true" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
@@ -117,7 +117,7 @@
         <FluentDivider />
         @if (_DocumentsDetails != null)
         {
-            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+            <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
                     <b>@SharedLocalizer["Common.Title"]:</b> @(_DocumentsDetails.Title)
                 </FluentGridItem>

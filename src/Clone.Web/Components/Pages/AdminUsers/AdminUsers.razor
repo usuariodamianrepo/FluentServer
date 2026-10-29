@@ -40,7 +40,7 @@
 
 <FluentMultiSplitter>
 
-    <FluentMultiSplitterPane Size="50%">
+    <FluentMultiSplitterPane Size="60%">
         <div style="height:560px; overflow-x:auto; display:flex;">
             <FluentDataGrid @ref="_Grid" Items=@_UserBySearchDto GridTemplateColumns="1fr 1fr 1fr 1fr">
                 <ChildContent>
@@ -71,20 +71,20 @@
         </div>
     </FluentMultiSplitterPane>
 
-    <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
+    <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="20%">
         <FluentLabel Size="@LabelSize.Large">@Localizer["ContentHeader"]</FluentLabel>
         @if (_ApplicationUser != null)
         {
             <EditForm Model="_ApplicationUser" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
-                <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
-                    <FluentGridItem Xs="12" Sm="6">
+                <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.Id"]" @bind-Value=_ApplicationUser.Id Width="100%" Disabled="true" />
                     </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="6">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value=_ApplicationUser.Name Width="100%" Disabled="true" />
                     </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="6">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.Email"]" @bind-Value=_ApplicationUser.Email TextInputType="TextInputType.Email" Width="100%" ReadOnly>
                             <EndTemplate>
                                 <FluentButton Appearance="ButtonAppearance.Transparent"
@@ -96,10 +96,10 @@
                             </EndTemplate>
                         </FluentTextInput>
                     </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="6">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@SharedLocalizer["Common.PhoneNumber"]" @bind-Value=_ApplicationUser.PhoneNumber Width="100%" Disabled="true" />
                     </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="6">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Name="Role" Label="@Localizer["Rol"]"
                                       Placeholder="@SharedLocalizer["Common.SelectRole"]"
                                       Items="@_RolesSelect"
@@ -109,7 +109,7 @@
                                       @bind-Value="@_RoleSelected"
                                       @onchange="OnRoleChangedChangeEvent" />
                     </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="6">
+                    <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@SharedLocalizer["Common.Company"]"
                                       Placeholder="@SharedLocalizer["Common.SelectCompany"]"
                                       Items="@_CompaniesSelect"
@@ -132,44 +132,44 @@
         }
     </FluentMultiSplitterPane>
 
-    <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
+    <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="20%">
         <FluentLabel Size="@LabelSize.Large">@Localizer["DetailsHeader"]</FluentLabel>
         <br />
         @if (_UserBySearchDtoDetails != null)
         {
-            <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+            <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
                     <b>@SharedLocalizer["Common.Id"]:</b> @(_UserBySearchDtoDetails.Id)
                 </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>@SharedLocalizer["Common.Name"]:</b> @(_UserBySearchDtoDetails.Name)
                 </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@Localizer["StreetAddress"]:</b> @(_UserBySearchDtoDetails.StreetAddress)
-                </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@Localizer["City"]:</b> @(_UserBySearchDtoDetails.City)
-                </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@Localizer["State"]:</b> @(_UserBySearchDtoDetails.State)
-                </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@Localizer["PostalCode"]:</b> @(_UserBySearchDtoDetails.PostalCode)
-                </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@SharedLocalizer["Common.PhoneNumber"]:</b> @(_UserBySearchDtoDetails.PhoneNumber)
-                </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>@SharedLocalizer["Common.Email"]:</b> @(_UserBySearchDtoDetails.Email)
                 </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
-                    <b>@Localizer["UserName"]:</b> @(_UserBySearchDtoDetails.UserName)
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@SharedLocalizer["Common.PhoneNumber"]:</b> @(_UserBySearchDtoDetails.PhoneNumber)
                 </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>@Localizer["Rol"]:</b> @(_UserBySearchDtoDetails.Roles)
                 </FluentGridItem>
-                <FluentGridItem Xs="12" Sm="6">
+                <FluentGridItem Xs="12" Sm="12">
                     <b>@Localizer["CompanyName"]:</b> @(_UserBySearchDtoDetails.CompanyName)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["UserName"]:</b> @(_UserBySearchDtoDetails.UserName)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["StreetAddress"]:</b> @(_UserBySearchDtoDetails.StreetAddress)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["City"]:</b> @(_UserBySearchDtoDetails.City)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["State"]:</b> @(_UserBySearchDtoDetails.State)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["PostalCode"]:</b> @(_UserBySearchDtoDetails.PostalCode)
                 </FluentGridItem>
             </FluentGrid>
             <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
