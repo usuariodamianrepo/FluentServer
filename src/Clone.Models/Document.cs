@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Clone.Models
 {
-    public class Document : AuditableEntity
+    public sealed class Document : AuditableEntity
     {
         [Required]
         [MaxLength(120)]
@@ -26,6 +26,6 @@ namespace Clone.Models
         [ForeignKey("DocumentTypeId")]
         [Required]
         public int DocumentTypeId { get; set; }
-        public virtual DocumentType DocumentType { get; set; } = default!;
+        public DocumentType DocumentType { get; set; } = default!;
     }
 }

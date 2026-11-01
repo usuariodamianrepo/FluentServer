@@ -1,0 +1,38 @@
+﻿@page "/demos/date-range"
+@rendermode InteractiveServer
+@using Clone.Models.Dtos
+@using Clone.Web.Components.Shared
+
+<PageTitle>Dates Filter</PageTitle>
+
+<h1>Dates Filter</h1>
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+        <DateRangePicker @bind-Value="_range" OnRangeChanged="OnRangeChanged" />
+    </FluentStack>
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+        <FluentButton>Search</FluentButton>
+    </FluentStack>
+</FluentStack>
+
+<p>Result:</p>
+<div class="mt-3">
+    <p>Desde: <code>@_range.From.ToString("yyyy-MM-ddTHH:mm:ss")</code></p>
+    <p>Hasta: <code>@_range.To.ToString("yyyy-MM-ddTHH:mm:ss")</code></p>
+    <p>Rango: @_range</p>
+</div>
+
+@code {
+    private DateRangeDto _range = DateRangeDto.Today();
+
+    private void OnRangeChanged(DateRangeDto range) => _range = range;
+
+    private async Task SearchAsync()
+    {
+        if (_range.From > _range.To)
+            return;
+
+        await Task.Delay(1);
+        Console.WriteLine($"Search {_range.From:O} - {_range.To:O}");
+    }
+}

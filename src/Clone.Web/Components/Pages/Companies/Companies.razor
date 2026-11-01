@@ -80,22 +80,22 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value=_Company.Name Required="true" Maxlength=120 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value="_Company.Name" Required="true" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["StreetAddress"]" @bind-Value=_Company.StreetAddress Maxlength=120 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["StreetAddress"]" @bind-Value="_Company.StreetAddress" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["City"]" @bind-Value=_Company.City Maxlength=120 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["City"]" @bind-Value="_Company.City" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["State"]" @bind-Value=_Company.State Maxlength=60 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["State"]" @bind-Value="_Company.State" Maxlength=60 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["PostalCode"]" @bind-Value=_Company.PostalCode Maxlength=60 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["PostalCode"]" @bind-Value="_Company.PostalCode" Maxlength=60 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.PhoneNumber"]" @bind-Value=_Company.PhoneNumber Maxlength=60 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.PhoneNumber"]" @bind-Value="_Company.PhoneNumber" Maxlength=60 AutoComplete="off" />
                     </FluentGridItem>
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">

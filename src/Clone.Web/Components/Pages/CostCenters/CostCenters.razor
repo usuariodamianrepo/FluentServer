@@ -1,0 +1,133 @@
+@page "/costcenters"
+@rendermode InteractiveServer
+
+@using Clone.DataAccess.Repositories.IRepository
+@using Clone.Utility
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
+@inject ILogger<CostCenters> Logger
+@inject INotificationService NotificationService
+@inject IUnitOfWork UnitOfWork
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject IStringLocalizer<CostCenters> Localizer
+
+@attribute [Authorize(Roles = RD.RoleAdmin)]
+
+<PageTitle>@Localizer["Title"]</PageTitle>
+<FluentDialogProvider />
+<FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
+
+<FluentKeyCode OnKeyDown="@KeyDownHandler">
+    <FluentStack HorizontalGap="6px" Wrap="true">
+        <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
+                      OnClick="@OnAddClicked" />
+        <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentButton Title="@(_IsMaxSearch?
+                                SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
+                                SharedLocalizer["Common.Search"])"
+                      IconStart="@(_IsMaxSearch ?
+                                        new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
+                                        new Icons.Regular.Size20.DatabaseSearch())"
+                      Appearance="ButtonAppearance.Default"
+                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
+    </FluentStack>
+</FluentKeyCode>
+
+<FluentMultiSplitter>
+
+    <FluentMultiSplitterPane Size="50%">
+        <div style="display: table; table-layout: fixed; width: 100%;">
+            <div style="overflow-x: auto;">
+                <FluentDataGrid @ref="_Grid" Items=@_CostCenters GridTemplateColumns="0.2fr 1fr 1fr">
+                    <ChildContent>
+                        <PropertyColumn Title="@SharedLocalizer["Common.Id"]" Property="@(c => c.Id)" />
+                        <PropertyColumn Title="@SharedLocalizer["Common.Name"]" Property="@(c => c.Name)" Sortable="true" />
+                        <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
+                            <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                            <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
+                            <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
+                        </TemplateColumn>
+                    </ChildContent>
+                    <EmptyContent>
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                            <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                            <div>@SharedLocalizer["Message.NoData"]</div>
+                        </FluentStack>
+                    </EmptyContent>
+                </FluentDataGrid>
+            </div>
+        </div>
+        <p style="font-weight: bold;padding:5px;">
+            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        </p>
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">@Localizer["ContentHeader"] - @SharedLocalizer["Common.Id"]: @(_CostCenter?.Id)</FluentLabel>
+        <FluentDivider />
+        @if (_CostCenter != null)
+        {
+            <EditForm Model="_CostCenter" OnValidSubmit="@(async () => await OnSaveContentClicked())">
+                <DataAnnotationsValidator />
+                <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value="_CostCenter.Name" Required="true" Maxlength=50 AutoComplete="off" />
+                    </FluentGridItem>
+                </FluentGrid>
+                <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
+                    <FluentButton Type="ButtonType.Submit" Title="@SharedLocalizer["Common.Save"]" IconStart="@(new Icons.Regular.Size20.Save())" Appearance="ButtonAppearance.Primary">@SharedLocalizer["Common.Save"]</FluentButton>
+                    <FluentButton Title="@SharedLocalizer["Common.Cancel"]" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                                  OnClick="OnCancelContentClicked">@SharedLocalizer["Common.Cancel"]</FluentButton>
+                </FluentStack>
+            </EditForm>
+        }
+        else
+        {
+            <p>@SharedLocalizer["Message.NoSelection"]</p>
+        }
+    </FluentMultiSplitterPane>
+
+    <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
+        <FluentLabel Size="@LabelSize.Large">@Localizer["DetailsHeader"] - @SharedLocalizer["Common.Id"]: @(_CostCenterDetails?.Id)</FluentLabel>
+        <FluentDivider />
+        @if (_CostCenterDetails != null)
+        {
+            <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@SharedLocalizer["Common.Name"]:</b> @(_CostCenterDetails.Name)
+                </FluentGridItem>
+                <FluentDivider AlignContent="DividerAlignContent.Center">
+                    @SharedLocalizer["Common.AuditInformation"]
+                </FluentDivider>
+                <FluentGridItem Xs="12">
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_CostCenterDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_CostCenterDetails.InsertUser)
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_CostCenterDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                </FluentGridItem>
+                <FluentGridItem Xs="12">
+                    <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_CostCenterDetails.UpdateUser)
+                </FluentGridItem>
+            </FluentGrid>
+            <br />
+            <FluentStack id="toolbar-footer" HorizontalGap="6px">
+                <FluentButton Title="@SharedLocalizer["Common.Copy"]" IconStart="@(new Icons.Regular.Size20.Copy())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCopyDetailsToClipboard">@SharedLocalizer["Common.Copy"]</FluentButton>
+                <FluentButton Title="@SharedLocalizer["Common.Cancel"]" IconStart="@(new Icons.Regular.Size20.ArrowExit())" Appearance="ButtonAppearance.Default"
+                              OnClick="OnCancelDetailsClicked">@SharedLocalizer["Common.Cancel"]</FluentButton>
+            </FluentStack>
+        }
+        else
+        {
+            <p>@SharedLocalizer["Message.NoSelection"]</p>
+        }
+    </FluentMultiSplitterPane>
+
+</FluentMultiSplitter>

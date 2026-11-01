@@ -1,6 +1,6 @@
 ---
 name: add-ui-crud
-description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition, if {EntitySingularName} you write the entity name at singular name and if {EntityPluralName} you write the entity name at plural name. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript.
+description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition, if {EntitySingularName} you write the entity name at singular name and if {EntityPluralName} you write the entity name at plural name. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript. Add Localization.
 argument-hint: "[EntityName]"
 ---
 
@@ -85,26 +85,26 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 				{SPECIAL_CASE: for each entity property repeat this little code with the property name.
 				IF Property is string THEN
                     `<FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
+                        <FluentTextInput Label="PropertyName" @bind-Value="_{EntitySingularName}.PropertyName" />
                     </FluentGridItem>`
 				ELSE IF Property is int THEN
                     `<FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName TextInputType="TextInputType.Number"/>
+                        <FluentTextInput Label="PropertyName" @bind-Value="_{EntitySingularName}.PropertyName" TextInputType="TextInputType.Number"/>
                     </FluentGridItem>`
 				ELSE IF Property is DateTime THEN
 				    `<FluentGridItem Xs="12" Sm="12">
-                        <FluentDatePicker Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
+                        <FluentDatePicker Label="PropertyName" @bind-Value="_{EntitySingularName}.PropertyName" />
                     </FluentGridItem>`
 				ELSE IF Property is bool THEN
 					`<FluentGridItem Xs="12" Sm="12">
-                        <FluentCheckbox Label="PropertyName" @bind-Value=_{EntitySingularName}.PropertyName />
+                        <FluentCheckbox Label="PropertyName" @bind-Value="_{EntitySingularName}.PropertyName" />
                     </FluentGridItem>`
 				ELSE IF Property is ForeignKey THEN
 					`<FluentGridItem Xs="12" Sm="12">
 						<FluentSelect Label="PropertyName"
 							  Placeholder="Select a PropertyName"
 							  Items="@_{PropertyName}Select"
-							  @bind-Value="@_{EntitySingularName}.PropertyName" />
+							  @bind-Value="_{EntitySingularName}.PropertyName" />
                     </FluentGridItem>`
 				}
                 </FluentGrid>

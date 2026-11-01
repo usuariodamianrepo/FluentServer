@@ -13,6 +13,8 @@
             <FluentNavItem Href="documents" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">@Localizer["Nav.Documents"]</FluentNavItem>
             <FluentNavItem Href="documenttypes" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">@Localizer["Nav.DocumentTypes"]</FluentNavItem>
             <FluentNavItem Href="companies" IconRest="@(new Icons.Regular.Size20.BuildingFactory())" IconActive="@(new Icons.Filled.Size20.BuildingFactory())">@Localizer["Nav.Companies"]</FluentNavItem>
+            <FluentNavItem Href="costcenters" IconRest="@(new Icons.Regular.Size20.Tag())" IconActive="@(new Icons.Filled.Size20.Tag())">@Localizer["Nav.CostCenters"]</FluentNavItem>
+            <FluentNavItem Href="receipts" IconRest="@(new Icons.Regular.Size20.ReceiptMoney())" IconActive="@(new Icons.Filled.Size20.ReceiptMoney())">@Localizer["Nav.Receipts"]</FluentNavItem>
             <FluentNavItem Href="Account/Manage">@context.User.Identity?.Name</FluentNavItem>
             <form action="Account/Logout" method="post">
                 <AntiforgeryToken />

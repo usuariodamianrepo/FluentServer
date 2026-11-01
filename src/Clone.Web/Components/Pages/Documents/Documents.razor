@@ -79,19 +79,19 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value=_Document.Title Required="true" Maxlength=120 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Required="true" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value=_Document.Description Required="true" Maxlength=450 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Required="true" Maxlength=450 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value=_Document.URL Required="true" Maxlength=250 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Required="true" Maxlength=250 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value=_Document.Published />
+                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value=_Document.IsPublic />
+                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@Localizer["DocumentType"]"

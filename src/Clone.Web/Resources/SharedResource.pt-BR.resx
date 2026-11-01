@@ -150,6 +150,12 @@
   <data name="Nav.Companies" xml:space="preserve">
     <value>Empresas</value>
   </data>
+  <data name="Nav.CostCenters" xml:space="preserve">
+    <value>Centros de custo</value>
+  </data>
+  <data name="Nav.Receipts" xml:space="preserve">
+    <value>Recibos</value>
+  </data>
   <data name="Common.Save" xml:space="preserve">
     <value>Salvar</value>
   </data>
@@ -215,6 +221,36 @@
   </data>
   <data name="Common.CopyEmailAddress" xml:space="preserve">
     <value>Copiar endereço de e-mail</value>
+  </data>
+  <data name="DateRange.Range" xml:space="preserve">
+    <value>Intervalo</value>
+  </data>
+  <data name="DateRange.From" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="DateRange.FromTime" xml:space="preserve">
+    <value>Hora inicial</value>
+  </data>
+  <data name="DateRange.To" xml:space="preserve">
+    <value>Até</value>
+  </data>
+  <data name="DateRange.ToTime" xml:space="preserve">
+    <value>Hora final</value>
+  </data>
+  <data name="DateRange.Custom" xml:space="preserve">
+    <value>Personalizado</value>
+  </data>
+  <data name="DateRange.Today" xml:space="preserve">
+    <value>Hoje</value>
+  </data>
+  <data name="DateRange.Yesterday" xml:space="preserve">
+    <value>Ontem</value>
+  </data>
+  <data name="DateRange.LastWeek" xml:space="preserve">
+    <value>Última semana</value>
+  </data>
+  <data name="DateRange.LastMonth" xml:space="preserve">
+    <value>Último mês</value>
   </data>
   <data name="Message.NoData" xml:space="preserve">
     <value>Não há nada para ver aqui.</value>

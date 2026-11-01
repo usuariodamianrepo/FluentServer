@@ -1,0 +1,185 @@
+﻿@namespace Clone.Web.Components.Shared
+@using Clone.Models.Dtos
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@inject IStringLocalizer<SharedResource> Localizer
+
+<div class="d-flex flex-wrap gap-2 align-items-end">
+    <FluentSelect TOption="PresetOption"
+                  TValue="string"
+                  Items="@_presets"
+                  OptionValue="@(p => p.Value)"
+                  OptionText="@(p => p.Text)"
+                  Value="@_lastPresetValue"
+                  ValueChanged="@OnPresetChangedAsync"
+                  Style="min-width:160px" />
+
+    <FluentDatePicker TValue="DateTime?"
+                      Value="@_from"
+                      ValueChanged="@OnFromDateChangedAsync"
+                      Disabled="@(!IsCustom)"
+                      Style="width:160px" />
+
+    <FluentTimePicker TValue="DateTime?"
+                      Value="@_from"
+                      ValueChanged="@OnFromTimeChangedAsync"
+                      Disabled="@(!IsCustom)"
+                      TimeDisplay="TimeDisplay.HourMinute"
+                      Style="width:160px" />
+
+    <FluentDatePicker TValue="DateTime?"
+                      Value="@_to"
+                      ValueChanged="@OnToDateChangedAsync"
+                      Disabled="@(!IsCustom)"
+                      Style="width:160px" />
+
+    <FluentTimePicker TValue="DateTime?"
+                      Value="@_to"
+                      ValueChanged="@OnToTimeChangedAsync"
+                      Disabled="@(!IsCustom)"
+                      TimeDisplay="TimeDisplay.HourMinute"
+                      Style="width:160px" />
+</div>
+
+@code {
+    private const string CustomValue = "customDate";
+    private const string TodayValue = "today";
+
+    private PresetOption[] _presets = [];
+    private DateTime? _from;
+    private DateTime? _to;
+    private DateRangeDto? _lastEmitted;
+    private string _lastPresetValue = TodayValue;
+
+    [Parameter] public DateRangeDto Value { get; set; }
+
+    [Parameter] public EventCallback<DateRangeDto> ValueChanged { get; set; }
+
+    [Parameter] public EventCallback<DateRangeDto> OnRangeChanged { get; set; }
+
+    private bool IsCustom => _lastPresetValue == CustomValue;
+
+    protected override void OnInitialized()
+    {
+        _presets =
+        [
+            new(CustomValue, Localizer["DateRange.Custom"]),
+            new(TodayValue, Localizer["DateRange.Today"]),
+            new("yesterday", Localizer["DateRange.Yesterday"]),
+            new("lastweek", Localizer["DateRange.LastWeek"]),
+            new("lastmonth", Localizer["DateRange.LastMonth"]),
+        ];
+
+        if (Value != default)
+            SetDates(Value.From, Value.To);
+        else
+            ApplyPreset(_lastPresetValue);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Value == default || (Value.From == _from && Value.To == _to))
+            return;
+
+        // Si el padre cambió el valor desde fuera (ej. "limpiar filtros")
+        if (_lastEmitted is { } last && last.From == Value.From && last.To == Value.To)
+            return;
+
+        SetDates(Value.From, Value.To);
+    }
+
+    private async Task OnPresetChangedAsync(string? option)
+    {
+        if (option is null)
+            return;
+
+        _lastPresetValue = option;
+
+        if (!IsCustom)
+        {
+            ApplyPreset(option);
+            await NotifyAsync();
+        }
+    }
+
+    private void ApplyPreset(string preset)
+    {
+        var today = DateTime.Today;
+        var endOfToday = today.AddDays(1).AddSeconds(-1); // 23:59:59
+
+        (_from, _to) = preset switch
+        {
+            TodayValue => (today, endOfToday),
+            "yesterday" => (today.AddDays(-1), today.AddSeconds(-1)),
+            "lastweek" => (today.AddDays(-6), endOfToday),
+            "lastmonth" => (today.AddMonths(-1), endOfToday),
+            _ => (_from, _to)
+        };
+    }
+
+    private void SetDates(DateTime from, DateTime to)
+    {
+        _from = from;
+        _to = to;
+        _lastPresetValue = TodayValue;
+    }
+
+    private Task OnFromDateChangedAsync(DateTime? date)
+    {
+        _from = CombineDate(date, _from);
+        return OnCustomValueChangedAsync();
+    }
+
+    private Task OnFromTimeChangedAsync(DateTime? time)
+    {
+        _from = CombineTime(_from, time);
+        return OnCustomValueChangedAsync();
+    }
+
+    private Task OnToDateChangedAsync(DateTime? date)
+    {
+        _to = CombineDate(date, _to);
+        return OnCustomValueChangedAsync();
+    }
+
+    private Task OnToTimeChangedAsync(DateTime? time)
+    {
+        _to = CombineTime(_to, time);
+        return OnCustomValueChangedAsync();
+    }
+
+    private async Task OnCustomValueChangedAsync()
+    {
+        if (!IsCustom)
+            _lastPresetValue = CustomValue;
+
+        await NotifyAsync();
+    }
+
+    private async Task NotifyAsync()
+    {
+        if (_from is null || _to is null)
+            return;
+
+        var range = new DateRangeDto(_from.Value, _to.Value);
+        _lastEmitted = range;
+
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(range);
+
+        if (OnRangeChanged.HasDelegate)
+            await OnRangeChanged.InvokeAsync(range);
+    }
+
+    private static DateTime? CombineDate(DateTime? date, DateTime? current)
+        => date is null
+            ? null
+            : date.Value.Date + (current?.TimeOfDay ?? TimeSpan.Zero);
+
+    private static DateTime? CombineTime(DateTime? current, DateTime? time)
+        => current is null || time is null
+            ? current
+            : current.Value.Date + time.Value.TimeOfDay;
+
+    private sealed record PresetOption(string Value, string Text);
+}

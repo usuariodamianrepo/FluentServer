@@ -10,8 +10,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Company> Companies { get; set; }
+    public DbSet<CostCenter> CostCenters { get; set; }
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentType> DocumentTypes { get; set; }
+    public DbSet<Receipt> Receipts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +53,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .Property<uint>("xmin")
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
+        modelBuilder.Entity<CostCenter>()
+            .Property<uint>("xmin")
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate();
         modelBuilder.Entity<Document>()
             .Property<uint>("xmin")
             .IsConcurrencyToken()
@@ -59,5 +65,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .Property<uint>("xmin")
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
+        modelBuilder.Entity<Receipt>()
+            .Property<uint>("xmin")
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate();
     }
 }
+
