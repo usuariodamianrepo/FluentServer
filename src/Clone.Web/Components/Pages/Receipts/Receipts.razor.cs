@@ -12,8 +12,8 @@ namespace Clone.Web.Components.Pages.Receipts
     {
         private const string MESSAGEBAR_SECTION = "MESSAGEBAR_RECEIPT";
         private IEnumerable<UserBySearchDto> _UsersEditSelect { get; set; } = [];
-        private IEnumerable<UserBySearchDto> _UsersEditSelected { get; set; } = [];
         private IEnumerable<CostCenter> _CostCenterSelect { get; set; } = [];
+
         private FluentDataGrid<Receipt>? _Grid;
 
         private Receipt _Receipt { get; set; } = new();
@@ -40,7 +40,10 @@ namespace Clone.Web.Components.Pages.Receipts
 
         protected override async Task OnInitializedAsync()
         {
-            _CostCenterSelect = await UnitOfWork.Repository<CostCenter>().GetAllAsync();
+            var costCenters = await UnitOfWork.Repository<CostCenter>().GetAllAsync();
+            _CostCenterSelect = costCenters.OrderBy(c => c.Name);
+            _UsersEditSelect = await (UnitOfWork.UserBySearch("", "", "")).ToListAsync();
+
             await SearchData();
         }
 
@@ -54,21 +57,20 @@ namespace Clone.Web.Components.Pages.Receipts
 
         private async Task OnAddDecreaseClicked()
         {
-            _Receipt = new Receipt { Date = DateTime.Now };
+            ResetForm();
             _IsIngress = false;
             _CollapsedContent = false;
         }
 
         private async Task OnAddIngressClicked()
         {
-            _Receipt = new Receipt { Date = DateTime.Now };
+            ResetForm();
             _IsIngress = true;
             _CollapsedContent = false;
         }
 
         private void OnCancelContentClicked()
         {
-            _UsersEditSelected = [];
             _CollapsedContent = true;
         }
 
@@ -172,8 +174,6 @@ namespace Clone.Web.Components.Pages.Receipts
                 return;
             }
 
-            _UsersEditSelected = _UsersEditSelect = await (UnitOfWork.UserBySearch(toEdit.ApplicationUserId, "", "")).ToListAsync();
-
             _Receipt = toEdit;
             _IsIngress = _Receipt.IsIngress;
             _CollapsedContent = false;
@@ -186,7 +186,7 @@ namespace Clone.Web.Components.Pages.Receipts
             if (!_Receipt.Active)
                 return;
 
-            if (string.IsNullOrWhiteSpace(_Receipt.ApplicationUserId))
+            if (string.IsNullOrEmpty(_Receipt.ApplicationUserId))
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.ApplicationUserRequired"]);
                 return;
@@ -246,20 +246,11 @@ namespace Clone.Web.Components.Pages.Receipts
             e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
         }
 
-        private async Task OnUserEditSearchAsync(OptionsSearchEventArgs<UserBySearchDto> e)
-        {
-            if (e.Text.Length < 3)
-                return;
-            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
-        }
-
         private void ResetForm()
         {
-            _UsersEditSelect = [];
-            _UsersEditSelected = [];
-            _Receipt = new Receipt();
-            _IsIngress = true;
+            _Receipt = new Receipt() { Date = DateTime.Now };
         }
+
         private async Task SearchData()
         {
             _SearchButtonLoading = true;

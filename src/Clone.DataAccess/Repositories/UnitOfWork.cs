@@ -83,7 +83,7 @@ namespace Clone.DataAccess.Repositories
                 }
             }
 
-            return query.Take(MaxRows.MaxFifty);
+            return query.Take(MaxRows.MaxFifty).OrderBy(u => u.Name);
         }
         #endregion
     }
