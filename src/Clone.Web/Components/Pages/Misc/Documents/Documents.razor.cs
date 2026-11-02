@@ -1,20 +1,22 @@
-﻿using Clone.Models;
+using Clone.Models;
 using Clone.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Clone.Web.Components.Pages.DocumentTypes
+namespace Clone.Web.Components.Pages.Misc.Documents
 {
-    public partial class DocumentTypes
+    public partial class Documents
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_DOCUMENT_TYPE";
-        private FluentDataGrid<DocumentType>? _Grid;
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_DOCUMENT";
+        private FluentDataGrid<Document>? _Grid;
 
-        private DocumentType _DocumentType { get; set; } = new();
-        private DocumentType _DocumentTypeDetails { get; set; } = new();
-        private IQueryable<DocumentType>? _DocumentTypes { get; set; }
+        private Document _Document { get; set; } = new();
+        private Document _DocumentsDetails { get; set; } = new();
+        private IQueryable<Document>? _Documents { get; set; }
+
+        private IEnumerable<DocumentType> _DocumentTypesSelect = default!;
 
         #region Search
         private string _NameSearch = string.Empty;
@@ -41,9 +43,10 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             }
         }
 
-        private void OnAddClicked()
+        private async Task OnAddClicked()
         {
-            _DocumentType = new();
+            _DocumentTypesSelect = await UnitOfWork.Repository<DocumentType>().GetAllAsync();
+            _Document = new();
             _CollapsedContent = false;
         }
 
@@ -59,7 +62,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
         private async Task OnCopyDetailsToClipboard()
         {
-            if (_DocumentTypeDetails is null)
+            if (_DocumentsDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Message.NoSelection"]);
                 return;
@@ -67,7 +70,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
             try
             {
-                var json = JsonSerializer.Serialize(_DocumentTypeDetails, new JsonSerializerOptions { WriteIndented = true });
+                var json = JsonSerializer.Serialize(_DocumentsDetails, new JsonSerializerOptions { WriteIndented = true });
                 await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
 
                 await NotificationService.ShowMessageBarAsync(options =>
@@ -75,7 +78,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
                     options.Section = MESSAGEBAR_SECTION;
                     options.Intent = MessageBarIntent.Info;
                     options.Layout = MessageBarLayout.SingleLine;
-                    options.Title = Localizer["Message.Copied", _DocumentTypeDetails.Id];
+                    options.Title = Localizer["Message.Copied", _DocumentsDetails.Id];
                     options.AllowDismiss = true;
                     options.Lifetime = TimeSpan.FromSeconds(3);
                     options.ResultTiming = MessageBarResultTiming.Closed;
@@ -83,14 +86,14 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             }
             catch (JSException ex)
             {
-                Logger.LogError(ex, "Error copying DocumentType {Id} to clipboard.", _DocumentTypeDetails.Id);
+                Logger.LogError(ex, "Error copying Document {Id} to clipboard.", _DocumentsDetails.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Copy"]);
             }
         }
 
         private async Task OnDeleteClicked(int id)
         {
-            var repository = UnitOfWork.Repository<DocumentType>();
+            var repository = UnitOfWork.Repository<Document>();
             var toDelete = await repository.GetByIdAsync(id);
 
             if (toDelete is null)
@@ -113,19 +116,19 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                Logger.LogError(ex, "Concurrency error while deleting DocumentType {Id}.", id);
+                Logger.LogError(ex, "Concurrency error while deleting Document {Id}.", id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.ModifiedByAnotherUser"]);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unexpected error while deleting DocumentType {Id}.", id);
+                Logger.LogError(ex, "Unexpected error while deleting Document {Id}.", id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Delete"]);
             }
         }
 
         private async Task OnDetailsClicked(int id)
         {
-            var repository = UnitOfWork.Repository<DocumentType>();
+            var repository = UnitOfWork.Repository<Document>();
             var toDetails = await repository.GetByIdAsync(id);
 
             if (toDetails is null)
@@ -134,13 +137,13 @@ namespace Clone.Web.Components.Pages.DocumentTypes
                 return;
             }
 
-            _DocumentTypeDetails = toDetails;
+            _DocumentsDetails = toDetails;
             _CollapsedDetails = false;
         }
 
         private async Task OnEditClicked(int id)
         {
-            var repository = UnitOfWork.Repository<DocumentType>();
+            var repository = UnitOfWork.Repository<Document>();
             var toEdit = await repository.GetByIdAsync(id);
 
             if (toEdit is null)
@@ -149,32 +152,33 @@ namespace Clone.Web.Components.Pages.DocumentTypes
                 return;
             }
 
-            _DocumentType = toEdit;
+            _DocumentTypesSelect = await UnitOfWork.Repository<DocumentType>().GetAllAsync();
+            _Document = toEdit;
             _CollapsedContent = false;
         }
 
         private async Task OnSaveContentClicked()
         {
-            if (string.IsNullOrWhiteSpace(_DocumentType.Name))
+            if (string.IsNullOrWhiteSpace(_Document.Title))
             {
-                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NameRequired"]);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.TitleRequired"]);
                 return;
             }
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var repository = UnitOfWork.Repository<DocumentType>();
+            var repository = UnitOfWork.Repository<Document>();
 
             try
             {
-                if (_DocumentType.Id == 0)
+                if (_Document.Id == 0)
                 {
-                    _DocumentType.InsertAudit(authState.User);
-                    await repository.AddAsync(_DocumentType);
+                    _Document.InsertAudit(authState.User);
+                    await repository.AddAsync(_Document);
                 }
                 else
                 {
-                    _DocumentType.UpdateAudit(authState.User);
-                    await repository.UpdateAsync(_DocumentType);
+                    _Document.UpdateAudit(authState.User);
+                    await repository.UpdateAsync(_Document);
                 }
 
                 await UnitOfWork.SaveAsync();
@@ -185,12 +189,12 @@ namespace Clone.Web.Components.Pages.DocumentTypes
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                Logger.LogError(ex, "Concurrency error DocumentType Id: {Id}.", _DocumentType.Id);
+                Logger.LogError(ex, "Concurrency error Document Id: {Id}.", _Document.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Concurrency"]);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unexpected error DocumentType Id: {Id}.", _DocumentType.Id);
+                Logger.LogError(ex, "Unexpected error Document Id: {Id}.", _Document.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Save"]);
             }
         }
@@ -202,7 +206,7 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
         private void ResetForm()
         {
-            _DocumentType = new DocumentType();
+            _Document = new Document();
         }
 
         private async Task SearchData()
@@ -211,9 +215,9 @@ namespace Clone.Web.Components.Pages.DocumentTypes
 
             try
             {
-                var findeds = await UnitOfWork.Repository<DocumentType>().Entities
-                    .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
-                    .OrderBy(d => d.Name)
+                var findeds = await UnitOfWork.Repository<Document>().Entities
+                    .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Title.Contains(_NameSearch))
+                    .Include(d => d.DocumentType)
                     .AsNoTracking()
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
@@ -221,11 +225,11 @@ namespace Clone.Web.Components.Pages.DocumentTypes
                 _TotalSearched = findeds.Count;
                 _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
-                _DocumentTypes = findeds.AsQueryable();
+                _Documents = findeds.AsQueryable();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error searching DocumentTypes.");
+                Logger.LogError(ex, "Error searching Documents.");
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Search"]);
             }
             finally

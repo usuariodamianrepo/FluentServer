@@ -375,4 +375,10 @@
   <data name="Reconnect.Resume" xml:space="preserve">
     <value>Retomar</value>
   </data>
+  <data name="ShowConfirmation.Title" xml:space="preserve">
+    <value>Confirmação</value>
+  </data>
+  <data name="Nav.Misc" xml:space="preserve">
+    <value>Diversos</value>
+  </data>
 </root>

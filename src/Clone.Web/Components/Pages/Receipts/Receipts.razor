@@ -3,19 +3,20 @@
 
 @using Clone.DataAccess.Repositories.IRepository
 @using Clone.Models
+@using Clone.Models.Dtos
 @using Clone.Utility
 @using Clone.Web.Components.Shared
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
-@using Clone.Models.Dtos
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
 @inject IJSRuntime JS
 @inject ILogger<Receipts> Logger
 @inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
-@inject UserManager<ApplicationUser> UserManager
+@inject IReceiptRepository ReceiptRepository
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 @inject IStringLocalizer<Receipts> Localizer
 
@@ -75,6 +76,7 @@
                         <PropertyColumn Title="@Localizer["Amount"]" Property="@(c => c.Amount.ToString("N2"))" Align="DataGridCellAlignment.End" />
                         <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
                             <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
+                            <FluentButton Title="@Localizer["CounterReceipt"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.ReceiptSparkles())" OnClick="@(() => OnGenerateAgainstClicked(context.Id))" />
                             <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
                             <FluentButton Title="@SharedLocalizer["Common.Delete"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Delete().WithColor(Color.Error))" OnClick="@(() => OnDeleteClicked(context.Id))" />
                         </TemplateColumn>

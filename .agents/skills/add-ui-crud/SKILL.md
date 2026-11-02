@@ -275,7 +275,7 @@ namespace Clone.Web.Components.Pages
                 return;
             }
 
-            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>delete</strong> item Id: {toDelete.Id}?");
+            var result = await DialogService.ShowConfirmationAsync($"Are you sure you want to <strong>delete</strong> item Id: {toDelete.Id}?",SharedLocalizer["ShowConfirmation.Title"]);
             if (result.Cancelled)
             {
                 return;

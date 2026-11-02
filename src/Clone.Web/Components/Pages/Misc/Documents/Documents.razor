@@ -1,4 +1,4 @@
-﻿@page "/documenttypes"
+@page "/misc/documents"
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
@@ -8,11 +8,11 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
-@inject ILogger<DocumentTypes> Logger
+@inject ILogger<Documents> Logger
 @inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
 @inject IStringLocalizer<SharedResource> SharedLocalizer
-@inject IStringLocalizer<DocumentTypes> Localizer
+@inject IStringLocalizer<Documents> Localizer
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
@@ -25,10 +25,10 @@
     <FluentStack HorizontalGap="6px" Wrap="true">
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked" />
-        <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Title"]" TextInputType="TextInputType.Search" Maxlength=120 AutoComplete="off" Autofocus="true" />
         <FluentButton Title="@(_IsMaxSearch?
                                         SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
-                SharedLocalizer["Common.Search"])"
+                                SharedLocalizer["Common.Search"])"
                       IconStart="@(_IsMaxSearch ?
                                         new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
                                         new Icons.Regular.Size20.DatabaseSearch())"
@@ -42,11 +42,14 @@
     <FluentMultiSplitterPane Size="50%">
         <div style="display: table; table-layout: fixed; width: 100%;">
             <div style="overflow-x: auto;">
-                <FluentDataGrid @ref="_Grid" Items=@_DocumentTypes GridTemplateColumns="0.2fr 1fr 1fr 1fr">
+                <FluentDataGrid @ref="_Grid" Items=@_Documents GridTemplateColumns="0.2fr 2fr 1fr 0.5fr 2fr 1fr 1.2fr" Style="min-width: max-content;">
                     <ChildContent>
                         <PropertyColumn Title="@SharedLocalizer["Common.Id"]" Property="@(c => c.Id)" />
-                        <PropertyColumn Title="@SharedLocalizer["Common.Name"]" Property="@(c => c.Name)" Sortable="true" />
-                        <PropertyColumn Title="@SharedLocalizer["Common.Description"]" Property="@(c => c.Description)" />
+                        <PropertyColumn Title="@SharedLocalizer["Common.Title"]" Property="@(c => c.Title)" Sortable="true" />
+                        <PropertyColumn Title="@Localizer["Column.Published"]" Property="@(c => c.Published.ToDateHHmm())" />
+                        <PropertyColumn Title="@Localizer["Column.IsPublic"]" Property="@(c => c.IsPublic ? Localizer["Yes"] : Localizer["No"])" Align="DataGridCellAlignment.Center" />
+                        <PropertyColumn Title="@Localizer["URL"]" Property="@(c => c.URL)" />
+                        <PropertyColumn Title="@Localizer["Column.DocumentType"]" Property="@(c => c.DocumentType.Name)" />
                         <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
                             <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
                             <FluentButton Title="@SharedLocalizer["Common.Details"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.TextDescription())" OnClick="@(() => OnDetailsClicked(context.Id))" />
@@ -68,18 +71,35 @@
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedContent" Size="25%">
-        <FluentLabel Size="@LabelSize.Large">@Localizer["ContentHeader"] - @SharedLocalizer["Common.Id"]: @(_DocumentType?.Id)</FluentLabel>
+        <FluentLabel Size="@LabelSize.Large">@Localizer["ContentHeader"] - @SharedLocalizer["Common.Id"]: @(_Document?.Id)</FluentLabel>
         <FluentDivider />
-        @if (_DocumentType != null)
+        @if (_Document != null)
         {
-            <EditForm Model="_DocumentType" OnValidSubmit="@(async () => await OnSaveContentClicked())">
+            <EditForm Model="_Document" OnValidSubmit="@(async () => await OnSaveContentClicked())">
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value="_DocumentType.Name" Required="true" Maxlength=30 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Required="true" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextArea Label="@SharedLocalizer["Common.Description"]" @bind-Value="_DocumentType.Description" Required="true" Maxlength=450 Width="100%" Height="80px" AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Required="true" Maxlength=450 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Required="true" Maxlength=250 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentSelect Label="@Localizer["DocumentType"]"
+                                      Placeholder="@Localizer["SelectDocumentType"]"
+                                      Items="@_DocumentTypesSelect"
+                                      OptionText="@(i => i.Name)"
+                                      OptionValue="@(i => i.Id)"
+                                      @bind-Value="@_Document.DocumentTypeId" />
                     </FluentGridItem>
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
@@ -96,31 +116,43 @@
     </FluentMultiSplitterPane>
 
     <FluentMultiSplitterPane Collapsed="_CollapsedDetails" Size="25%">
-        <FluentLabel Size="@LabelSize.Large">@Localizer["DetailsHeader"] - @SharedLocalizer["Common.Id"]: @(_DocumentTypeDetails?.Id)</FluentLabel>
+        <FluentLabel Size="@LabelSize.Large">@Localizer["DetailsHeader"] - @SharedLocalizer["Common.Id"]: @(_DocumentsDetails?.Id)</FluentLabel>
         <FluentDivider />
-        @if (_DocumentTypeDetails != null)
+        @if (_DocumentsDetails != null)
         {
             <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>@SharedLocalizer["Common.Name"]:</b> @(_DocumentTypeDetails.Name)
+                    <b>@SharedLocalizer["Common.Title"]:</b> @(_DocumentsDetails.Title)
                 </FluentGridItem>
-                <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.Description"]:</b> @(_DocumentTypeDetails.Description)
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@SharedLocalizer["Common.Description"]:</b> @(_DocumentsDetails.Description)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["URL"]:</b> @(_DocumentsDetails.URL)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["Published"]:</b> @(_DocumentsDetails.Published)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["Public"]:</b> @(_DocumentsDetails.IsPublic)
+                </FluentGridItem>
+                <FluentGridItem Xs="12" Sm="12">
+                    <b>@Localizer["DocumentTypeId"]:</b> @(_DocumentsDetails.DocumentTypeId)
                 </FluentGridItem>
                 <FluentDivider AlignContent="DividerAlignContent.Center">
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentTypeDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentsDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_DocumentTypeDetails.InsertUser)
+                    <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_DocumentsDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentTypeDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentsDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_DocumentTypeDetails.UpdateUser)
+                    <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_DocumentsDetails.UpdateUser)
                 </FluentGridItem>
             </FluentGrid>
             <br />

@@ -112,26 +112,52 @@ namespace Clone.Web.Components.Pages.Receipts
 
         private async Task OnDeleteClicked(int id)
         {
-            var repository = UnitOfWork.Repository<Receipt>();
-            var toDelete = await repository.GetByIdAsync(id);
+            var result = await DialogService.ShowConfirmationAsync(Localizer["Confirm.Delete", id], SharedLocalizer["ShowConfirmation.Title"]);
+            if (result.Cancelled)
+                return;
 
-            if (toDelete is null)
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            try
+            {
+                await ReceiptRepository.DeactivateAsync(id, authState.User);    
+                await UnitOfWork.SaveAsync();
+                await SearchData();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Logger.LogError(ex, "Concurrency error while deleting Receipt {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.ModifiedByAnotherUser"]);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unexpected error while deleting Receipt {Id}.", id);
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Delete"]);
+            }
+        }
+
+        private async Task OnGenerateAgainstClicked(int id)
+        {
+            var toGenerate = await UnitOfWork.Repository<Receipt>().GetByIdAsync(id);
+
+            if (toGenerate is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NotFound", id]);
                 return;
             }
 
-            var result = await DialogService.ShowConfirmationAsync(Localizer["Confirm.Delete", toDelete.Id]);
+            var result = await DialogService.ShowConfirmationAsync(Localizer["Confirm.GenerateAgainst", toGenerate.Amount], SharedLocalizer["ShowConfirmation.Title"]);
             if (result.Cancelled)
-            {
                 return;
-            }
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
             try
             {
-                toDelete.Active = false;
-                await repository.UpdateAsync(toDelete);
+                var newReceipt = await ReceiptRepository.GenerateAgainstAsync(id, authState.User);
+                await UnitOfWork.Repository<Receipt>().AddAsync(newReceipt);
                 await UnitOfWork.SaveAsync();
+                await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: Localizer["Info.ReceiptGenerated", newReceipt.Id]);
                 await SearchData();
             }
             catch (DbUpdateConcurrencyException ex)

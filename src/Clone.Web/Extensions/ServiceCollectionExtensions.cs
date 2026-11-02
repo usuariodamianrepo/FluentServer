@@ -10,7 +10,7 @@ namespace Clone.Web.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
 
-            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IReceiptRepository, ReceiptRepository>();
         }
     }
 }

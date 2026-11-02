@@ -213,4 +213,13 @@
   <data name="Decrease" xml:space="preserve">
     <value>Egreso</value>
   </data>
+  <data name="Confirm.GenerateAgainst" xml:space="preserve">
+    <value>¿Desea generar un contrarrecibo por {0}?</value>
+  </data>
+  <data name="CounterReceipt" xml:space="preserve">
+    <value>Contrarrecibo</value>
+  </data>
+  <data name="Info.ReceiptGenerated" xml:space="preserve">
+    <value>Recibo Id: {0} generado!</value>
+  </data>
 </root>
