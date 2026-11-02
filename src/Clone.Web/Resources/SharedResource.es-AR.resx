@@ -123,8 +123,8 @@
   <data name="Nav.Counter" xml:space="preserve">
     <value>Contador</value>
   </data>
-  <data name="Nav.Weather" xml:space="preserve">
-    <value>Clima</value>
+  <data name="Nav.Administration" xml:space="preserve">
+    <value>Administración</value>
   </data>
   <data name="Nav.AuthRequired" xml:space="preserve">
     <value>Requiere autenticación</value>
@@ -139,7 +139,7 @@
     <value>Cerrar sesión</value>
   </data>
   <data name="Nav.AdminUsers" xml:space="preserve">
-    <value>Usuario administrador</value>
+    <value>Usuarios</value>
   </data>
   <data name="Nav.Documents" xml:space="preserve">
     <value>Documentos</value>

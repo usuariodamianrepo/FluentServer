@@ -37,6 +37,9 @@ namespace Clone.Models
         [NotMapped]
         public bool IsIngress => Amount >= 0;
 
+        [NotMapped]
+        public bool CanUpdate => Active && (OrderId is null);
+
         public void SetAmount(bool isIngress)
         {
             decimal absAmount = Math.Abs(Amount);

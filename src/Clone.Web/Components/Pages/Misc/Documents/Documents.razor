@@ -82,24 +82,24 @@
                         <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Required="true" Maxlength=120 AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Required="true" Maxlength=450 AutoComplete="off" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Required="true" Maxlength=250 AutoComplete="off" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@Localizer["DocumentType"]"
                                       Placeholder="@Localizer["SelectDocumentType"]"
                                       Items="@_DocumentTypesSelect"
                                       OptionText="@(i => i.Name)"
                                       OptionValue="@(i => i.Id)"
                                       @bind-Value="@_Document.DocumentTypeId" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Maxlength=450 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Maxlength=250 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
                     </FluentGridItem>
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">

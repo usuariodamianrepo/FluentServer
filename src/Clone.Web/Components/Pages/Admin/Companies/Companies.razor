@@ -26,6 +26,8 @@
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked" />
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentTextInput @bind-Value=_StreetAddressSearch Placeholder="@Localizer["Column.StreetAddress"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" />
+        <FluentTextInput @bind-Value=_PhoneNumberSearch Placeholder="@SharedLocalizer["Common.PhoneNumber"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" />
         <FluentButton Title="@(_IsMaxSearch?
                                         SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
                                 SharedLocalizer["Common.Search"])"

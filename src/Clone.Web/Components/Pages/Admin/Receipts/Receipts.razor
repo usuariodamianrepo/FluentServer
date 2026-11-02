@@ -140,7 +140,7 @@
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
                     <FluentButton Type="ButtonType.Submit" Title="@SharedLocalizer["Common.Save"]" IconStart="@(new Icons.Regular.Size20.Save())"
                                   Appearance="ButtonAppearance.Primary"
-                                  Disabled="@(!_Receipt.Active)">
+                                  Disabled="@(!_Receipt.CanUpdate)">
                         @SharedLocalizer["Common.Save"]
                     </FluentButton>
                     <FluentButton Title="@SharedLocalizer["Common.Cancel"]" IconStart="@(new Icons.Regular.Size20.ArrowExit())"

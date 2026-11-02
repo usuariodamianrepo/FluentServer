@@ -6,7 +6,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Clone.Web.Components.Pages.Receipts
+namespace Clone.Web.Components.Pages.Admin.Receipts
 {
     public partial class Receipts
     {
@@ -120,7 +120,7 @@ namespace Clone.Web.Components.Pages.Receipts
 
             try
             {
-                await ReceiptRepository.DeactivateAsync(id, authState.User);    
+                await ReceiptRepository.DeactivateAsync(id, authState.User);
                 await UnitOfWork.SaveAsync();
                 await SearchData();
             }
@@ -209,8 +209,11 @@ namespace Clone.Web.Components.Pages.Receipts
 
         private async Task OnSaveContentClicked()
         {
-            if (!_Receipt.Active)
+            if (!_Receipt.CanUpdate)
+            {
+                await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.CanNotUpdate"]);
                 return;
+            }
 
             if (string.IsNullOrEmpty(_Receipt.ApplicationUserId))
             {

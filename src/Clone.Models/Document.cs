@@ -13,15 +13,13 @@ namespace Clone.Models
         [Required]
         public DateTime Published { get; set; }
 
-        [Required]
         [MaxLength(450)]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
         public bool IsPublic { get; set; } = false;
 
-        [Required]
         [MaxLength(250)]
-        public string URL { get; set; } = string.Empty;
+        public string? URL { get; set; }
 
         [ForeignKey("DocumentTypeId")]
         [Required]

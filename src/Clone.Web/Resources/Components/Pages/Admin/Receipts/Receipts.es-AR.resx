@@ -124,102 +124,105 @@
     <value>Recibos</value>
   </data>
   <data name="ContentHeader" xml:space="preserve">
-    <value>Conteúdo</value>
+    <value>Contenido</value>
   </data>
   <data name="DetailsHeader" xml:space="preserve">
-    <value>Detalhes</value>
+    <value>Detalles</value>
   </data>
   <data name="Date" xml:space="preserve">
-    <value>Data</value>
+    <value>Fecha</value>
   </data>
   <data name="Number" xml:space="preserve">
     <value>Número</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Valor</value>
+    <value>Importe</value>
   </data>
   <data name="OrderId" xml:space="preserve">
     <value>Pedido Id</value>
   </data>
   <data name="Active" xml:space="preserve">
-    <value>Ativo</value>
+    <value>Activo</value>
   </data>
   <data name="IsIngress" xml:space="preserve">
-    <value>É entrada</value>
+    <value>Es ingreso</value>
   </data>
   <data name="ApplicationUser" xml:space="preserve">
-    <value>Usuário</value>
+    <value>Usuario</value>
   </data>
   <data name="CostCenter" xml:space="preserve">
-    <value>Centro de custo</value>
+    <value>Centro de costo</value>
   </data>
   <data name="SelectApplicationUser" xml:space="preserve">
-    <value>Selecione um usuário</value>
+    <value>Seleccione un usuario</value>
   </data>
   <data name="SelectCostCenter" xml:space="preserve">
-    <value>Selecione um centro de custo</value>
+    <value>Seleccione un centro de costo</value>
   </data>
   <data name="SearchPlaceholder" xml:space="preserve">
-    <value>Número ou descrição</value>
+    <value>Número o descripción</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Sim</value>
+    <value>Sí</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>Não</value>
+    <value>No</value>
   </data>
   <data name="Message.Copied" xml:space="preserve">
-    <value>Recibo Id: {0} copiado para a área de transferência!</value>
+    <value>¡Recibo Id: {0} copiado al portapapeles!</value>
   </data>
   <data name="Confirm.Delete" xml:space="preserve">
-    <value>Tem certeza de que deseja &lt;strong&gt;excluir&lt;/strong&gt; o item Id: {0}?</value>
+    <value>¿Está seguro de que desea &lt;strong&gt;eliminar&lt;/strong&gt; el elemento Id: {0}?</value>
   </data>
   <data name="Error.Copy" xml:space="preserve">
-    <value>Não foi possível copiar o conteúdo para a área de transferência.</value>
+    <value>No se pudo copiar el contenido al portapapeles.</value>
   </data>
   <data name="Error.NotFound" xml:space="preserve">
-    <value>Recibo Id: {0} não encontrado.</value>
+    <value>Recibo Id: {0} no encontrado.</value>
   </data>
   <data name="Error.ModifiedByAnotherUser" xml:space="preserve">
-    <value>O item foi modificado por outro usuário. Atualize e tente novamente.</value>
+    <value>El elemento fue modificado por otro usuario. Actualice y vuelva a intentarlo.</value>
   </data>
   <data name="Error.Delete" xml:space="preserve">
-    <value>Ocorreu um erro ao excluir os dados.</value>
+    <value>Se produjo un error al eliminar los datos.</value>
   </data>
   <data name="Error.ApplicationUserRequired" xml:space="preserve">
-    <value>O usuário é obrigatório.</value>
+    <value>El usuario es obligatorio.</value>
   </data>
   <data name="Error.CostCenterRequired" xml:space="preserve">
-    <value>O centro de custo é obrigatório.</value>
+    <value>El centro de costo es obligatorio.</value>
   </data>
   <data name="Error.AmountInvalid" xml:space="preserve">
-    <value>O valor não é válido.</value>
+    <value>El importe no es válido.</value>
   </data>
   <data name="Error.OrderIdInvalid" xml:space="preserve">
-    <value>O Id do pedido não é válido.</value>
+    <value>El Id de pedido no es válido.</value>
   </data>
   <data name="Error.Concurrency" xml:space="preserve">
-    <value>Erro de concorrência. Cancele a operação e tente novamente.</value>
+    <value>Error de concurrencia. Cancele la operación y vuelva a intentarlo.</value>
   </data>
   <data name="Error.Save" xml:space="preserve">
-    <value>Ocorreu um erro ao salvar os dados.</value>
+    <value>Se produjo un error al guardar los datos.</value>
   </data>
   <data name="Error.Search" xml:space="preserve">
-    <value>Ocorreu um erro ao pesquisar os dados.</value>
+    <value>Se produjo un error al buscar los datos.</value>
   </data>
   <data name="Ingress" xml:space="preserve">
-    <value>Entrada</value>
+    <value>Ingreso</value>
   </data>
   <data name="Decrease" xml:space="preserve">
-    <value>Diminuição</value>
+    <value>Egreso</value>
   </data>
   <data name="Confirm.GenerateAgainst" xml:space="preserve">
-    <value>Deseja gerar um contrarrecibo para {0}?</value>
+    <value>¿Desea generar un contrarrecibo por {0}?</value>
   </data>
   <data name="CounterReceipt" xml:space="preserve">
     <value>Contrarrecibo</value>
   </data>
   <data name="Info.ReceiptGenerated" xml:space="preserve">
-    <value>Recibo Id: {0} gerado!</value>
+    <value>Recibo Id: {0} generado!</value>
+  </data>
+  <data name="Error.CanNotUpdate" xml:space="preserve">
+    <value>El recibo no se puede actualizar porque tiene un pedido asociado o no está activo.</value>
   </data>
 </root>

@@ -5,19 +5,21 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace Clone.Web.Components.Pages.CostCenters
+namespace Clone.Web.Components.Pages.Admin.Companies
 {
-    public partial class CostCenters
+    public partial class Companies
     {
-        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_COST_CENTER";
-        private FluentDataGrid<CostCenter>? _Grid;
+        private const string MESSAGEBAR_SECTION = "MESSAGEBAR_COMPANY";
+        private FluentDataGrid<Company>? _Grid;
 
-        private CostCenter _CostCenter { get; set; } = new();
-        private CostCenter _CostCenterDetails { get; set; } = new();
-        private IQueryable<CostCenter>? _CostCenters { get; set; }
+        private Company _Company { get; set; } = new();
+        private Company _CompaniesDetails { get; set; } = new();
+        private IQueryable<Company>? _Companies { get; set; }
 
         #region Search
         private string _NameSearch = string.Empty;
+        private string _StreetAddressSearch = string.Empty;
+        private string _PhoneNumberSearch = string.Empty;
         private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
         private int _TotalSearched = 0;
@@ -43,7 +45,7 @@ namespace Clone.Web.Components.Pages.CostCenters
 
         private void OnAddClicked()
         {
-            _CostCenter = new();
+            _Company = new();
             _CollapsedContent = false;
         }
 
@@ -59,7 +61,7 @@ namespace Clone.Web.Components.Pages.CostCenters
 
         private async Task OnCopyDetailsToClipboard()
         {
-            if (_CostCenterDetails is null)
+            if (_CompaniesDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Message.NoSelection"]);
                 return;
@@ -67,7 +69,7 @@ namespace Clone.Web.Components.Pages.CostCenters
 
             try
             {
-                var json = JsonSerializer.Serialize(_CostCenterDetails, new JsonSerializerOptions { WriteIndented = true });
+                var json = JsonSerializer.Serialize(_CompaniesDetails, new JsonSerializerOptions { WriteIndented = true });
                 await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
 
                 await NotificationService.ShowMessageBarAsync(options =>
@@ -75,7 +77,7 @@ namespace Clone.Web.Components.Pages.CostCenters
                     options.Section = MESSAGEBAR_SECTION;
                     options.Intent = MessageBarIntent.Info;
                     options.Layout = MessageBarLayout.SingleLine;
-                    options.Title = Localizer["Message.Copied", _CostCenterDetails.Id];
+                    options.Title = Localizer["Message.Copied", _CompaniesDetails.Id];
                     options.AllowDismiss = true;
                     options.Lifetime = TimeSpan.FromSeconds(3);
                     options.ResultTiming = MessageBarResultTiming.Closed;
@@ -83,14 +85,14 @@ namespace Clone.Web.Components.Pages.CostCenters
             }
             catch (JSException ex)
             {
-                Logger.LogError(ex, "Error copying CostCenter {Id} to clipboard.", _CostCenterDetails.Id);
+                Logger.LogError(ex, "Error copying Company {Id} to clipboard.", _CompaniesDetails.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Copy"]);
             }
         }
 
         private async Task OnDeleteClicked(int id)
         {
-            var repository = UnitOfWork.Repository<CostCenter>();
+            var repository = UnitOfWork.Repository<Company>();
             var toDelete = await repository.GetByIdAsync(id);
 
             if (toDelete is null)
@@ -113,19 +115,19 @@ namespace Clone.Web.Components.Pages.CostCenters
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                Logger.LogError(ex, "Concurrency error while deleting CostCenter {Id}.", id);
+                Logger.LogError(ex, "Concurrency error while deleting Company {Id}.", id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.ModifiedByAnotherUser"]);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unexpected error while deleting CostCenter {Id}.", id);
+                Logger.LogError(ex, "Unexpected error while deleting Company {Id}.", id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Delete"]);
             }
         }
 
         private async Task OnDetailsClicked(int id)
         {
-            var repository = UnitOfWork.Repository<CostCenter>();
+            var repository = UnitOfWork.Repository<Company>();
             var toDetails = await repository.GetByIdAsync(id);
 
             if (toDetails is null)
@@ -134,13 +136,13 @@ namespace Clone.Web.Components.Pages.CostCenters
                 return;
             }
 
-            _CostCenterDetails = toDetails;
+            _CompaniesDetails = toDetails;
             _CollapsedDetails = false;
         }
 
         private async Task OnEditClicked(int id)
         {
-            var repository = UnitOfWork.Repository<CostCenter>();
+            var repository = UnitOfWork.Repository<Company>();
             var toEdit = await repository.GetByIdAsync(id);
 
             if (toEdit is null)
@@ -149,32 +151,32 @@ namespace Clone.Web.Components.Pages.CostCenters
                 return;
             }
 
-            _CostCenter = toEdit;
+            _Company = toEdit;
             _CollapsedContent = false;
         }
 
         private async Task OnSaveContentClicked()
         {
-            if (string.IsNullOrWhiteSpace(_CostCenter.Name))
+            if (string.IsNullOrWhiteSpace(_Company.Name))
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NameRequired"]);
                 return;
             }
 
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var repository = UnitOfWork.Repository<CostCenter>();
+            var repository = UnitOfWork.Repository<Company>();
 
             try
             {
-                if (_CostCenter.Id == 0)
+                if (_Company.Id == 0)
                 {
-                    _CostCenter.InsertAudit(authState.User);
-                    await repository.AddAsync(_CostCenter);
+                    _Company.InsertAudit(authState.User);
+                    await repository.AddAsync(_Company);
                 }
                 else
                 {
-                    _CostCenter.UpdateAudit(authState.User);
-                    await repository.UpdateAsync(_CostCenter);
+                    _Company.UpdateAudit(authState.User);
+                    await repository.UpdateAsync(_Company);
                 }
 
                 await UnitOfWork.SaveAsync();
@@ -185,12 +187,12 @@ namespace Clone.Web.Components.Pages.CostCenters
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                Logger.LogError(ex, "Concurrency error CostCenter Id: {Id}.", _CostCenter.Id);
+                Logger.LogError(ex, "Concurrency error Company Id: {Id}.", _Company.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Concurrency"]);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Unexpected error CostCenter Id: {Id}.", _CostCenter.Id);
+                Logger.LogError(ex, "Unexpected error Company Id: {Id}.", _Company.Id);
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Save"]);
             }
         }
@@ -202,7 +204,7 @@ namespace Clone.Web.Components.Pages.CostCenters
 
         private void ResetForm()
         {
-            _CostCenter = new CostCenter();
+            _Company = new Company();
         }
 
         private async Task SearchData()
@@ -211,9 +213,10 @@ namespace Clone.Web.Components.Pages.CostCenters
 
             try
             {
-                var findeds = await UnitOfWork.Repository<CostCenter>().Entities
+                var findeds = await UnitOfWork.Repository<Company>().Entities
                     .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
-                    .OrderBy(d => d.Name)
+                    .Where(d => string.IsNullOrWhiteSpace(_StreetAddressSearch) || d.StreetAddress!.Contains(_StreetAddressSearch))
+                    .Where(d => string.IsNullOrWhiteSpace(_PhoneNumberSearch) || d.PhoneNumber!.Contains(_PhoneNumberSearch))
                     .AsNoTracking()
                     .Take(MaxRows.MaxThirty)
                     .ToListAsync();
@@ -221,11 +224,11 @@ namespace Clone.Web.Components.Pages.CostCenters
                 _TotalSearched = findeds.Count;
                 _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
 
-                _CostCenters = findeds.AsQueryable();
+                _Companies = findeds.AsQueryable();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error searching CostCenters.");
+                Logger.LogError(ex, "Error searching Companies.");
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.Search"]);
             }
             finally
