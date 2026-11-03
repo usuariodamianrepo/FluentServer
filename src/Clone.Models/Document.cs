@@ -5,12 +5,10 @@ namespace Clone.Models
 {
     public sealed class Document : AuditableEntity
     {
-        [Required]
         [MaxLength(120)]
         public string Title { get; set; } = string.Empty;
 
         [Column(TypeName = "timestamp without time zone")]
-        [Required]
         public DateTime Published { get; set; }
 
         [MaxLength(450)]
@@ -22,7 +20,6 @@ namespace Clone.Models
         public string? URL { get; set; }
 
         [ForeignKey("DocumentTypeId")]
-        [Required]
         public int DocumentTypeId { get; set; }
         public DocumentType DocumentType { get; set; } = default!;
     }

@@ -9,13 +9,11 @@ namespace Clone.Models
         [Column(TypeName = "timestamp without time zone")]
         public DateTime Date { get; set; }
 
-        [Required]
         public string ApplicationUserId { get; set; } = string.Empty;
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; } = default!;
 
-        [Required]
         public int CostCenterId { get; set; }
         [ForeignKey("CostCenterId")]
         [ValidateNever]
@@ -27,7 +25,6 @@ namespace Clone.Models
         [MaxLength(180)]
         public string? Description { get; set; }
 
-        [Required]
         public decimal Amount { get; set; }
 
         public int? OrderId { get; set; }

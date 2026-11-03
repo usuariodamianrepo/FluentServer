@@ -26,12 +26,12 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>{EntityPluralName}</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">{EntityPluralName}</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack HorizontalGap="6px" Wrap="true">
+    <FluentStack HorizontalGap="6px" Wrap="true" Padding="5px 0 5px 0;">
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />

@@ -4,7 +4,6 @@ namespace Clone.Models
 {
     public sealed class Company : AuditableEntity
     {
-		[Required]
 		[MaxLength(120)]
 		public string Name { get; set; } = string.Empty;
 

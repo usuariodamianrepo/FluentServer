@@ -19,12 +19,12 @@
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>@Localizer["Title"]</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack HorizontalGap="6px" Wrap="true">
+    <FluentStack HorizontalGap="6px" Wrap="true" Padding="5px 0 5px 0;">
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
         <FluentTextInput @bind-Value=_PhoneNumberSearch Placeholder="@SharedLocalizer["Common.PhoneNumber"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
         <FluentButton Title="@(_IsMaxSearch?

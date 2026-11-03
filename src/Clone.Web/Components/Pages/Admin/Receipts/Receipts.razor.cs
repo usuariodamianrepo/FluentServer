@@ -19,8 +19,10 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
         private Receipt _Receipt { get; set; } = new();
         private Receipt _ReceiptDetails { get; set; } = new();
         private IQueryable<Receipt>? _Receipts { get; set; }
+
         #region Form
         private bool _IsIngress = true;
+        IEnumerable<UserBySearchDto> _UsersContentSearchSelected { get; set; } = [];
         #endregion
 
         #region Search
@@ -192,13 +194,19 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
 
         private async Task OnEditClicked(int id)
         {
-            var toEdit = await UnitOfWork.Repository<Receipt>().GetByIdAsync(id);
+            var toEdit = await UnitOfWork.Repository<Receipt>().Entities
+                .Include(r => r.ApplicationUser)
+                .FirstOrDefaultAsync(r => r.Id == id);
 
             if (toEdit is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: Localizer["Error.NotFound", id]);
                 return;
             }
+
+            _UsersContentSearchSelected = string.IsNullOrEmpty(toEdit.ApplicationUserId)
+                ? []
+                : [new UserBySearchDto { Id = toEdit.ApplicationUserId, Name = toEdit.ApplicationUser?.Name ?? "- NotFound -" }];
 
             _Receipt = toEdit;
             _IsIngress = _Receipt.IsIngress;
@@ -275,9 +283,17 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
             e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
         }
 
+        private async Task OnUserContentSearchAsync(OptionsSearchEventArgs<UserBySearchDto> e)
+        {
+            if (e.Text.Length < 3)
+                return;
+            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
+        }
+
         private void ResetForm()
         {
             _Receipt = new Receipt() { Date = DateTime.Now };
+            _UsersContentSearchSelected = [];
         }
 
         private async Task SearchData()
