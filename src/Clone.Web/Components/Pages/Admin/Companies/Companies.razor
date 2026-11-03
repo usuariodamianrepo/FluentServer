@@ -17,15 +17,17 @@
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>@Localizer["Title"]</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack HorizontalGap="6px" Wrap="true">
+    <FluentStack HorizontalGap="6px" Wrap="true" Padding="5px 0 5px 0;">
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked" />
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Name"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
+        <FluentTextInput @bind-Value=_StreetAddressSearch Placeholder="@Localizer["Column.StreetAddress"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" />
+        <FluentTextInput @bind-Value=_PhoneNumberSearch Placeholder="@SharedLocalizer["Common.PhoneNumber"]" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" />
         <FluentButton Title="@(_IsMaxSearch?
                                         SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
                                 SharedLocalizer["Common.Search"])"
@@ -66,8 +68,8 @@
                 </FluentDataGrid>
             </div>
         </div>
-        <p style="font-weight: bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 
@@ -80,7 +82,7 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value="_Company.Name" Required="true" Maxlength=120 AutoComplete="off" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Name"]" @bind-Value="_Company.Name" Maxlength=120 AutoComplete="off" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@Localizer["StreetAddress"]" @bind-Value="_Company.StreetAddress" Maxlength=120 AutoComplete="off" />
@@ -139,13 +141,13 @@
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_CompaniesDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_CompaniesDetails.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_CompaniesDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_CompaniesDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_CompaniesDetails.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_CompaniesDetails.UpdateUser)

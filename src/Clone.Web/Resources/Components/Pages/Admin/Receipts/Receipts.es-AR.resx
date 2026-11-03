@@ -222,4 +222,7 @@
   <data name="Info.ReceiptGenerated" xml:space="preserve">
     <value>Recibo Id: {0} generado!</value>
   </data>
+  <data name="Error.CanNotUpdate" xml:space="preserve">
+    <value>El recibo no se puede actualizar porque tiene un pedido asociado o no está activo.</value>
+  </data>
 </root>

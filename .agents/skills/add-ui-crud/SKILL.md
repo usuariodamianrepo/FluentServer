@@ -26,12 +26,12 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>{EntityPluralName}</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">{EntityPluralName}</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack HorizontalGap="6px" Wrap="true">
+    <FluentStack HorizontalGap="6px" Wrap="true" Padding="5px 0 5px 0;">
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
@@ -69,8 +69,8 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 				</FluentDataGrid>
 			</div>
 		</div>
-		<p style="font-weight: bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 
@@ -137,13 +137,13 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
                     Audit Information
                 </FluentDivider>
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>InsertDate:</b> @(_{EntityPluralName}Details.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>InsertDate:</b> @(_{EntityPluralName}Details.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>InsertUser:</b> @(_{EntityPluralName}Details.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>UpdateDate:</b> @(_{EntityPluralName}Details.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>UpdateDate:</b> @(_{EntityPluralName}Details.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>UpdateUser:</b> @(_{EntityPluralName}Details.UpdateUser)

@@ -17,12 +17,12 @@
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>@Localizer["Title"]</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack HorizontalGap="6px" Wrap="true">
+    <FluentStack HorizontalGap="6px" Wrap="true" Padding="5px 0 5px 0;">
         <FluentButton Title="@SharedLocalizer["Common.Add"]" IconStart="@(new Icons.Regular.Size20.Add())" Appearance="ButtonAppearance.Default"
                       OnClick="@OnAddClicked" />
         <FluentTextInput @bind-Value=_NameSearch Placeholder="@SharedLocalizer["Common.Title"]" TextInputType="TextInputType.Search" Maxlength=120 AutoComplete="off" Autofocus="true" />
@@ -65,8 +65,8 @@
                 </FluentDataGrid>
             </div>
         </div>
-        <p style="font-weight: bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 
@@ -79,19 +79,7 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Required="true" Maxlength=120 AutoComplete="off" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Required="true" Maxlength=450 AutoComplete="off" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Required="true" Maxlength=250 AutoComplete="off" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
-                    </FluentGridItem>
-                    <FluentGridItem Xs="12" Sm="12">
-                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
+                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Maxlength=120 AutoComplete="off" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@Localizer["DocumentType"]"
@@ -100,6 +88,18 @@
                                       OptionText="@(i => i.Name)"
                                       OptionValue="@(i => i.Id)"
                                       @bind-Value="@_Document.DocumentTypeId" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Maxlength=450 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Maxlength=250 AutoComplete="off" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />
+                    </FluentGridItem>
+                    <FluentGridItem Xs="12" Sm="12">
+                        <FluentCheckbox Label="@Localizer["Public"]" @bind-Value="_Document.IsPublic" />
                     </FluentGridItem>
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
@@ -143,13 +143,13 @@
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentsDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentsDetails.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_DocumentsDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentsDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentsDetails.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_DocumentsDetails.UpdateUser)

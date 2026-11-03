@@ -23,12 +23,12 @@
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
 <PageTitle>@Localizer["Title"]</PageTitle>
+<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 <FluentDialogProvider />
 <FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
-<FluentMessageBarProvider Section="@MESSAGEBAR_SECTION" Margin="@Margin.Vertical2" />
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-    <FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Vertical" Padding="5px 0 5px 0;">
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
             <FluentButton Title="@Localizer["Increase"]" IconStart="@(new Icons.Regular.Size20.ArrowRight().WithColor(Color.Success))" Appearance="ButtonAppearance.Default"
                           OnClick="@OnAddIngressClicked" />
@@ -41,6 +41,7 @@
                                 TValue="string"
                                 Width="250px"
                                 Placeholder="@Localizer["ApplicationUser"]"
+                                MaximumSelectedOptions="3"
                                 OnOptionsSearch="@OnUserSearchAsync"
                                 OptionText="@(item => item.Name)"
                                 @bind-SelectedItems="@_UsersSearchSelected" />
@@ -48,6 +49,7 @@
                                 TValue="int"
                                 Width="250px"
                                 Placeholder="@Localizer["CostCenter"]"
+                                MaximumSelectedOptions="3"
                                 Items="@_CostCenterSelect"
                                 OptionText="@(item => item.Name)"
                                 @bind-SelectedItems="@_CostCenterSearchSelected" />
@@ -73,7 +75,7 @@
                         <PropertyColumn Title="@Localizer["CostCenter"]" Property="@(c => c.CostCenter.Name)" />
                         <PropertyColumn Title="@Localizer["Number"]" Property="@(c => c.Number)" />
                         <PropertyColumn Title="@Localizer["Active"]" Property="@(c => c.Active ? Localizer["Yes"] : Localizer["No"])" Align="DataGridCellAlignment.Center" />
-                        <PropertyColumn Title="@Localizer["Amount"]" Property="@(c => c.Amount.ToString("N2"))" Align="DataGridCellAlignment.End" />
+                        <PropertyColumn Title="@Localizer["Amount"]" Property="@(c => c.Amount.ToMoney())" Align="DataGridCellAlignment.End" />
                         <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
                             <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
                             <FluentButton Title="@Localizer["CounterReceipt"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.ReceiptSparkles())" OnClick="@(() => OnGenerateAgainstClicked(context.Id))" />
@@ -90,8 +92,8 @@
                 </FluentDataGrid>
             </div>
         </div>
-        <p style="font-weight:bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 
@@ -104,19 +106,23 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="6" Sm="6">
-                        <FluentDatePicker Label="@Localizer["Date"]" @bind-Value="_Receipt.Date" Required="true" />
+                        <FluentDatePicker Label="@Localizer["Date"]" @bind-Value="_Receipt.Date" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="6" Sm="6">
                         <FluentNumberInput Label="@Localizer["OrderId"]" @bind-Value="_Receipt.OrderId" Disabled="true" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentSelect Label="@Localizer["ApplicationUser"]"
-                                      Placeholder="@Localizer["SelectApplicationUser"]"
-                                      Items="@_UsersEditSelect"
-                                      OptionText="@(i => i.Name + " " + i.CompanyName)"
-                                      OptionValue="@(i => i.Id)"
-                                      @bind-Value="_Receipt.ApplicationUserId"
-                                      Required="true" />
+                        <FluentAutocomplete Label="@Localizer["ApplicationUser"]"
+                                            TOption="UserBySearchDto"
+                                            TValue="string"
+                                            Width="250px"
+                                            Placeholder="@Localizer["ApplicationUser"]"
+                                            Multiple="false"
+                                            OnOptionsSearch="@OnUserContentSearchAsync"
+                                            @bind-Value="@_Receipt.ApplicationUserId"
+                                            @bind-SelectedItems="@_UsersContentSearchSelected"
+                                            OptionText="@(i => i?.Name ?? string.Empty)"
+                                            OptionValue="@(i => i?.Id ?? string.Empty)" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@Localizer["CostCenter"]"
@@ -124,8 +130,7 @@
                                       Items="@_CostCenterSelect"
                                       OptionText="@(i => i.Name)"
                                       OptionValue="@(i => i.Id)"
-                                      @bind-Value="_Receipt.CostCenterId"
-                                      Required="true" />
+                                      @bind-Value="_Receipt.CostCenterId" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentTextInput Label="@Localizer["Number"]" @bind-Value="_Receipt.Number" Maxlength=60 AutoComplete="off" />
@@ -134,13 +139,13 @@
                         <FluentTextArea Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Receipt.Description" Maxlength=180 Width="100%" Height="80px" AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentNumberInput Label="@Localizer["Amount"]" @bind-Value="_Receipt.Amount" AutoComplete="off" Required="true" />
+                        <FluentNumberInput Label="@Localizer["Amount"]" @bind-Value="_Receipt.Amount" AutoComplete="off" />*
                     </FluentGridItem>
                 </FluentGrid>
                 <FluentStack id="toolbar-footer" HorizontalGap="6px" Padding="3px">
                     <FluentButton Type="ButtonType.Submit" Title="@SharedLocalizer["Common.Save"]" IconStart="@(new Icons.Regular.Size20.Save())"
                                   Appearance="ButtonAppearance.Primary"
-                                  Disabled="@(!_Receipt.Active)">
+                                  Disabled="@(!_Receipt.CanUpdate)">
                         @SharedLocalizer["Common.Save"]
                     </FluentButton>
                     <FluentButton Title="@SharedLocalizer["Common.Cancel"]" IconStart="@(new Icons.Regular.Size20.ArrowExit())"
@@ -164,7 +169,7 @@
         {
             <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>@Localizer["Date"]:</b> @(_ReceiptDetails.Date.ToDateHHmm())
+                    <b>@Localizer["Date"]:</b> @(_ReceiptDetails.Date.ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>@Localizer["ApplicationUser"]:</b> @(_ReceiptDetails.ApplicationUser?.Name)
@@ -194,13 +199,13 @@
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_ReceiptDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_ReceiptDetails.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_ReceiptDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_ReceiptDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_ReceiptDetails.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_ReceiptDetails.UpdateUser)

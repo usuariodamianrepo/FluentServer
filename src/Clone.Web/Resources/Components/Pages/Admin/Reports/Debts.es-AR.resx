@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,108 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Title" xml:space="preserve">
-    <value>Recibos</value>
+    <value>Informe de deudas</value>
   </data>
-  <data name="Label" xml:space="preserve">
-    <value>Recibos</value>
+  <data name="Header" xml:space="preserve">
+    <value>Informe de deudas</value>
   </data>
-  <data name="ContentHeader" xml:space="preserve">
-    <value>Conteúdo</value>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo</value>
   </data>
-  <data name="DetailsHeader" xml:space="preserve">
-    <value>Detalhes</value>
+  <data name="Customers" xml:space="preserve">
+    <value>Clientes</value>
   </data>
-  <data name="Date" xml:space="preserve">
-    <value>Data</value>
-  </data>
-  <data name="Number" xml:space="preserve">
-    <value>Número</value>
-  </data>
-  <data name="Amount" xml:space="preserve">
-    <value>Valor</value>
-  </data>
-  <data name="OrderId" xml:space="preserve">
-    <value>Pedido Id</value>
-  </data>
-  <data name="Active" xml:space="preserve">
-    <value>Ativo</value>
-  </data>
-  <data name="IsIngress" xml:space="preserve">
-    <value>É entrada</value>
-  </data>
-  <data name="ApplicationUser" xml:space="preserve">
-    <value>Usuário</value>
-  </data>
-  <data name="CostCenter" xml:space="preserve">
-    <value>Centro de custo</value>
-  </data>
-  <data name="SelectApplicationUser" xml:space="preserve">
-    <value>Selecione um usuário</value>
-  </data>
-  <data name="SelectCostCenter" xml:space="preserve">
-    <value>Selecione um centro de custo</value>
-  </data>
-  <data name="SearchPlaceholder" xml:space="preserve">
-    <value>Número ou descrição</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Sim</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Não</value>
-  </data>
-  <data name="Message.Copied" xml:space="preserve">
-    <value>Recibo Id: {0} copiado para a área de transferência!</value>
-  </data>
-  <data name="Confirm.Delete" xml:space="preserve">
-    <value>Tem certeza de que deseja &lt;strong&gt;excluir&lt;/strong&gt; o item Id: {0}?</value>
-  </data>
-  <data name="Error.Copy" xml:space="preserve">
-    <value>Não foi possível copiar o conteúdo para a área de transferência.</value>
-  </data>
-  <data name="Error.NotFound" xml:space="preserve">
-    <value>Recibo Id: {0} não encontrado.</value>
-  </data>
-  <data name="Error.ModifiedByAnotherUser" xml:space="preserve">
-    <value>O item foi modificado por outro usuário. Atualize e tente novamente.</value>
-  </data>
-  <data name="Error.Delete" xml:space="preserve">
-    <value>Ocorreu um erro ao excluir os dados.</value>
-  </data>
-  <data name="Error.ApplicationUserRequired" xml:space="preserve">
-    <value>O usuário é obrigatório.</value>
-  </data>
-  <data name="Error.CostCenterRequired" xml:space="preserve">
-    <value>O centro de custo é obrigatório.</value>
-  </data>
-  <data name="Error.AmountInvalid" xml:space="preserve">
-    <value>O valor não é válido.</value>
-  </data>
-  <data name="Error.OrderIdInvalid" xml:space="preserve">
-    <value>O Id do pedido não é válido.</value>
-  </data>
-  <data name="Error.Concurrency" xml:space="preserve">
-    <value>Erro de concorrência. Cancele a operação e tente novamente.</value>
-  </data>
-  <data name="Error.Save" xml:space="preserve">
-    <value>Ocorreu um erro ao salvar os dados.</value>
-  </data>
-  <data name="Error.Search" xml:space="preserve">
-    <value>Ocorreu um erro ao pesquisar os dados.</value>
-  </data>
-  <data name="Ingress" xml:space="preserve">
-    <value>Entrada</value>
-  </data>
-  <data name="Decrease" xml:space="preserve">
-    <value>Diminuição</value>
-  </data>
-  <data name="Confirm.GenerateAgainst" xml:space="preserve">
-    <value>Deseja gerar um contrarrecibo para {0}?</value>
-  </data>
-  <data name="CounterReceipt" xml:space="preserve">
-    <value>Contrarrecibo</value>
-  </data>
-  <data name="Info.ReceiptGenerated" xml:space="preserve">
-    <value>Recibo Id: {0} gerado!</value>
+  <data name="Suppliers" xml:space="preserve">
+    <value>Proveedores</value>
   </data>
 </root>

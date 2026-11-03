@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Clone.Web.Components.Pages.AdminUsers
+namespace Clone.Web.Components.Pages.Admin.AdminUsers
 {
     public partial class AdminUsers
     {

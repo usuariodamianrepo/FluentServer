@@ -9,14 +9,19 @@
     <FluentNavItem Href="/" Match="NavLinkMatch.All" IconRest="@(new Icons.Regular.Size20.Home())" IconActive="@(new Icons.Filled.Size20.Home())">@Localizer["Nav.Home"]</FluentNavItem>
     <AuthorizeView>
         <Authorized>
-            <FluentNavItem Href="adminusers" IconRest="@(new Icons.Regular.Size20.Person())" IconActive="@(new Icons.Filled.Size20.Person())">@Localizer["Nav.AdminUsers"]</FluentNavItem>
-            <FluentNavItem Href="companies" IconRest="@(new Icons.Regular.Size20.Building())" IconActive="@(new Icons.Filled.Size20.Building())">@Localizer["Nav.Companies"]</FluentNavItem>
-            <FluentNavItem Href="costcenters" IconRest="@(new Icons.Regular.Size20.Tag())" IconActive="@(new Icons.Filled.Size20.Tag())">@Localizer["Nav.CostCenters"]</FluentNavItem>
             <FluentNavItem Href="receipts" IconRest="@(new Icons.Regular.Size20.ReceiptMoney())" IconActive="@(new Icons.Filled.Size20.ReceiptMoney())">@Localizer["Nav.Receipts"]</FluentNavItem>
-            <FluentNavCategory Title="@Localizer["Nav.Misc"]" IconRest="@(new Icons.Regular.Size20.NotePin())" IconActive="@(new Icons.Filled.Size20.NotePin())">
-                <FluentNavItem Href="misc/documents" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">@Localizer["Nav.Documents"]</FluentNavItem>
-                <FluentNavItem Href="misc/documenttypes" IconRest="@(new Icons.Regular.Size20.Document())" IconActive="@(new Icons.Filled.Size20.Document())">@Localizer["Nav.DocumentTypes"]</FluentNavItem>
+            <FluentNavCategory Title="@Localizer["Nav.Administration"]" IconRest="@(new Icons.Regular.Size20.Toolbox())" IconActive="@(new Icons.Filled.Size20.Toolbox())">
+                <FluentNavItem Href="companies">@Localizer["Nav.Companies"]</FluentNavItem>
+                <FluentNavItem Href="costcenters">@Localizer["Nav.CostCenters"]</FluentNavItem>
             </FluentNavCategory>
+            <FluentNavCategory Title="@Localizer["Nav.Reports"]" IconRest="@(new Icons.Regular.Size20.Book())" IconActive="@(new Icons.Filled.Size20.Book())">
+                <FluentNavItem Href="reports/debts">@Localizer["Nav.Debts"]</FluentNavItem>
+            </FluentNavCategory>
+            <FluentNavCategory Title="@Localizer["Nav.Misc"]" IconRest="@(new Icons.Regular.Size20.NotePin())" IconActive="@(new Icons.Filled.Size20.NotePin())">
+                <FluentNavItem Href="misc/documents">@Localizer["Nav.Documents"]</FluentNavItem>
+                <FluentNavItem Href="misc/documenttypes">@Localizer["Nav.DocumentTypes"]</FluentNavItem>
+            </FluentNavCategory>
+            <FluentNavItem Href="adminusers" IconRest="@(new Icons.Regular.Size20.Person())" IconActive="@(new Icons.Filled.Size20.Person())">@Localizer["Nav.AdminUsers"]</FluentNavItem>
             <FluentNavItem Href="Account/Manage">@context.User.Identity?.Name</FluentNavItem>
             <form action="Account/Logout" method="post">
                 <AntiforgeryToken />
