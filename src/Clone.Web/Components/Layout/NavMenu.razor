@@ -14,6 +14,9 @@
                 <FluentNavItem Href="companies">@Localizer["Nav.Companies"]</FluentNavItem>
                 <FluentNavItem Href="costcenters">@Localizer["Nav.CostCenters"]</FluentNavItem>
             </FluentNavCategory>
+            <FluentNavCategory Title="@Localizer["Nav.Reports"]" IconRest="@(new Icons.Regular.Size20.Book())" IconActive="@(new Icons.Filled.Size20.Book())">
+                <FluentNavItem Href="reports/debts">@Localizer["Nav.Debts"]</FluentNavItem>
+            </FluentNavCategory>
             <FluentNavCategory Title="@Localizer["Nav.Misc"]" IconRest="@(new Icons.Regular.Size20.NotePin())" IconActive="@(new Icons.Filled.Size20.NotePin())">
                 <FluentNavItem Href="misc/documents">@Localizer["Nav.Documents"]</FluentNavItem>
                 <FluentNavItem Href="misc/documenttypes">@Localizer["Nav.DocumentTypes"]</FluentNavItem>

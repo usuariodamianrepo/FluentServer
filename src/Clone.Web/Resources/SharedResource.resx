@@ -381,4 +381,31 @@
   <data name="Nav.Misc" xml:space="preserve">
     <value>Misc</value>
   </data>
+  <data name="Common.Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Common.Employee" xml:space="preserve">
+    <value>Employee</value>
+  </data>
+  <data name="Common.Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Nav.Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="ítems" xml:space="preserve">
+    <value>Debts</value>
+  </data>
+  <data name="Common.Items" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+  <data name="Common.Item" xml:space="preserve">
+    <value>{0} item</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Nav.Debts" xml:space="preserve">
+    <value>Debts</value>
+  </data>
 </root>

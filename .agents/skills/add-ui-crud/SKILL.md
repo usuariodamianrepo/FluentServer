@@ -69,8 +69,8 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
 				</FluentDataGrid>
 			</div>
 		</div>
-		<p style="font-weight: bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 

@@ -1,0 +1,90 @@
+﻿@page "/reports/debts"
+@rendermode InteractiveServer
+
+@using Clone.DataAccess.Repositories.IRepository
+@using Clone.Models.Dtos
+@using Clone.Utility
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUnitOfWork UnitOfWork
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject IStringLocalizer<Debts> Localizer
+
+@attribute [Authorize(Roles = RD.RoleAdmin)]
+
+<PageTitle>@Localizer["Title"]</PageTitle>
+<h3>@Localizer["Header"]</h3>
+<h6>@Localizer["Balance"]: @_TotalDebts.ToMoney()</h6>
+<FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+    <FluentGridItem Xs="6" Sm="6">
+        <h6>@Localizer["Customers"]: @_TotalCustomersDebts.ToMoney()</h6>
+        <FluentDataGrid Items="@_Customers">
+            <ChildContent>
+                <PropertyColumn Title="@SharedLocalizer["Common.Name"]" Property="@(p => p.Name)" Sortable="true" />
+                <PropertyColumn Title="@SharedLocalizer["Common.PhoneNumber"]" Property="@(p => p.PhoneNumber)" />
+                <PropertyColumn Title="@SharedLocalizer["Common.Total"]" Property="@(p => p.Total.ToMoney())" Sortable="true" Align="DataGridCellAlignment.End" />
+            </ChildContent>
+            <EmptyContent>
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                    <div>@SharedLocalizer["Message.NoData"]</div>
+                </FluentStack>
+            </EmptyContent>
+        </FluentDataGrid>
+        <p style="font-weight:bold; padding:5px; display:flex; justify-content:space-between;">
+            @(_TotalCustomers == 1 ? SharedLocalizer["Common.Item", _TotalCustomers] : SharedLocalizer["Common.Items", _TotalCustomers])
+            <span>@_TotalCustomersDebts.ToMoney()</span>
+        </p>
+    </FluentGridItem>
+    <FluentGridItem Xs="6" Sm="6">
+        <h6>@Localizer["Suppliers"]: @_TotalProvidersDebts.ToMoney()</h6>
+        <FluentDataGrid Items="@_Providers">
+            <ChildContent>
+                <PropertyColumn Title="@SharedLocalizer["Common.Name"]" Property="@(p => p.Name)" Sortable="true" />
+                <PropertyColumn Title="@SharedLocalizer["Common.PhoneNumber"]" Property="@(p => p.PhoneNumber)" />
+                <PropertyColumn Title="@SharedLocalizer["Common.Company"]" Property="@(p => p.CompanyName)" Sortable="true" />
+                <PropertyColumn Title="@SharedLocalizer["Common.Total"]" Property="@(p => p.Total.ToMoney())" Sortable="true" Align="DataGridCellAlignment.End" />
+            </ChildContent>
+            <EmptyContent>
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.Center" HorizontalGap="10">
+                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Primary" />
+                    <div>@SharedLocalizer["Message.NoData"]</div>
+                </FluentStack>
+            </EmptyContent>
+        </FluentDataGrid>
+        <p style="font-weight:bold; padding:5px; display:flex; justify-content:space-between;">
+            @(_TotalProviders == 1 ? SharedLocalizer["Common.Item", _TotalProviders] : SharedLocalizer["Common.Items", _TotalProviders])
+            <span>@_TotalProvidersDebts.ToMoney()</span>
+        </p>
+    </FluentGridItem>
+</FluentGrid>
+
+@code {
+    IQueryable<DebsDto> _Debts { get; set; } = default!;
+    IQueryable<DebsDto> _Customers { get; set; } = default!;
+    IQueryable<DebsDto> _Providers { get; set; } = default!;
+
+    decimal _TotalDebts = 0;
+    decimal _TotalCustomersDebts = 0;
+    decimal _TotalProvidersDebts = 0;
+
+    int _TotalCustomers = 0;
+    int _TotalProviders = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var resp = await UnitOfWork.DebtsReportAsync();
+        _Debts = resp.AsQueryable();
+        _Customers = resp.Where(d => d.CompanyId == null).AsQueryable();
+        _Providers = resp.Where(d => d.CompanyId != null).AsQueryable();
+
+        _TotalCustomers = _Customers.Count();
+        _TotalProviders = _Providers.Count();
+
+        _TotalDebts = _Debts.Sum(d => d.Total);
+        _TotalCustomersDebts = _Customers.Sum(d => d.Total);
+        _TotalProvidersDebts = _Providers.Sum(d => d.Total);
+    }
+}

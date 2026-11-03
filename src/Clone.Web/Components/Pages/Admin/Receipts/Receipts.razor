@@ -73,7 +73,7 @@
                         <PropertyColumn Title="@Localizer["CostCenter"]" Property="@(c => c.CostCenter.Name)" />
                         <PropertyColumn Title="@Localizer["Number"]" Property="@(c => c.Number)" />
                         <PropertyColumn Title="@Localizer["Active"]" Property="@(c => c.Active ? Localizer["Yes"] : Localizer["No"])" Align="DataGridCellAlignment.Center" />
-                        <PropertyColumn Title="@Localizer["Amount"]" Property="@(c => c.Amount.ToString("N2"))" Align="DataGridCellAlignment.End" />
+                        <PropertyColumn Title="@Localizer["Amount"]" Property="@(c => c.Amount.ToMoney())" Align="DataGridCellAlignment.End" />
                         <TemplateColumn Title="@SharedLocalizer["Common.Actions"]" Align="@DataGridCellAlignment.Center">
                             <FluentButton Title="@SharedLocalizer["Common.Edit"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.Edit())" OnClick="@(() => OnEditClicked(context.Id))" />
                             <FluentButton Title="@Localizer["CounterReceipt"]" Appearance="ButtonAppearance.Subtle" IconEnd="@(new Icons.Regular.Size20.ReceiptSparkles())" OnClick="@(() => OnGenerateAgainstClicked(context.Id))" />
@@ -90,8 +90,8 @@
                 </FluentDataGrid>
             </div>
         </div>
-        <p style="font-weight:bold;padding:5px;">
-            @(_TotalSearched == 0 ? $"{_TotalSearched} item" : $"{_TotalSearched} items")
+        <p style="font-weight:bold; padding:5px;">
+            @(_TotalSearched == 1 ? SharedLocalizer["Common.Item", _TotalSearched] : SharedLocalizer["Common.Items", _TotalSearched])
         </p>
     </FluentMultiSplitterPane>
 
