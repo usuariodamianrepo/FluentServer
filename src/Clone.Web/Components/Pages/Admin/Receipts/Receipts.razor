@@ -169,7 +169,7 @@
         {
             <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>@Localizer["Date"]:</b> @(_ReceiptDetails.Date.ToDateHHmm())
+                    <b>@Localizer["Date"]:</b> @(_ReceiptDetails.Date.ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>@Localizer["ApplicationUser"]:</b> @(_ReceiptDetails.ApplicationUser?.Name)
@@ -199,13 +199,13 @@
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_ReceiptDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_ReceiptDetails.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_ReceiptDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_ReceiptDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_ReceiptDetails.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_ReceiptDetails.UpdateUser)

@@ -111,13 +111,13 @@
                     @SharedLocalizer["Common.AuditInformation"]
                 </FluentDivider>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentTypeDetails.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.InsertDate"]:</b> @(_DocumentTypeDetails.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.InsertUser"]:</b> @(_DocumentTypeDetails.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
-                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentTypeDetails.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>@SharedLocalizer["Common.UpdateDate"]:</b> @(_DocumentTypeDetails.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12">
                     <b>@SharedLocalizer["Common.UpdateUser"]:</b> @(_DocumentTypeDetails.UpdateUser)

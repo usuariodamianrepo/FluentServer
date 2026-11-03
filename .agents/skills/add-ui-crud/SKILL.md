@@ -137,13 +137,13 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
                     Audit Information
                 </FluentDivider>
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>InsertDate:</b> @(_{EntityPluralName}Details.InsertDate.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>InsertDate:</b> @(_{EntityPluralName}Details.InsertDate.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>InsertUser:</b> @(_{EntityPluralName}Details.InsertUser)
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
-                    <b>UpdateDate:</b> @(_{EntityPluralName}Details.UpdateDate?.ConvertToShow().ToString("yyyy-MM-dd HH:mm:ss"))
+                    <b>UpdateDate:</b> @(_{EntityPluralName}Details.UpdateDate?.ConvertToShow().ToDateHHmmss())
                 </FluentGridItem>
                 <FluentGridItem Xs="12" Sm="12">
                     <b>UpdateUser:</b> @(_{EntityPluralName}Details.UpdateUser)
