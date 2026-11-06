@@ -1,6 +1,6 @@
 ---
 name: add-ui-crud
-description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition, if {EntitySingularName} you write the entity name at singular name and if {EntityPluralName} you write the entity name at plural name. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript. Add Localization.
+description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages/Admin` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition. Example: if {EntitySingularName} you write the entity name at singular name, if {EntityPluralName} you write the entity name at plural name, etc. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript. Add Localization.
 argument-hint: "[EntityName]"
 ---
 

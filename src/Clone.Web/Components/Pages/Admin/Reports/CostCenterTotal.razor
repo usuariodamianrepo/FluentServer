@@ -9,7 +9,6 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime JS
 @inject ILogger<CostCenterTotal> Logger
 @inject INotificationService NotificationService
 @inject IUnitOfWork UnitOfWork
@@ -24,15 +23,16 @@
 <FluentLabel Size="@LabelSize.Large">@Localizer["Label"]</FluentLabel>
 
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
-        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-            <DateRangePicker @bind-Value="_range" OnRangeChanged="OnRangeChanged" />
-        <FluentButton Title="@(_IsMaxSearch ? SharedLocalizer["Warning.Search", MaxRows.MaxThirty] : SharedLocalizer["Common.Search"])"
-                      IconStart="@(_IsMaxSearch ? new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) : new Icons.Regular.Size20.DatabaseSearch())"
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
+        <DateRangePicker @bind-Value="_range" OnRangeChanged="OnRangeChanged" />
+        <FluentButton Title=@SharedLocalizer["Common.Search"]"
+                      IconStart="@(new Icons.Regular.Size20.DatabaseSearch())"
                       Appearance="ButtonAppearance.Default"
-                      OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
-        </FluentStack>
+                      OnClick="@OnSearchClicked"
+                      Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>
+    </FluentStack>
 </FluentKeyCode>
-<FluentDataGrid Id="weathergrid" Items="@_ReportItems" TGridItem="CostCenterTotalDto" GridTemplateColumns="2fr 1fr 1fr" Style="width: 800px;">
+<FluentDataGrid Items="@_ReportItems" GridTemplateColumns="2fr 1fr 1fr" Style="width: 800px;">
     <ChildContent>
         <PropertyColumn Title="@SharedLocalizer["Common.Name"]" Property="@(c => c!.CostCenterName)" Align="DataGridCellAlignment.Start" />
         <PropertyColumn Title="@Localizer["Column.Count"]" Property="@(c => c!.TotalCount)" Align="DataGridCellAlignment.End" />
@@ -59,7 +59,6 @@
     IQueryable<CostCenterTotalDto> _ReportItems { get; set; } = default!;
 
     #region Search
-    private bool _IsMaxSearch = false;
     private DateRangeDto _range = DateRangeDto.Today();
     private bool _SearchButtonLoading = false;
     private int _TotalSearched = 0;
@@ -95,7 +94,6 @@
         try
         {
             var findeds = await UnitOfWork.CostCenterTotalReportAsync(_range.From, _range.To);
-            _IsMaxSearch = findeds.Count() >= MaxRows.MaxThirty;
 
             _ReportItems = findeds.AsQueryable();
         }
