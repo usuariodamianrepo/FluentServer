@@ -7,7 +7,8 @@ namespace Clone.DataAccess.Repositories.IRepository
     {
         IRepositoryAsync<T> Repository<T>() where T : AuditableEntity;
         Task SaveAsync();
-        IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber);
-        Task<IEnumerable<DebsDto>> DebtsReportAsync();
+        IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber, int maxRows);
+        Task<IEnumerable<BalancesDto>> BalancesReportAsync();
+        Task<IEnumerable<CostCenterTotalDto>> CostCenterTotalReportAsync(DateTime dateFrom, DateTime dateTo);
     }
 }

@@ -24,6 +24,7 @@ namespace Clone.Web.Components.Pages.Admin.AdminUsers
         string _NameSearch = string.Empty;
         string _PhoneNumberSearch = string.Empty;
         bool _IsMaxSearch = false;
+        int _MaxRowsDefined = MaxRows.MaxThirty;
         bool _SearchButtonLoading = false;
         private int _TotalSearched = 0;
         #endregion
@@ -115,7 +116,7 @@ namespace Clone.Web.Components.Pages.Admin.AdminUsers
 
         private async Task OnDetailsClicked(string id)
         {
-            var toDetails = await _UnitOfWork.UserBySearch(id, "", "").ToListAsync();
+            var toDetails = await _UnitOfWork.UserBySearch(id, "", "", _MaxRowsDefined).ToListAsync();
             if (toDetails is null)
             {
                 await NotificationService.ShowErrorBarAsync(MESSAGEBAR_SECTION, title: SharedLocalizer["Error.UserNotFound", id]);
@@ -224,10 +225,10 @@ namespace Clone.Web.Components.Pages.Admin.AdminUsers
             _SearchButtonLoading = true;
             try
             {
-                var findeds = await (_UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch)).ToListAsync();
+                var findeds = await (_UnitOfWork.UserBySearch("", _NameSearch, _PhoneNumberSearch, _MaxRowsDefined)).ToListAsync();
 
                 _TotalSearched = findeds.Count;
-                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
+                _IsMaxSearch = _TotalSearched >= _MaxRowsDefined;
 
                 _UserBySearchDto = findeds.AsQueryable();
             }

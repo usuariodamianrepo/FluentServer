@@ -1,4 +1,4 @@
-﻿@page "/reports/debts"
+﻿@page "/reports/balances"
 @rendermode InteractiveServer
 
 @using Clone.DataAccess.Repositories.IRepository
@@ -10,7 +10,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUnitOfWork UnitOfWork
 @inject IStringLocalizer<SharedResource> SharedLocalizer
-@inject IStringLocalizer<Debts> Localizer
+@inject IStringLocalizer<Balances> Localizer
 
 @attribute [Authorize(Roles = RD.RoleAdmin)]
 
@@ -62,9 +62,9 @@
 </FluentGrid>
 
 @code {
-    IQueryable<DebsDto> _Debts { get; set; } = default!;
-    IQueryable<DebsDto> _Customers { get; set; } = default!;
-    IQueryable<DebsDto> _Providers { get; set; } = default!;
+    IQueryable<BalancesDto> _Debts { get; set; } = default!;
+    IQueryable<BalancesDto> _Customers { get; set; } = default!;
+    IQueryable<BalancesDto> _Providers { get; set; } = default!;
 
     decimal _TotalDebts = 0;
     decimal _TotalCustomersDebts = 0;
@@ -75,7 +75,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var resp = await UnitOfWork.DebtsReportAsync();
+        var resp = await UnitOfWork.BalancesReportAsync();
         _Debts = resp.AsQueryable();
         _Customers = resp.Where(d => d.CompanyId == null).AsQueryable();
         _Providers = resp.Where(d => d.CompanyId != null).AsQueryable();

@@ -12,16 +12,16 @@ namespace Clone.Web.Components.Pages.Admin.Companies
         private const string MESSAGEBAR_SECTION = "MESSAGEBAR_COMPANY";
         private FluentDataGrid<Company>? _Grid;
 
-        private Company _Company { get; set; } = new();
-        private Company _CompaniesDetails { get; set; } = new();
         private IQueryable<Company>? _Companies { get; set; }
-
+        private Company _CompaniesDetails { get; set; } = new();
+        private Company _Company { get; set; } = new();
         #region Search
-        private string _NameSearch = string.Empty;
-        private string _StreetAddressSearch = string.Empty;
-        private string _PhoneNumberSearch = string.Empty;
         private bool _IsMaxSearch = false;
+        private int _MaxRowsDefined = MaxRows.MaxThirty;
+        private string _NameSearch = string.Empty;
+        private string _PhoneNumberSearch = string.Empty;
         private bool _SearchButtonLoading = false;
+        private string _StreetAddressSearch = string.Empty;
         private int _TotalSearched = 0;
         #endregion
 
@@ -218,11 +218,11 @@ namespace Clone.Web.Components.Pages.Admin.Companies
                     .Where(d => string.IsNullOrWhiteSpace(_StreetAddressSearch) || d.StreetAddress!.Contains(_StreetAddressSearch))
                     .Where(d => string.IsNullOrWhiteSpace(_PhoneNumberSearch) || d.PhoneNumber!.Contains(_PhoneNumberSearch))
                     .AsNoTracking()
-                    .Take(MaxRows.MaxThirty)
+                    .Take(_MaxRowsDefined)
                     .ToListAsync();
 
                 _TotalSearched = findeds.Count;
-                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
+                _IsMaxSearch = _TotalSearched >= _MaxRowsDefined;
 
                 _Companies = findeds.AsQueryable();
             }
