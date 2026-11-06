@@ -291,13 +291,6 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
             e.Items = await (UnitOfWork.UserBySearch("", e.Text, "", MaxRows.MaxFifty)).ToListAsync();
         }
 
-        private async Task OnUserContentSearchAsync(OptionsSearchEventArgs<UserBySearchDto> e)
-        {
-            if (e.Text.Length < 3)
-                return;
-            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
-        }
-
         private void ResetForm()
         {
             _Receipt = new Receipt() { Date = DateTime.Now };

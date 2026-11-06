@@ -113,14 +113,5 @@ namespace Clone.DataAccess.Repositories
                     .ToListAsync();
         }
         #endregion
-
-        #region Reports
-        public async Task<IEnumerable<DebsDto>> DebtsReportAsync()
-        {
-            return await _db.Database
-                    .SqlQuery<DebsDto>($"SELECT \"Id\", \"CompanyId\", \"CompanyName\", \"Name\", \"PhoneNumber\", \"Total\" FROM public.\"vDebts\"")
-                    .ToListAsync();
-        }   
-        #endregion
     }
 }

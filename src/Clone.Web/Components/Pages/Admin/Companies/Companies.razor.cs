@@ -21,9 +21,7 @@ namespace Clone.Web.Components.Pages.Admin.Companies
         private string _NameSearch = string.Empty;
         private string _StreetAddressSearch = string.Empty;
         private string _PhoneNumberSearch = string.Empty;
-        private bool _IsMaxSearch = false;
         private bool _SearchButtonLoading = false;
-        private string _StreetAddressSearch = string.Empty;
         private int _TotalSearched = 0;
         #endregion
 
