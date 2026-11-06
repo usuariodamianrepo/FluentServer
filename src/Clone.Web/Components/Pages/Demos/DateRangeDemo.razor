@@ -1,7 +1,11 @@
 ﻿@page "/demos/date-range"
 @rendermode InteractiveServer
+
+@using Clone.DataAccess.Repositories.IRepository
 @using Clone.Models.Dtos
 @using Clone.Web.Components.Shared
+
+@inject IUnitOfWork UnitOfWork
 
 <PageTitle>Dates Filter</PageTitle>
 
@@ -11,7 +15,7 @@
         <DateRangePicker @bind-Value="_range" OnRangeChanged="OnRangeChanged" />
     </FluentStack>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-        <FluentButton>Search</FluentButton>
+        <FluentButton onclick="OnSearchAsync">Search</FluentButton>
     </FluentStack>
 </FluentStack>
 
@@ -34,5 +38,11 @@
 
         await Task.Delay(1);
         Console.WriteLine($"Search {_range.From:O} - {_range.To:O}");
+    }
+
+    private async Task OnSearchAsync()
+    {
+        var resp = await UnitOfWork.CostCenterTotalReportAsync(_range.From, _range.To);
+        Console.WriteLine($"Search Total: {resp.Count()}");
     }
 }

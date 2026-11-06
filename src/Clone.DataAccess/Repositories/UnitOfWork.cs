@@ -4,6 +4,8 @@ using Clone.Models;
 using Clone.Models.Dtos;
 using Clone.Utility;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using NpgsqlTypes;
 using System.Collections;
 
 namespace Clone.DataAccess.Repositories
@@ -42,7 +44,7 @@ namespace Clone.DataAccess.Repositories
         }
 
         #region Users
-        public IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber)
+        public IQueryable<UserBySearchDto> UserBySearch(string id, string name, string phoneNumber, int maxRows)
         {
             var query = (
                 from user in _db.Users
@@ -83,7 +85,32 @@ namespace Clone.DataAccess.Repositories
                 }
             }
 
-            return query.Take(MaxRows.MaxFifty).OrderBy(u => u.Name);
+            return query.Take(maxRows).OrderBy(u => u.Name);
+        }
+        #endregion
+
+        #region Reports
+        public async Task<IEnumerable<BalancesDto>> BalancesReportAsync()
+        {
+            return await _db.Database
+                    .SqlQuery<BalancesDto>($"SELECT * FROM f_balances()")
+                    .ToListAsync();
+        }
+        public async Task<IEnumerable<CostCenterTotalDto>> CostCenterTotalReportAsync(DateTime dateFrom, DateTime dateTo)
+        {
+            var fromParam = new NpgsqlParameter("p_date_from", NpgsqlDbType.Timestamp)
+            {
+                Value = dateFrom
+            };
+
+            var toParam = new NpgsqlParameter("p_date_to", NpgsqlDbType.Timestamp)
+            {
+                Value = dateTo
+            };
+
+            return await _db.Database
+                    .SqlQuery<CostCenterTotalDto>($"SELECT * FROM f_costcentertotal({fromParam}, {toParam})")
+                    .ToListAsync();
         }
         #endregion
 

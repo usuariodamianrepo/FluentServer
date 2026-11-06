@@ -19,6 +19,7 @@ namespace Clone.Web.Components.Pages.Misc.DocumentTypes
         #region Search
         private string _NameSearch = string.Empty;
         private bool _IsMaxSearch = false;
+        private int _MaxRowsDefined = MaxRows.MaxFifty;
         private bool _SearchButtonLoading = false;
         private int _TotalSearched = 0;
         #endregion
@@ -215,11 +216,11 @@ namespace Clone.Web.Components.Pages.Misc.DocumentTypes
                     .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
                     .OrderBy(d => d.Name)
                     .AsNoTracking()
-                    .Take(MaxRows.MaxThirty)
+                    .Take(_MaxRowsDefined)
                     .ToListAsync();
 
                 _TotalSearched = findeds.Count;
-                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
+                _IsMaxSearch = _TotalSearched >= _MaxRowsDefined;
 
                 _DocumentTypes = findeds.AsQueryable();
             }

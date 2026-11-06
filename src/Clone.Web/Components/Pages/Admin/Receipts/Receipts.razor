@@ -54,7 +54,7 @@
                                 OptionText="@(item => item.Name)"
                                 @bind-SelectedItems="@_CostCenterSearchSelected" />
             <FluentSwitch @bind-Value="@_IsActive" Label="@Localizer["Active"]" />
-            <FluentButton Title="@(_IsMaxSearch ? SharedLocalizer["Warning.Search", MaxRows.MaxThirty] : SharedLocalizer["Common.Search"])"
+            <FluentButton Title="@(_IsMaxSearch ? SharedLocalizer["Warning.Search", _MaxRowsDefined] : SharedLocalizer["Common.Search"])"
                           IconStart="@(_IsMaxSearch ? new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) : new Icons.Regular.Size20.DatabaseSearch())"
                           Appearance="ButtonAppearance.Default"
                           OnClick="@OnSearchClicked" Loading="@_SearchButtonLoading">@SharedLocalizer["Common.Search"]</FluentButton>

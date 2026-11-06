@@ -151,7 +151,7 @@
     <value>Empresas</value>
   </data>
   <data name="Nav.CostCenters" xml:space="preserve">
-    <value>Centros de custo</value>
+    <value>Centros de Custo</value>
   </data>
   <data name="Nav.Receipts" xml:space="preserve">
     <value>Recibos</value>
@@ -405,7 +405,10 @@
   <data name="Common.Total" xml:space="preserve">
     <value>Total</value>
   </data>
-  <data name="Nav.Debts" xml:space="preserve">
-    <value>Dívidas</value>
+  <data name="Nav.Balances" xml:space="preserve">
+    <value>Saldos</value>
+  </data>
+  <data name="Nav.CostCenterTotal" xml:space="preserve">
+    <value>Centros de Custo Totales</value>
   </data>
 </root>

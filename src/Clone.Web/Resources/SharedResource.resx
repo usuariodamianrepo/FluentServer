@@ -405,7 +405,10 @@
   <data name="Common.Total" xml:space="preserve">
     <value>Total</value>
   </data>
-  <data name="Nav.Debts" xml:space="preserve">
-    <value>Debts</value>
+  <data name="Nav.Balances" xml:space="preserve">
+    <value>Balances</value>
+  </data>
+  <data name="Nav.CostCenterTotal" xml:space="preserve">
+    <value>Cost Centers Totals</value>
   </data>
 </root>

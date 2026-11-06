@@ -1,6 +1,6 @@
 ---
 name: add-ui-crud
-description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition, if {EntitySingularName} you write the entity name at singular name and if {EntityPluralName} you write the entity name at plural name. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript. Add Localization.
+description: Create a UI CRUD from a specific `Entity` of `src/Clone.Models`. Save the CRUD page at `src/Clone.Web.Components.Pages/Admin` folder. Use the Templates, replace the [Entity] name in the template to corresponding definition. Example: if {EntitySingularName} you write the entity name at singular name, if {EntityPluralName} you write the entity name at plural name, etc. Create the UI markup and the code to support it (Code-Behind). If see {SPECIAL_CASE: } implemented the code descript. Add Localization.
 argument-hint: "[EntityName]"
 ---
 
@@ -36,7 +36,7 @@ Create into de folder `src/Clone.Web.Components.Pages/{EntityPluralName}.razor` 
                       OnClick="@OnAddClicked"/>
         <FluentTextInput @bind-Value=_NameSearch Placeholder="Name" TextInputType="TextInputType.Search" Maxlength=10 AutoComplete="off" Autofocus="true" />
         <FluentButton Title="@(_IsMaxSearch?
-                                        SharedLocalizer["Warning.Search", MaxRows.MaxThirty] :
+                                        SharedLocalizer["Warning.Search", _MaxRowsDefined] :
                                         SharedLocalizer["Common.Search"])"
                       IconStart="@(_IsMaxSearch ?
                                         new Icons.Regular.Size20.DatabaseSearch().WithColor(Color.Error) :
@@ -195,6 +195,7 @@ namespace Clone.Web.Components.Pages
         #region Search
         private string _NameSearch = string.Empty;
 		private bool _IsMaxSearch = false;
+		private int _MaxRowsDefined = MaxRows.MaxThirty;
         private bool _SearchButtonLoading = false;
 		private int _TotalSearched = 0;
         #endregion
@@ -394,11 +395,11 @@ namespace Clone.Web.Components.Pages
 			    var findeds = await UnitOfWork.Repository<{EntitySingularName}>().Entities
                     .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
                     .AsNoTracking()
-                    .Take(MaxRows.MaxThirty)
+                    .Take(_MaxRowsDefined)
                     .ToListAsync();
 
                 _TotalSearched = findeds.Count;
-                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
+                _IsMaxSearch = _TotalSearched >= _MaxRowsDefined;
 
                 _{EntityPluralName} = findeds.AsQueryable();
             }

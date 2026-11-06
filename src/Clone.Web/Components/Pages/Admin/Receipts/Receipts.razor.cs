@@ -28,6 +28,7 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
         #region Search
         private bool _IsActive = true;
         private bool _IsMaxSearch = false;
+        private int _MaxRowsDefined = MaxRows.MaxFifty;
         private DateRangeDto _range = DateRangeDto.Today();
         private bool _SearchButtonLoading = false;
         private int _TotalSearched = 0;
@@ -44,7 +45,7 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
         {
             var costCenters = await UnitOfWork.Repository<CostCenter>().GetAllAsync();
             _CostCenterSelect = costCenters.OrderBy(c => c.Name);
-            _UsersEditSelect = await (UnitOfWork.UserBySearch("", "", "")).ToListAsync();
+            _UsersEditSelect = await (UnitOfWork.UserBySearch("", "", "", MaxRows.MaxFifty)).ToListAsync();
 
             await SearchData();
         }
@@ -280,7 +281,14 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
         {
             if (e.Text.Length < 3)
                 return;
-            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "")).ToListAsync();
+            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "", MaxRows.MaxFifty)).ToListAsync();
+        }
+
+        private async Task OnUserContentSearchAsync(OptionsSearchEventArgs<UserBySearchDto> e)
+        {
+            if (e.Text.Length < 3)
+                return;
+            e.Items = await (UnitOfWork.UserBySearch("", e.Text, "", MaxRows.MaxFifty)).ToListAsync();
         }
 
         private async Task OnUserContentSearchAsync(OptionsSearchEventArgs<UserBySearchDto> e)
@@ -317,11 +325,11 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
                     .Include(d => d.CostCenter)
                     .OrderByDescending(d => d.Date)
                     .AsNoTracking()
-                    .Take(MaxRows.MaxThirty)
+                    .Take(_MaxRowsDefined)
                     .ToListAsync();
 
                 _TotalSearched = findeds.Count;
-                _IsMaxSearch = _TotalSearched >= MaxRows.MaxThirty;
+                _IsMaxSearch = _TotalSearched >= _MaxRowsDefined;
 
                 _Receipts = findeds.AsQueryable();
             }
