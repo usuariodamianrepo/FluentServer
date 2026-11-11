@@ -7,6 +7,6 @@ namespace Clone.DataAccess.Repositories.IRepository
 	{
         Task<Receipt> DeactivateAsync(int receiptId, ClaimsPrincipal? userLogued);
 
-        Task<Receipt> GenerateAgainstAsync(int receiptId, ClaimsPrincipal? userLogued);
+        Task<Receipt> GenerateAgainstAsync(int receiptId, ClaimsPrincipal? userLogued, decimal amount = 0);
     }
 }

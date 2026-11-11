@@ -1,0 +1,48 @@
+﻿@inherits FluentDialogInstance
+@using Clone.Models
+@using Clone.Utility
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject IStringLocalizer<Receipts> DialogLocalizer
+
+<FluentDialogBody>
+    <FluentGrid Justify="JustifyContent.FlexStart" Spacing="1" Padding="3px">
+        <FluentGridItem Xs="12" Sm="12">
+            @DialogLocalizer["Confirm.GenerateAgainst"] @(_IsIngress ? @DialogLocalizer["Decrease"] : @DialogLocalizer["Ingress"]): @_Amount.ToMoney()
+        </FluentGridItem>
+        <FluentGridItem Xs="12" Sm="12">
+            <FluentTextInput Label="@DialogLocalizer["ApplicationUser"]" @bind-Value="@_NewReceipt.ApplicationUser.Name" Disabled="true" />
+            <FluentNumberInput Label="@DialogLocalizer["Amount"]" @bind-Value="@_NewReceipt.Amount" Autofocus/>
+        </FluentGridItem>
+    </FluentGrid>
+</FluentDialogBody>
+
+@code {
+    decimal _Amount = 0;
+    bool _IsIngress = true;
+
+    [Parameter]
+    public Receipt _NewReceipt { get; set; } = new();
+
+    protected override void OnInitializeDialog(DialogOptionsHeader header, DialogOptionsFooter footer)
+    {
+        _IsIngress = _NewReceipt.Amount >= 0;
+        _Amount = -_NewReceipt.Amount;
+        _NewReceipt.Amount = Math.Abs(_Amount);
+
+        header.Title = @DialogLocalizer["CounterReceipt"];
+        footer.SecondaryAction.Visible = true;
+        footer.SecondaryAction.Label = @SharedLocalizer["Common.Cancel"];
+    }
+
+    protected override async Task OnActionClickedAsync(bool primary)
+    {
+        if (primary)
+        {
+            await DialogInstance.CloseAsync("Yes");
+        }
+        else
+        {
+            await DialogInstance.CancelAsync();
+        }
+    }
+}

@@ -214,7 +214,7 @@
     <value>Diminuição</value>
   </data>
   <data name="Confirm.GenerateAgainst" xml:space="preserve">
-    <value>Deseja gerar um contrarrecibo para {0}?</value>
+    <value>Deseja gerar um contrarrecibo?</value>
   </data>
   <data name="CounterReceipt" xml:space="preserve">
     <value>Contrarrecibo</value>

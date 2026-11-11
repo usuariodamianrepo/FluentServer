@@ -141,7 +141,10 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
 
         private async Task OnGenerateAgainstClicked(int id)
         {
-            var toGenerate = await UnitOfWork.Repository<Receipt>().GetByIdAsync(id);
+            var toGenerate = await UnitOfWork.Repository<Receipt>().Entities
+                .Include(r => r.ApplicationUser)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
 
             if (toGenerate is null)
             {
@@ -149,7 +152,20 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
                 return;
             }
 
-            var result = await DialogService.ShowConfirmationAsync(Localizer["Confirm.GenerateAgainst", toGenerate.Amount], SharedLocalizer["ShowConfirmation.Title"]);
+            var dialogReceipt = new Receipt()
+            {
+                Id = toGenerate.Id,
+                ApplicationUserId = toGenerate.ApplicationUserId,
+                ApplicationUser = toGenerate.ApplicationUser,
+                Amount = toGenerate.Amount
+            };
+
+            var result = await DialogService.ShowDialogAsync<AgainstReceiptDialog>(options =>
+            {
+                options.Parameters.Add(nameof(AgainstReceiptDialog._NewReceipt), dialogReceipt);
+            });
+
+
             if (result.Cancelled)
                 return;
 
@@ -157,7 +173,7 @@ namespace Clone.Web.Components.Pages.Admin.Receipts
 
             try
             {
-                var newReceipt = await ReceiptRepository.GenerateAgainstAsync(id, authState.User);
+                var newReceipt = await ReceiptRepository.GenerateAgainstAsync(toGenerate.Id, authState.User, dialogReceipt.Amount);
                 await UnitOfWork.Repository<Receipt>().AddAsync(newReceipt);
                 await UnitOfWork.SaveAsync();
                 await NotificationService.ShowWarningBarAsync(MESSAGEBAR_SECTION, title: Localizer["Info.ReceiptGenerated", newReceipt.Id]);
