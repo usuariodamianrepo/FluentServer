@@ -28,7 +28,7 @@ namespace Clone.DataAccess.Repositories
             return receiptToDeactivate;
         }
 
-        public async Task<Receipt> GenerateAgainstAsync(int receiptId, ClaimsPrincipal? userLogued)
+        public async Task<Receipt> GenerateAgainstAsync(int receiptId, ClaimsPrincipal? userLogued, decimal amount = 0)
         {
             var receiptFrom = await _repository.GetByIdAsync(receiptId);
             if (receiptFrom is null)
@@ -43,7 +43,7 @@ namespace Clone.DataAccess.Repositories
                 CostCenterId = receiptFrom.CostCenterId,
                 Date = DateTime.Now,
                 Number = receiptFrom.Number,
-                Amount = receiptFrom.Amount,
+                Amount = amount == 0 ? receiptFrom.Amount : amount,
             };
 
             newReceipt.InsertAudit(userLogued);

@@ -214,7 +214,7 @@
     <value>Egreso</value>
   </data>
   <data name="Confirm.GenerateAgainst" xml:space="preserve">
-    <value>¿Desea generar un contrarrecibo por {0}?</value>
+    <value>¿Desea generar un contrarrecibo?</value>
   </data>
   <data name="CounterReceipt" xml:space="preserve">
     <value>Contrarrecibo</value>

@@ -192,7 +192,10 @@ namespace Clone.Web.Components.Pages
 		`IEnumerable<{PropertyName}> _{PropertyName}Select = default!;`
 		}
 
-        #region Search
+        #region Search		
+		{SPECIAL_CASE: entity property contain property name as Name or Title, define the variable respectively
+		`private string _NameSearch = string.Empty;`
+		}
         private string _NameSearch = string.Empty;
 		private bool _IsMaxSearch = false;
 		private int _MaxRowsDefined = MaxRows.MaxThirty;
@@ -392,8 +395,11 @@ namespace Clone.Web.Components.Pages
 
             try
             {
+
 			    var findeds = await UnitOfWork.Repository<{EntitySingularName}>().Entities
-                    .Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))
+					{SPECIAL_CASE: entity property contain property name as Name or Title, define the variable respectively
+					`.Where(d => string.IsNullOrWhiteSpace(_NameSearch) || d.Name.Contains(_NameSearch))`
+					}
                     .AsNoTracking()
                     .Take(_MaxRowsDefined)
                     .ToListAsync();
