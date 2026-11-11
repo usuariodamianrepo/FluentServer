@@ -11,7 +11,7 @@
         </FluentGridItem>
         <FluentGridItem Xs="12" Sm="12">
             <FluentTextInput Label="@DialogLocalizer["ApplicationUser"]" @bind-Value="@_NewReceipt.ApplicationUser.Name" Disabled="true" />
-            <FluentNumberInput Label="@DialogLocalizer["Amount"]" @bind-Value="@_NewReceipt.Amount" />
+            <FluentNumberInput Label="@DialogLocalizer["Amount"]" @bind-Value="@_NewReceipt.Amount" Autofocus/>
         </FluentGridItem>
     </FluentGrid>
 </FluentDialogBody>
