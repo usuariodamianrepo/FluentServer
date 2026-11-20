@@ -30,7 +30,7 @@
 <FluentKeyCode OnKeyDown="@KeyDownHandler">
     <FluentStack Orientation="Orientation.Vertical" Padding="5px 0 5px 0;">
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
-            <FluentButton Title="@Localizer["Increase"]" IconStart="@(new Icons.Regular.Size20.ArrowRight().WithColor(Color.Success))" Appearance="ButtonAppearance.Default"
+            <FluentButton Title="@Localizer["Ingress"]" IconStart="@(new Icons.Regular.Size20.ArrowRight().WithColor(Color.Success))" Appearance="ButtonAppearance.Default"
                           OnClick="@OnAddIngressClicked" />
             <FluentButton Title="@Localizer["Decrease"]" IconStart="@(new Icons.Regular.Size20.ArrowLeft().WithColor(Color.Error))" Appearance="ButtonAppearance.Default"
                           OnClick="@OnAddDecreaseClicked" />
@@ -39,17 +39,19 @@
         <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="4">
             <FluentAutocomplete TOption="UserBySearchDto"
                                 TValue="string"
-                                Width="250px"
+                                Width="300px"
                                 Placeholder="@Localizer["ApplicationUser"]"
                                 MaximumSelectedOptions="3"
+                                MaxSelectedWidth="40px"
                                 OnOptionsSearch="@OnUserSearchAsync"
                                 OptionText="@(item => item.Name)"
                                 @bind-SelectedItems="@_UsersSearchSelected" />
             <FluentAutocomplete TOption="CostCenter"
                                 TValue="int"
-                                Width="250px"
+                                Width="300px"
                                 Placeholder="@Localizer["CostCenter"]"
                                 MaximumSelectedOptions="3"
+                                MaxSelectedWidth="40px"
                                 Items="@_CostCenterSelect"
                                 OptionText="@(item => item.Name)"
                                 @bind-SelectedItems="@_CostCenterSearchSelected" />

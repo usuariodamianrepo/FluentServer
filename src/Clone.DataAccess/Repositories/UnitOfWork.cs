@@ -77,7 +77,7 @@ namespace Clone.DataAccess.Repositories
             {
                 if (!string.IsNullOrEmpty(name))
                 {
-                    query = query.Where(u => u.Name!.Contains(name));
+                    query = query.Where(u => u.Name!.ToUpper().Contains(name.ToUpper()));
                 }
                 if (!string.IsNullOrEmpty(phoneNumber))
                 {

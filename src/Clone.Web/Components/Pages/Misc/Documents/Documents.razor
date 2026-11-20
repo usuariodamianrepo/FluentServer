@@ -79,7 +79,7 @@
                 <DataAnnotationsValidator />
                 <FluentGrid Justify="JustifyContent.FlexStart" Padding="4px">
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Maxlength=120 AutoComplete="off" />*
+                        <FluentTextInput Label="@SharedLocalizer["Common.Title"]" @bind-Value="_Document.Title" Maxlength=120 Width="50%" AutoComplete="off" />*
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentSelect Label="@Localizer["DocumentType"]"
@@ -87,13 +87,14 @@
                                       Items="@_DocumentTypesSelect"
                                       OptionText="@(i => i.Name)"
                                       OptionValue="@(i => i.Id)"
-                                      @bind-Value="@_Document.DocumentTypeId" />
+                                      @bind-Value="@_Document.DocumentTypeId"
+                                      Width="50%" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Maxlength=450 AutoComplete="off" />
+                        <FluentTextArea Label="@SharedLocalizer["Common.Description"]" @bind-Value="_Document.Description" Maxlength=480 Width="100%" Height="80px" AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
-                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Maxlength=250 AutoComplete="off" />
+                        <FluentTextInput Label="@Localizer["URL"]" @bind-Value="_Document.URL" Maxlength=250 Width="100%" AutoComplete="off" />
                     </FluentGridItem>
                     <FluentGridItem Xs="12" Sm="12">
                         <FluentDatePicker Label="@Localizer["Published"]" @bind-Value="_Document.Published" />

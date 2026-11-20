@@ -5,7 +5,6 @@ using Clone.Web.Components.Account;
 using Clone.Web.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
