@@ -33,7 +33,7 @@
 - Entities must inherit `AuditableEntity` to be usable through `IUnitOfWork.Repository<T>()`.
 - Use `UnitOfWork.Repository<T>()` and `UnitOfWork.SaveAsync()`; do not add a custom repository unless you need custom queries.
 - `InsertAudit(user)` / `UpdateAudit(user)` are manual. `SaveAsync()` does not populate audit fields, so CRUD pages must call them before add/update.
-- PostgreSQL `xmin` is the concurrency token. Each new entity needs the inherited `xmin` property configured explicitly in `ApplicationDbContext.OnModelCreating`, like `Company`, `Document`, and `DocumentType`. Handle `DbUpdateConcurrencyException` on save/delete.
+- PostgreSQL `xmin` is the concurrency token. Each new entity needs the inherited `xmin` property configured explicitly in `ApplicationDbContext.OnModelCreating`, like `Company`, `CostCenter`, `Document`, `DocumentType`, and `Receipt`. Handle `DbUpdateConcurrencyException` on save/delete.
 - Audit timestamps are stored in UTC. Use `ConvertToShow()` when displaying them; `Clone.Utility` converts to `America/Argentina/Buenos_Aires`.
 
 ## UI conventions
